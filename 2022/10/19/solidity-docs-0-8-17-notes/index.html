@@ -1,0 +1,873 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fitz.png">
+  <link rel="icon" href="/img/fitz.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="alphafitz">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Solidity 文档 0.8.17 笔记 本文是本人对 Solidity 0.8.17 文档的笔记，基本语法复习自用。  类型Value Types值类型永远通过值传递（赋值或作为函数参数）。 address 类型可以和 uint160、整数字面量、bytes20 和合约类型相互转换。但只有 address 和合约类型可以通过显式类型转换 payable(&lt;address&gt;) 转换为">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Solidity 文档 0.8.17 笔记">
+<meta property="og:url" content="https://alphafitz.com/2022/10/19/solidity-docs-0-8-17-notes/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="Solidity 文档 0.8.17 笔记 本文是本人对 Solidity 0.8.17 文档的笔记，基本语法复习自用。  类型Value Types值类型永远通过值传递（赋值或作为函数参数）。 address 类型可以和 uint160、整数字面量、bytes20 和合约类型相互转换。但只有 address 和合约类型可以通过显式类型转换 payable(&lt;address&gt;) 转换为">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-19T10:06:42.000Z">
+<meta property="article:modified_time" content="2022-10-25T09:45:26.395Z">
+<meta property="article:author" content="alphafitz">
+<meta property="article:tag" content="区块链技术">
+<meta property="article:tag" content="智能合约开发">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Solidity 文档 0.8.17 笔记 - </title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alphafitz.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="null" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>alphafitz</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Solidity 文档 0.8.17 笔记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-10-19 18:06" pubdate>
+          2022年10月19日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          16k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          136 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Solidity 文档 0.8.17 笔记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Solidity-文档-0-8-17-笔记"><a href="#Solidity-文档-0-8-17-笔记" class="headerlink" title="Solidity 文档 0.8.17 笔记"></a>Solidity 文档 0.8.17 笔记</h1><blockquote>
+<p>本文是本人对 Solidity 0.8.17 文档的笔记，基本语法复习自用。</p>
+</blockquote>
+<h2 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h2><h3 id="Value-Types"><a href="#Value-Types" class="headerlink" title="Value Types"></a>Value Types</h3><p>值类型永远通过值传递（赋值或作为函数参数）。</p>
+<p><code>address</code> 类型可以和 <code>uint160</code>、整数字面量、<code>bytes20</code> 和合约类型相互转换。但只有 <code>address</code> 和合约类型可以通过显式类型转换 <code>payable(&lt;address&gt;)</code> 转换为 <code>address payable</code> 类型。对于合约类型，只有合约能够接收以太时转换才被允许。</p>
+<p>长字节类型强制类型转换为短字节类型时，会从高位开始取；长整数型强制类型转换为短整数型时，会从低位开始取。</p>
+<p>每一个合约都定义了它们自己的类型。您可以将合约隐式转换为它们继承的合约。合约可以显式转换为地址类型或从地址类型转换。如果你声明了一个合约类型的局部变量，你就能调用该合约上的函数。您也可以实例化合约（使用 <code>new</code> 创建新的合约）。合约类型的成员是其外部函数。</p>
+<p>函数类型也是值类型的一种，分为 <code>internal</code> 或 <code>external</code> 两种。函数可以作为参数或返回值来使用，因为其也是值类型的一种。具体用法和注意点可以查看 <a target="_blank" rel="noopener" href="https://docs.soliditylang.org/en/latest/types.html#function-types">Types — function types</a>。</p>
+<h3 id="Reference-Types"><a href="#Reference-Types" class="headerlink" title="Reference Types"></a>Reference Types</h3><p>引用类型的值可以通过多个不同的名字更改。因此引用类型必须比值类型更加小心地处理。一般，引用类型包括结构体、数组和映射。如果使用引用类型，必须显式地提供数据存储位置：<code>memory</code>（生命周期限制为外部函数调用）、<code>storage</code>（状态变量存储的位置，生命周期限制为合约的声明周期）或 <code>calldata</code>（包含函数参数的特殊数据位置）。<code>calldata</code> 是存储函数参数的不可修改、非持久性区域，行为主要类似于内存。</p>
+<p>更改数据位置的赋值或类型转换将始终引发自动复制操作，而同一数据位置内的赋值仅在某些情况下为存储(storage)类型进行复制。如果可以请尽量使用 <code>calldata</code> 因为会避免复制，也会确保数据不会被修改。</p>
+<p>赋值行为：</p>
+<ul>
+<li><code>storage</code> 和 <code>memory</code>（或从 <code>calldata</code>）之间的赋值始终会创建单独的拷贝；</li>
+<li>从 <code>memory</code> 到 <code>memory</code> 只创建引用；</li>
+<li>从 <code>storage</code> 到 局部(local)存储变量也只分配引用；</li>
+<li>所有其他的到 <code>storage</code> 的赋值都会拷贝，比如到状态变量或到局部存储结构体类型的成员的赋值，即使局部变量本身只是个引用；</li>
+</ul>
+<p>数组可以有编译时固定大小，或有动态大小。固定大小数组表示为 <code>T[k]</code>，动态数组表示为 <code>T[]</code>。例如 5 个 <code>uint</code> 的动态数组的数组表示为 <code>uint[][5]</code>，语法类似 <code>uint[][5] memory x;</code>。数组元素可以是任何类型，包括映射或结构体。类型的一般限制为，映射只能存储在 <code>storage</code> 位置，公共可见的函数需要 ABI 类型的参数。</p>
+<p><code>bytes</code> 和 <code>string</code> 分别是字节动态数组和 UTF-8 编码的动态字节数组。<code>bytes</code> 可以和其他动态数组类型一样，有成员变量 <code>length</code> 和成员函数：<code>push()</code>、<code>push(x)</code> 和 <code>pop()</code>。但 <code>string</code> 没有这四个成员，而只能通过赋值来改变值 <code>s = &#39;xxx&#39;</code>。但由于是动态的，因此可以赋任意长度的字符串。</p>
+<p><code>bytes</code> 和 <code>string</code> 类型变量是特殊的数组。<code>string</code> 和 <code>bytes</code> 相等但不允许长度或下标索引。可以通过 keccak256 哈希来判断两个 <code>string</code> 是否相等：<code>keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2))</code>，也可以把两个字符串连在一起：<code>string.concat(s1, s2)</code>。</p>
+<p>作为基本规则，请将 <code>bytes</code> 用于任意长度的原始字节数据，将 <code>string</code> 用作任意长度的字符串 (UTF-8) 数据。如果你将长度限制为固定的字节个数，应该使用 <code>bytes1</code> 至 <code>bytes32</code>。使用 <code>bytes(s).length</code> 和 <code>bytes(s)[7] = &#39;x&#39;;</code> 的方式可以以单个字节的形式访问字符串。要使用 <code>string.concat</code> 应将参数都转换为 <code>string</code> 类型，要使用 <code>bytes.concat</code> 应将参数都转换为 <code>bytes</code> 或 <code>bytes1/.../bytes32</code> 类型。</p>
+<p>动态长度的内存数组可以使用 <code>new</code> 运算符创建。与存储数组不同，内存数组不能重新组织大小（<code>.push</code> 成员不能使用）。要么必须提前计算所需的大小，要么创建一个新的内存数组并复制每个元素。<code>uint[] memory a = new uint[](7);</code> 或 <code>bytes memory b = new bytes(len);</code>。</p>
+<p>数组字面量始终是静态大小的内存数组，其长度是表达式的个数。数组的基本类型是第一个表达式的类型，后面的表达式都会隐式转换为该类型，如果不能就会产生类型错误。固定大小内存数组不能分配给动态大小的内存数组。如果想要初始化动态大小数组，必须分配给每个单独的元素。</p>
+<p>尽量注意避免存储数组元素的悬浮引用。每个语句只分配一次存储总是更安全，并且避免在分配的左侧使用复杂的表达式。</p>
+<p>数组切片写作 <code>x[start:end]</code>，没有任何成员，可以隐式转换为其基础类型的数组并支持索引访问。索引访问在底层数组中不是绝对的，而是相对于切片的开头。到目前为止，数组切片仅针对 <code>calldata</code> 数组实现。</p>
+<p>在所有函数中，结构体类型被分配为 <code>storage</code> 数据位置的局部变量。这不会复制一个结构体，而只会存储一个引用，以便对局部变量的成员的赋值实际写入状态。</p>
+<h3 id="Mapping-Types"><a href="#Mapping-Types" class="headerlink" title="Mapping Types"></a>Mapping Types</h3><p>映射类型使用 <code>mapping(KeyType =&gt; ValueType) VariableName</code> 来声明。其中，<code>KeyType</code> 可以是任何内置值类型，<code>bytes</code>，<code>string</code> 或任何合约或枚举类型，<code>ValueType</code> 可以是任何类型。映射只能存储在 <code>storage</code>，用于状态变量，作为函数的存储引用类型，或作为库函数的参数。不能用作公共可见的合约函数的参数或返回参数。不能对映射进行迭代，即不能枚举它们的键。但是可以在它们之上实现一个数据结构并对其进行迭代。</p>
+<p><code>delete a</code> 可以为 <code>a</code> 分配该类型的初始值。对于结构体，它为结构体的所有成员分配初始值。但 <code>delete</code> 不会对映射产生影响（因为映射的键通常是任意的且不可知）。</p>
+<h2 id="表达式和控制结构"><a href="#表达式和控制结构" class="headerlink" title="表达式和控制结构"></a>表达式和控制结构</h2><p>大括号语言中的大多数控制结构在 Solidity 中都是有的：<code>if</code>、<code>else</code>、<code>while</code>、<code>do</code>、<code>for</code>、<code>break</code>、<code>continue</code>、<code>return</code>，并且有着 C 或 JavaScript 中的通用语义。</p>
+<p>Solidity 使用 <code>try</code> &#x2F; <code>catch</code> 语句用作异常处理，但仅能用于外部函数调用和合约创建调用。 Error 可以使用 <code>revert</code> 语句创建。</p>
+<p>条件句不能省略括号，但单语句体周围的花括号可以省略。</p>
+<p>布尔类型和非布尔类型不能进行类型转换。</p>
+<h3 id="Function-Calls"><a href="#Function-Calls" class="headerlink" title="Function Calls"></a>Function Calls</h3><p>内部函数调用被翻译为 EVM 中的简单跳转。当前内存不会被清空，传入内存引用很高效。内部函数调用也应该避免过度递归，因为每一个内部函数调用使用至少一个栈槽，而且仅有 1024 个可用的栈槽。</p>
+<p>外部函数调用可以使用 <code>this.g(8);</code> 和 <code>c.g(2)</code> 的表达方式，<code>c</code> 是合约实例。外部函数调用使用的是消息调用(message call)而不是直接跳转。对于外部调用，所有的函数参数必须拷贝到内存中。这里的消息调用是整体交易中的一部分，不会创建自己的交易。</p>
+<p>当调用其他合约的函数时，你可以使用特殊的选项指定发送的金额和提供的 gas：<code>&#123;value: 10, gas: 10000&#125;</code>。不鼓励明确指定 gas 值，因为操作码的 gas 费用可能会在未来发生变化。您发送给合约的任何金额都会添加到该合约的总余额中。如果你想发送金额，需要使用 <code>payable</code> 标识被调用的合约函数。</p>
+<p>EVM 认为对不存在的合约的调用总是成功的，Solidity 使用 <code>extcodesize</code> 操作码来检查即将被调用的合约是否确实存在（包含代码），如果不存在则触发异常。如果返回数据将在调用后被解码，则跳过此检查，因此 ABI 编码器将捕获不存在合约的情况。对于地址而不是合约实例的低级调用，检查不会进行。</p>
+<p>与另一个合约的任何交互都会带来潜在的危险，特别是如果事先不知道合约的源代码。当前的合约将控制权移交给被调用的合约，这可能会发生任何事情。</p>
+<p>函数调用时参数可以使用 <code>&#123;&#125;</code> 指定。函数声明中的参数和返回值的名称可以省略。这些省略名称的项仍将出现在堆栈中，但无法通过名称访问。</p>
+<h3 id="Creating-Contracts-via-new"><a href="#Creating-Contracts-via-new" class="headerlink" title="Creating Contracts via new"></a>Creating Contracts via <code>new</code></h3><p>一个合约可以使用 <code>new</code> 关键字创建其他合约。在编译创建合约时，必须知道正在创建的合约的完整代码，因此递归创建依赖项是不可能的。创建合约时可以使用 <code>&#123;value: amount&#125;</code> 发送以太。创建失败则抛出异常。</p>
+<p>此处创建合约时，合约的地址是根据创建合约的地址和随着每次合约创建而增加的计数器计算出来的。如果指定了选项 <code>salt</code>（bytes32 value），则合约创建会使用不同的机制生成新合约的地址。会使用创建合约的地址、给定的 salt 值、创建合约的（创建）字节码和构造函数参数来计算地址，不再使用计数器（”nonce”）。因此可以在创建新合约之前获取其地址，以防止创建合约同时创建其他合约。</p>
+<h3 id="Assignment"><a href="#Assignment" class="headerlink" title="Assignment"></a>Assignment</h3><p>Solidity 内部允许元组类型。元组不是 Solidity 的合适类型，它们仅能被用于表达式的句法分组。不能混合变量声明和非声明赋值。在涉及引用类型时同时分配多个变量时要小心，因为可能导致意外的复制行为。</p>
+<p>数组、结构体（包括 <code>bytes</code> 和 <code>string</code>）的赋值语义更加复杂。具体参考前面引用类型的赋值行为。</p>
+<h3 id="Scoping-and-Declarations"><a href="#Scoping-and-Declarations" class="headerlink" title="Scoping and Declarations"></a>Scoping and Declarations</h3><p>Solidity 中的作用域遵循 C99 的广泛作用域规则。变量从声明之后的那一位置到包含声明的最小 <code>&#123; &#125;</code> 块的末尾都是可见的。一个例外是 for 循环的初始化部分中声明的变量仅在 for 循环结束之前可见。类似参数的变量（函数参数、修饰符参数、catch 参数等）在后面的代码块中可见。在代码块之外声明的变量和其他项目，例如函数、合约、用户定义的类型等，甚至在声明之前就可见。</p>
+<h3 id="Checked-or-Unchecked-Arithmetic"><a href="#Checked-or-Unchecked-Arithmetic" class="headerlink" title="Checked or Unchecked Arithmetic"></a>Checked or Unchecked Arithmetic</h3><p>在 Solidity 0.8.0 之前，算术运算总是会在上溢或下溢的情况下进行 wrap，从而导致广泛地使用引入额外检查的库。从 Solidity 0.8.0 开始，所有的算术运算将会默认地在上溢或下溢时 revert，而不再需要这些库。</p>
+<p>位运算符不执行上溢或下溢检查。同样在用按位移位代替整数乘除法时尤其明显。</p>
+<h3 id="Error-handling-Assert-Require-Revert-and-Exception"><a href="#Error-handling-Assert-Require-Revert-and-Exception" class="headerlink" title="Error handling: Assert, Require, Revert and Exception"></a>Error handling: Assert, Require, Revert and Exception</h3><p>Solidity 使用状态回滚异常(state-reverting exception)来处理错误。这样的异常会撤销对当前调用（及其所有子调用）中状态所做的所有更改，并向调用者标记错误。当子调用发生异常，它们会“冒泡”，除非被 <code>try/catch</code> 语句捕获。此规则的例外是 <code>send</code> 和低级函数调用 <code>call</code>、<code>delegatecall</code> 和 <code>staticcall</code>：它们返回 <code>false</code> 作为它们的第一个返回值，以防出现异常而不是“冒泡”。注意，如果调用的账户不存在，这三个低级调用会返回 <code>true</code>。因此需要在调用前检查账户是否存在。异常可以包含以错误实例的形式传回调用者的错误数据。</p>
+<p><code>assert</code> 和 <code>require</code> 可用于检查条件，如果条件不满足则抛出异常。<code>assert</code> 函数会创建一个 <code>Panic(uint256)</code> 类型的错误。在某些情况下，编译器会创建相同的错误。</p>
+<p>Assert 只应该用于测试内部错误和检查不变量。正常运行的代码不应该创建 Panic，即使是在无效的外部输入上也是如此。<a target="_blank" rel="noopener" href="https://docs.soliditylang.org/en/latest/control-structures.html#panic-via-assert-and-error-via-require">Expressions and Control Structures — Error handling</a> 给出了 Panic 的错误代码。</p>
+<p><code>require</code> 函数要么创建一个没有任何数据的错误，要么创建一个 <code>Error(string)</code> 类型的错误。应该用于确保在执行之前无法检测到的有效条件，包括对于外部合约调用的输入或返回值的条件。目前无法将自定义错误与 <code>require</code> 结合使用，应该使用 <code>if (!condition) revert CustomError();</code>。</p>
+<p>发生 <code>Error(string)</code> 异常和无数据异常的条件：</p>
+<ol>
+<li><code>require(x)</code> 中 <code>x</code> 等于 <code>false</code>；</li>
+<li><code>revert()</code> 或 <code>revert(&quot;description&quot;)</code>；</li>
+<li>外部函数调用目标合约没有代码；</li>
+<li>通过没有 <code>payable</code> 修饰符的公共函数接收以太币；</li>
+<li>合约通过公共 getter 函数接收以太币。</li>
+</ol>
+<p>以下情况将转发来自外部调用（如果提供）的错误数据。这意味着它可能会导致 Error 或 Panic（或给出的任何其他内容）：</p>
+<ol>
+<li><code>.transfer()</code> 失败；</li>
+<li>通过消息调用(message call)调用一个函数但没有正确完成（out of gas，没有匹配的函数，或自身抛出异常）（除了低级操作 <code>call</code>、<code>send</code>、<code>delegatecall</code> 或 <code>staticcall</code> 的情况）；</li>
+<li>使用 <code>new</code> 创建合约，但合约创建未正确完成。</li>
+</ol>
+<p>使用 <code>revert</code> 语句和 <code>revert</code> 函数将触发直接回滚。<code>revert</code> 语句以通用错误作为直接参数：<code>revert CustomError(arg1, arg2);</code>。出于向后兼容的原因，还有 <code>revert()</code> 函数，使用括号并接受字符串：<code>revert();</code> 或 <code>revert(&quot;description&quot;);</code>。</p>
+<p>错误数据将会被传递回调用者，并且可以在那里被捕获。使用 <code>revert()</code> 会导致没有任何错误数据的回滚，而 <code>revert(&quot;description&quot;)</code> 将会创建 <code>Error(string)</code> 错误。使用自定义错误实例通常会比字符串描述便宜得多，因为您可以使用错误名称来描述它，它仅编码为四个字节。可以通过 NatSpec 提供更长的描述，这不会产生任何费用。</p>
+<p>只要 <code>revert</code> 和 <code>require</code> 的参数没有副作用，两种方式 <code>if (!condition) revert(...);</code> 和 <code>require(condition, ...)</code> 就是相等的。<code>require</code> 函数在执行函数之前评估所有参数，也就是说即使 <code>require(condition, f())</code> 中的 <code>condition</code> 为真，<code>f</code> 函数也会被执行。</p>
+<p>调用者可以使用 <code>try</code> &#x2F; <code>catch</code> 检错提供的消息，应对这些失败，但被调用者的更改将被回滚。具体使用示例见 <a target="_blank" rel="noopener" href="https://docs.soliditylang.org/en/latest/control-structures.html#try-catch">Expressions and Control Structures — try&#x2F;catch</a>。<code>try</code> 关键字后面必须跟一个表示外部函数调用或合约创建的表达式(<code>new ContractName()</code>)。表达式内部的错误不会被捕获，只会在外部调用本身内部发生回滚。后面的返回部分（可选）声明了与外部调用返回的类型匹配的返回变量。如果没有错误，则分配这些变量，并且合约的执行在第一个成功块内继续。如果到达成功块的末尾，则在 catch 块之后继续执行。Solidity 根据错误类型支持不同类型的 catch 块：</p>
+<ol>
+<li><code>catch Error(string memory reason) &#123; ... &#125;</code>：<code>require(&quot;reason&quot;)</code> 或 <code>require(false, &quot;reason&quot;)</code> 引起的错误；</li>
+<li><code>catch Panic(uint errorCode) &#123; ... &#125;</code>：panic 引起的错误；</li>
+<li><code>catch (bytes memory lowLevelData) &#123; ... &#125;</code>：如果错误签名与任何其他子句不匹配，如果在解码错误消息时出现错误，或者如果没有提供错误数据和异常，则执行此子句。在这种情况下，声明的变量提供对低级错误数据的访问；</li>
+<li><code>catch &#123; ... &#125;</code>：对错误数据不感兴趣，可以只使用 <code>catch &#123; ... &#125;</code>（甚至作为唯一的 catch 子句）。</li>
+</ol>
+<p>为了捕获所有错误情况，您必须至少有子句 <code>catch &#123; ...&#125;</code> 或子句 <code>catch (bytes memory lowLevelData) &#123; ... &#125;</code>。</p>
+<h2 id="合约"><a href="#合约" class="headerlink" title="合约"></a>合约</h2><p>Solidity 中的 contract 和面向对象语言中的 class 相似。</p>
+<h3 id="Creating-Contracts"><a href="#Creating-Contracts" class="headerlink" title="Creating Contracts"></a>Creating Contracts</h3><p>合约可以通过交易从外部创建，也可以从合约创建。合约被创建时，其构造函数被执行一次。具体的创建过程可以参考 <a href="http://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part5-zh/">深入以太坊虚拟机 — 智能合约创建过程</a>。构造函数可选，但最多只能有一个，即不支持重载。部署代码不包含构造函数以及仅被构造函数调用的内部函数。构造函数参数在合约代码之后以 ABI 编码的方式被传递。</p>
+<p>如果一个合约想要创建另一个合约，那么被创建合约的源码（或二进制）必须被创建者所知。</p>
+<h3 id="Visibility-and-Getters"><a href="#Visibility-and-Getters" class="headerlink" title="Visibility and Getters"></a>Visibility and Getters</h3><p>状态变量可见性包括：<code>public</code>(内部访问直接访问存储，外部访问通过消息调用)、<code>internal</code>(状态变量的默认可见级别)、<code>private</code>。</p>
+<p>Solidity 有两种函数调用：EVM 消息调用和内部(跳转)，有四种函数可见性：<code>external</code>(合约接口的一部分，消息调用)、<code>public</code>(合约接口的一部分，消息调用或内部)、<code>internal</code>(内部，且能够接收映射或存储的引用)、<code>private</code>(与<code>internal</code>相似但对于派生合约不可见)。</p>
+<p>编译器自动为所有公共状态变量创建 getter 函数，自动创建的 getter 函数和变量同名，是否有参数以及参数类型依赖于变量类型。在合约内部也可以使用外部调用的方式访问变量 <code>data</code>：<code>this.data()</code>。对于数组，getter 函数检索数组的单个元素，可以使用参数指定要返回的单个元素。你也可以用函数返回整个数组，例如：<code>function getArray public view returns (uint[] memory) &#123; return myArray; &#125;</code>。</p>
+<h3 id="Function-Modifiers"><a href="#Function-Modifiers" class="headerlink" title="Function Modifiers"></a>Function Modifiers</h3><p>修饰符可用于以声明的方式更改函数的行为。修饰符是可继承的合约属性，可能被派生的合约覆盖，但需要将其标记为 <code>virtual</code>。</p>
+<p>如果想要访问合约 <code>C</code> 中的修饰符 <code>m</code>，可以使用 <code>C.m</code> 来引用它而无需虚拟查找。只能使用当前合约或其基合约中定义的修饰符。修饰符也可以在库中定义，但它们的使用仅限于相同库的函数。</p>
+<p>可以将多个修饰符应用于函数，并按显示的顺序进行评估。</p>
+<p>修饰符不能隐式访问或更改它们修饰的函数的参数和返回值。它们的值只能在调用时显示传递给它们。</p>
+<p>修饰符内，占位符 <code>_</code> 用于表示应在何处插入被修饰函数的主体。<code>_</code> 可以多次出现在修饰符中，每次出现都替换为函数体。从修饰符或函数体显式返回仅返回当前修饰符或函数体。返回变量被分配，控制流在修饰符中的 <code>_</code> 之后继续。即如果修饰符 <code>_</code> 之后仍有语句，那么即使函数已经返回，这些语句也会在函数返回之后继续执行。</p>
+<p>带有 <code>return;</code> 的修饰符的显式返回并不影响函数返回的值。修饰符可以选择根本不执行函数体，在这种情况下，返回变量被设置为它们的默认值，就像函数有一个空的函数体一样。</p>
+<p>修饰符参数允许使用任意表达式，在这种情况下，从函数中可见的所有符号在修饰符中都是可见的。修饰符中引入的符号在函数中不可见（因为它们可能会因覆盖而改变）。</p>
+<h3 id="Constant-and-Immutable-State-Variables"><a href="#Constant-and-Immutable-State-Variables" class="headerlink" title="Constant and Immutable State Variables"></a>Constant and Immutable State Variables</h3><p>状态变量可以声明为 <code>constant</code> 或 <code>immutable</code>。<code>constant</code> 变量的值需要在编译时确定，但 <code>immutable</code> 变量的值可以在构造时分配。也可以在文件级别定义 <code>constant</code> 变量。编译器不会为这些变量保留存储槽，每次出现都会被相应的值替换。编译器生成的合约创建代码将在返回之前修改合约的运行时代码，方法是将所有对不可变对象的引用替换为分配给它们的值。</p>
+<p>常量和不可变变量的 gas 要比常规状态变量低得多。目前支持的常量类型有 <code>string</code> 和值类型，支持的不可变变量只有值类型。</p>
+<p>对于 <code>constant</code> 变量，该值在编译时必须是一个常量，并且必须在声明变量的地方赋值。任何访问存储、区块链数据或执行数据或调用外部合约的表达式都是不允许的。不可变变量可以在合约的构造函数中或在它们声明时被分配一个任意值，且只能分配一次。</p>
+<h3 id="Functions"><a href="#Functions" class="headerlink" title="Functions"></a>Functions</h3><p>函数将类型化参数(typed parameters)作为输入，还可以返回任意数量的值作为输出。</p>
+<p>函数参数的声明方式与变量相同，未使用的参数名称可以省略。函数参数可以用作任何其他局部变量，也可以分配给它们。</p>
+<p>返回值在 <code>return</code> 关键词后使用相同的语法声明。返回变量的名称可以省略。返回变量可以用作任何其他局部变量，并使用其默认值初始化并具有该值，直到它们被（重新）分配。可以显式分配给返回变量的名称，或者可以直接使用 <code>return</code> 语句提供返回值（单个或多个）：<code>return (a + b, a * b);</code>。当返回多个返回值时，接收组件的数量和类型必须与返回变量的相同（可以是在隐式转换后）。</p>
+<p>声明为 <code>view</code> 的函数承诺不修改状态。声明为 <code>pure</code> 的函数承诺不会读取或修改状态。纯函数能够使用 <code>revert()</code> 和 <code>require()</code> 函数在发生错误时恢复潜在的状态更改。回滚状态更改不被视为“状态修改”。</p>
+<p>一个合约最多有一个 <code>receive</code>  函数：<code>receive() external payable &#123; ... &#125;</code>（没有参数，不能返回任何数据，必须是 <code>external</code> 和 <code>payable</code> 的）。可以是 virtual 的，可以 override，也可以有修饰符。在 calldata 为空的合约调用时被执行。如果没有 <code>receive</code> 但是有 <code>payable</code>  的 <code>fallback</code> 函数，则会执行 <code>fallback</code> 函数。如果都没有，那么合约就不能接收以太，就会抛出异常。</p>
+<p>如果使用 <code>send</code>  或 <code>transfer</code>，那么 <code>receive</code> 函数只有 2300 gas 可用，只能进行一些基本逻辑操作。以下操作都会花费超过 2300 gas：</p>
+<ul>
+<li>写入到存储</li>
+<li>创建合约</li>
+<li>花费大量 gas 调用外部函数</li>
+<li>发送以太</li>
+</ul>
+<p>没有接收以太功能的合约可以接收以太作为矿工块奖励或作为 <code>selfdestruct</code> 函数的目的地。合约无法对此类以太币转账做出反应，因此也无法拒绝它们。这也意味着 <code>address(this).balance</code> 可能高于在合约中实现的一些手动记账的总和（比如在接收以太的函数中更新一个计数器）。</p>
+<p>一个合约最多有一个 <code>fallback</code> 函数，使用 <code>fallback () external [payable]</code> 或 <code>fallback (bytes calldata input) external [payable] returns (bytes memory output)</code> 进行声明。可以是 virtual 的，可以 override，也可以有修饰符。除了上面的场景，<code>fallback</code> 还在 calldata 中的函数签名没有成功匹配的情况下执行。如果使用了带参数的版本，<code>input</code> 将包含发送到合约的完整数据（等于 <code>msg.data</code>），并且可以在 <code>output</code> 中返回数据。返回的数据不会经过 ABI 编码。相反，它将在没有修改的情况下返回（甚至不会填充）。与任何函数一样，只要有足够的 gas 传递给它就可以执行复杂的操作。但对于替代 <code>receive</code> 的应用中，只有 2300 gas 可用。</p>
+<p>如果想要解码输入数据，可以检查函数选择器的前四个字节，然后使用 <code>abi.decode</code> 和数组切片语法来解码 ABI 编码的数据：<code>(c, d) = abi.decode(input[4:], (uint256, uint256));</code>。请注意这仅应作为最后的手段，应该使用适当的函数。</p>
+<p>一个合约可以有多个同名但是参数类型不同的函数，即函数可以“重载(overload)”，并且也适用于继承的函数。外部接口也存在重载函数。</p>
+<p>通过将当前作用域中的函数声明与函数调用中提供的参数匹配来选择重载函数。如果所有参数都可以隐式转换为预期类型，则选择函数作为重载候选者。重载解析不考虑返回参数。</p>
+<h3 id="Events"><a href="#Events" class="headerlink" title="Events"></a>Events</h3><p>Solidity 事件在 EVM 的日志记录功能之上提供了一个抽象。应用程序可以通过以太坊客户端的 RPC 接口订阅和监听这些事件。</p>
+<p>事件是合约的可继承成员。事件的数据被存储在交易日志中。这些日志与合约地址相关联，并在区块可访问时一直存在。</p>
+<p>一个日志最多可以添加 3 个 <code>indexed</code> 属性到参数上，这会将其添加到 “topics” 的数据结构中，而不是日志的数据部分。一个 topic 只能包含单个字（32 字节），如果是索引参数则会取该值的 Keccak256 哈希。在记录的日志中无法通过该哈希恢复原数据。在使用日志代替存储的场景下应注意这一点。所有没有 <code>indexed</code> 属性的参数都被 ABI 编码到日志的数据部分。 </p>
+<p> Topic 允许搜索事件，比如为某些事件过滤一系列的块，还可以按发出事件的合约地址过滤事件。事件签名的哈希也是 topic 之一，除非使用 <code>anonymous</code> 说明符声明事件。这意味着无法按照名称过滤该匿名事件而只能按照合约地址过滤。匿名事件优点是部署和调用成本更低。此外还允许声明 4 个 indexed 参数。</p>
+<p>事件的成员：<code>event.selector</code>，对于非匿名事件，这是一个包含事件签名的 <code>keccak256</code> 哈希的 <code>bytes32</code> 值。</p>
+<h3 id="Errors-and-the-Revert-Statement"><a href="#Errors-and-the-Revert-Statement" class="headerlink" title="Errors and the Revert Statement"></a>Errors and the Revert Statement</h3><p>Solidity 中的错误(Error)提供了一种方便高效的方式向用户解释操作失败的原因。它们可以在合约内部和外部（包括接口和库）定义。它们必须与 <code>revert</code> 语句一起使用，这会导致当前调用中的所有更改都被还原并将错误数据传递回调用者。</p>
+<p>Error 不能被重载(overload)或覆盖(override)，而是被继承(inherit)。只要范围不同，就可以在多个地方定义相同的错误。错误实例只能使用 <code>revert</code> 语句创建。</p>
+<p>该错误创建的数据随后通过 revert 操作传递给调用者，以返回到链外组件或在 <code>try/catch</code> 语句中捕获它。请注意，错误只能在来自外部调用时被捕获，在内部调用或同一函数内部发生的还原无法被捕获。</p>
+<p>如果不提供任何参数，则错误只需要四个字节的数据，您可以使用 NatSpec 进一步解释错误背后的原因，它没有存储在链上。这使得它同时成为一个非常便宜和方便的错误报告功能。</p>
+<p>更具体地说，错误实例以与对相同名称和类型的函数的相同的函数调用方式进行 ABI 编码，然后将其用作还原操作码中的返回数据。这意味着数据包含一个 4 字节选择器，后跟 ABI 编码数据。选择器由错误类型签名的 keccak256 哈希的前四个字节组成。</p>
+<p>如果你定义了 <code>error Error(string)</code>，那么语句 <code>require(condition, &quot;description&quot;);</code> 与 <code>if (!condition) revert Error(&quot;description&quot;)</code> 相同。</p>
+<p>Error 的成员：<code>error.selector</code>，一个包含错误选择器的 <code>bytes4</code> 类型的值。</p>
+<h3 id="Inheritance"><a href="#Inheritance" class="headerlink" title="Inheritance"></a>Inheritance</h3><p>Solidity 支持多重继承，包括多态性。多态性意味着函数调用（内部和外部）总是在继承层次结构中最派生的合约中执行相同名称（和参数类型）的函数。这必须使用 <code>virtual</code> 和 <code>override</code> 关键字在层次结构中的每个函数上显示启用。</p>
+<p>可以通过使用 <code>ContractName.functionName()</code> 或使用 <code>super.functionName()</code> 在内部继承层次结构中显式指定合约以进一步调用函数。</p>
+<p>当一个合约继承自其他合约时，区块链上只创建一个合约，所有基础合约的代码都编译到创建的合约中。这意味着对基础合约函数的所有内部调用也只使用内部函数调用（<code>super.f(...)</code> 将使用 JUMP 而不是消息调用）。</p>
+<p>状态变量遮盖(shadowing)被视为错误。如果在其任何基合约中都没有同名的可见状态变量，派生合约只能声明状态变量 <code>x</code>。</p>
+<p>如果在继承合约中调用 <code>super</code> 的函数，它会在最终继承图中的下一个基础合约上调用此函数。使用 <code>super</code> 时调用的实际函数在使用它的类的上下文中是未知的，尽管它的类型是已知的。这与普通的 virtual 方法查找类似。</p>
+<p>如果基函数被标记为 <code>virtual</code>，则可以通过继承合约更改它们的行为来覆盖基函数。然后，覆盖函数必须在函数头中使用 <code>override</code> 关键字。覆盖函数只能将覆盖函数的可见性从 <code>external</code> 更改为 <code>public</code>。可变性可以更改为更严格的顺序：<code>nonpayable</code> 可以被 <code>view</code> 和 <code>pure</code> 覆盖。<code>view</code> 可以被 <code>pure</code> 覆盖。<code>payable</code> 是一个例外，不能更改为任何其他可变性。</p>
+<p>对于多重继承，必须在 <code>override</code> 关键字之后显式指定定义相同函数的最派生基合约。换句话说，必须指定所有定义相同函数且尚未被另一个基合约覆盖的基合约（在通过继承图的某个路径上）。此外，如果合约从多个（不相关的）基继承相同的函数，必须显式覆盖它。如果函数是在通用基合约中定义的，或者如果通用基合约中有一个唯一函数已经覆盖了所有其他函数，则不需要显式覆盖说明符。</p>
+<p>更正式地说，如果有一个基合约是签名的所有覆盖路径的一部分，则不需要覆盖从多个基（直接或间接）继承的函数，并且 (1) 该基实现了该函数，并且从当前合约到基的路径没有提到具有该签名的函数，或者 (2) 该基没有实现该函数，并且在所有路径中至多提及该函数当前与该基的合约。从这个意义上说，签名的覆盖路径是通过继承图的路径，该路径从所考虑的合约开始，到提及具有该签名的未覆盖函数的合约结束。</p>
+<p>如果不将函数标记为 <code>virtual</code>，那么派生合约不能改变合约的行为。从 Solidity 0.8.8 开始，覆盖接口函数时不需要 <code>override</code> 关键字，除非函数在多个基中定义。</p>
+<p>如果函数的参数和返回类型与变量的 <code>getter</code> 函数匹配，则公共状态变量可以覆盖外部函数。</p>
+<p>函数修饰符可以像函数一样覆盖。同样地，被覆盖的修饰符用 <code>virtual</code> 关键字，覆盖的修饰符用 <code>override</code> 关键字。在多重继承中，所有的直接基合约必须显式声明。</p>
+<p>构造函数是可选的，会在合约创建时执行，可以运行合约初始化代码。在执行构造函数代码之前，如果内联初始化状态变量，则将其初始化为指定值，否则将其初始化为默认值。在构造函数运行后，合约的最终代码就被部署到区块链上。</p>
+<p>可以在构造函数中使用内部参数（如存储指针）。在这种情况下，必须将合约标记为 <code>abstract</code>，因为这些参数不能从外部分配有效值，而只能通过派生合约的构造函数分配。</p>
+<p>所有基合约的构造函数都将按照合约继承的线性化规则进行调用。如果基构造函数有参数，则派生合约需要指定所有参数。一种方法是直接在继承列表中，另一种是作为派生构造函数的一部分调用修饰符的方式。如果构造函数参数是一个常量并定义合约的行为或描述它，则第一种方法会更方便。如果基的构造函数参数依赖于派生合约的参数，则必须使用第二种方法。参数必须在继承列表或派生构造函数的修饰符样式中给出。</p>
+<p>如果派生合约没有为其所有基合约的构造函数指定参数，则必须将其声明为 <code>abstract</code>。在这种情况下，当另一个合约派生自它时，该其他合约的继承列表或构造函数必须为所有未指定其参数的基类提供必要的参数（否则，该其他合约也必须声明为 <code>abstract</code>）。</p>
+<p>在 Solidity 中，继承中的 <code>is</code>  指令给出基类的顺序很重要：必须按照从 “most base-like” 到 “most derived” 的顺序列出直接基合约。请注意，此顺序与 Python 中使用的顺序相反。可以这么分析，当调用在不同合约中多次定义的函数时，以深度优先的方式从右到左搜索给定的基，在第一次匹配时停止。如果一个基合约已经被搜索过了则跳过。</p>
+<p>当继承层次结构中有多个构造函数时，构造函数将始终以线性化顺序执行，无论继承合约的构造函数中提供它们的参数的顺序如何。从线性化顺序的 “most base-like” 合约的构造函数开始，执行到 “most derived” 合约的构造函数。</p>
+<p>如果合约中任何函数或修饰符或事件由于继承而具有相同的名称，则为错误。一个例外是，状态变量获取函数可以覆盖外部函数。</p>
+<h3 id="Abstract-Contracts"><a href="#Abstract-Contracts" class="headerlink" title="Abstract Contracts"></a>Abstract Contracts</h3><p>如果一个合约中至少有一个函数没有实现或没有为其所有的基合约构造函数提供参数时，合约必须标记为 <code>abstract</code>（自身或其基合约信息不完整）。即使不是这种情况，合约仍有可能被标记为 <code>abstract</code>，比如不打算直接创建合约时。抽象合约类似于接口，但接口在其可以声明的部分有更多的限制。</p>
+<p>抽象合约不能直接实例化。如果抽象合约本身确实实现了所有的函数，这也是正确的。如果合约继承自抽象合约，并且没有通过覆盖(override)实现所有未实现的功能，则也需要将其标记为 <code>abstract</code>。没有实现的函数与函数类型并不相同，尽管语法看起来非常相似。没有实现的函数示例（函数声明）：<code>function foo(address) external returns (address);</code>；作为函数类型的变量的声明示例：<code>function(address) external returns (address) foo;</code>。</p>
+<p>抽象合约将合约的定义与其实现分离，提供更好的可扩展性和自文档化，并促进  <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Template_method_pattern">Template method</a> 等模式和消除代码重复。抽象合约的用处与在接口中定义方法的用处相同。这是抽象合约的设计者说的 “any child of mine must implement this method” 的一种方式。抽象合约不能用未实现的 <code>virtual</code> 函数覆盖已实现的 <code>virtual</code> 函数。</p>
+<h3 id="Interfaces"><a href="#Interfaces" class="headerlink" title="Interfaces"></a>Interfaces</h3><p>接口和抽象合约相似，但它们不能有任何实现了的函数，以及更多的限制：</p>
+<ul>
+<li>接口不能继承自其他合约，但可以继承自其他接口；</li>
+<li>接口中所有声明的函数必须是外部的(external)，即使它们在合约中是公共的；</li>
+<li>接口不能声明构造函数；</li>
+<li>接口不能声明状态变量；</li>
+<li>接口不能声明修饰符。</li>
+</ul>
+<p>接口基本上仅限于合约 ABI 所能表示的内容，ABI 和接口之间的转换应该是可以没有任何信息丢失地实现的。接口使用 <code>interface</code> 关键字标识。</p>
+<p>合约可以像继承其它合约一样继承接口。接口可以从其它接口继承。这与普通继承具有相同的规则。</p>
+<p>接口中声明的所有函数都是隐式 <code>virtual</code>，任何覆盖它们的函数都不需要 <code>override</code> 关键字。这并不意味着覆盖函数可以再次被覆盖，只有覆盖函数被标记为 <code>virtual</code> 时才可以。</p>
+<p>在接口和其它类似合约的结构中定义的类型可以从其它合约访问，比如 <code>Token.TokenType</code> 或 <code>Token.Coin</code>。</p>
+<h3 id="Libraries"><a href="#Libraries" class="headerlink" title="Libraries"></a>Libraries</h3><p>库和合约相似，但它们的目的是它们仅在特定地址部署一次，并且它们的代码可以使用 EVM 的 <code>DELEGATECALL</code> 特性重用。这意味着如果库函数被调用，它们的代码在调用合约的上下文中被执行。因为库是一个隔离的源代码片段，它只可以访问调用合约的状态变量，如果它们被显式提供的话。如果库函数没有改变状态，则它们只能被直接调用（不使用 <code>DELEGATECALL</code>），因为库假设是无状态的。尤其是，不能销毁(destroy)一个库。</p>
+<p>可以在定义&#x2F;不定义数据结构的情况下使用它们。函数也可以在没有任何存储引用参数的情况下工作，并且它们可以有多个存储引用参数并且可以在任何位置。<a target="_blank" rel="noopener" href="https://docs.soliditylang.org/en/latest/contracts.html#libraries">Contracts — Libraries</a> 给出了库的使用示例。</p>
+<p>可以通过将库类型转换为 <code>address</code> 类型来获取库的地址，例如使用 <code>address(LibraryName)</code>。</p>
+<p>由于编译器不知道库的部署地址，因此编译后的十六进制代码将包含 <code>__$30bbc0abd4d6364515865950d3e0d10953$__</code> 形式的占位符。占位符是完全限定库名称的 keccak256 哈希的十六进制编码的 34 个字符前缀，例如，如果库存储在 <code>libraries/</code> 目录下的名为 <code>bigint.sol</code> 的文件中，则为 <code>libraries/bigint.sol:BigInt</code>。此字节码不完整，不应部署。占位符需要替换为实际地址。你可以通过在编译库时将它们传递给编译器或使用链接器更新已编译的二进制文件来做到这一点。</p>
+<p>与合约相比，库在以下方面受到限制：</p>
+<ul>
+<li>不能有状态变量；</li>
+<li>不能继承也不能被继承；</li>
+<li>无法接收以太币；</li>
+<li>不能会销毁。</li>
+</ul>
+<p>虽然对公共或外部库函数的外部调用是可能的，但此类调用的调用约定被认为是 Solidity 内部的，与为常规合约 ABI 指定的不同。外部库函数支持比外部合约函数更多的参数类型，例如递归结构和存储指针。出于这个原因，用于计算 4 字节选择器的函数签名是按照内部命名模式计算的，并且合约 ABI 中不支持的类型的参数使用内部编码。</p>
+<p>以下标识符用于签名中的类型：</p>
+<ul>
+<li>值类型，非存储 <code>string</code> 和非存储 <code>bytes</code> 使用与合约 ABI 中相同的标识符。</li>
+<li>非存储数组类型遵循与合约 ABI 中相同的约定，即 <code>&lt;type&gt;[]</code> 用于动态数组，<code>&lt;type&gt;[M]</code> 用于 <code>M</code> 元素的固定大小数组。</li>
+<li>非存储结构体由它们的完全限定名称引用，即 <code>contract C &#123; struct S &#123; ... &#125; &#125;</code> 的 <code>C.S</code>。</li>
+<li>存储指针映射使用 <code>mapping(&lt;keyType&gt; =&gt; &lt;valueType&gt;) storage</code>，其中 <code>&lt;keyType&gt;</code> 和 <code>&lt;valueType&gt;</code> 分别是映射的键和值类型的标识符。</li>
+<li>其他存储指针类型使用其对应的非存储类型的类型标识符，但会附加一个空格，然后是 <code>storage</code>。</li>
+</ul>
+<p>参数编码与常规合约 ABI 相同，除了存储指针，它们被编码为 <code>uint256</code> 值，指的是它们指向的存储槽。与合约 ABI 类似，选择器由签名的 Keccak256-hash 的前四个字节组成。它的值可以使用 <code>.selector</code> 成员从 Solidity 中获取。</p>
+<p>如果使用 <code>CALL</code> 而不是 <code>DELEGATECALL</code> 或 <code>CALLCODE</code>，除非是调用 <code>view</code> 或 <code>pure</code> 函数，否则它将回滚。</p>
+<p>EVM 没有为合约提供直接的方法来检测它是否使用 <code>CALL</code> 调用，但合约可以使用 <code>ADDRESS</code> 操作码来找出它当前运行的“位置”。生成的代码将此地址与构建时使用的地址进行比较，以确定调用方式。</p>
+<p>更具体地说，库的运行时代码总是以 push 指令开始，它在编译时是 20 字节的零。当部署代码运行时，这个常量在内存中被当前地址替换，修改后的代码存储在合约中。在运行时，这会导致部署时间地址成为第一个被压入堆栈的常量，并且调度程序代码将当前地址与任何非视图和非纯函数的该常量进行比较。</p>
+<p>这意味着存储在链上的库的实际代码与编译器报告为 <code>deployBytecode</code> 的代码不同。</p>
+<h3 id="Using-For"><a href="#Using-For" class="headerlink" title="Using For"></a>Using For</h3><p><code>using A for B;</code> 指示可以用于将函数（<code>A</code>）作为成员函数附加到类型（<code>B</code>）。这些函数将接收它们被调用的对象作为它们的第一个参数（就像 Python 的 <code>self</code> 变量）。</p>
+<p>它在文件级别或合约内部的合约级别有效。</p>
+<p>第一部分的 <code>A</code> 可以是以下之一：</p>
+<ul>
+<li>文件级或库函数列表（<code>using &#123;f, g, h, L.t&#125; for uint;</code>） - 只有这些函数会被附加到类型。</li>
+<li>库的名称（<code>using L for uint;</code>）- 库的所有函数（公共的和内部的）都附加到类型。</li>
+</ul>
+<p>在文件级别，第二部分 <code>B</code> 必须是显式类型（没有数据位置说明符）。在合约内部，您还可以使用 <code>using L for *;</code>，其效果是库 <code>L</code> 的所有函数都附加到所有类型。</p>
+<p>如果指定库，则库中的所有函数都会附加，即使是第一个参数的类型与对象类型不匹配的函数。在调用函数并执行函数重载解析时检查类型。</p>
+<p>如果使用函数列表（<code>using &#123;f, g, h, L.t&#125; for uint;</code>），则类型 (<code>uint</code>) 必须隐式转换为每个函数的第一个参数。即使没有调用这些函数，也会执行此检查。</p>
+<p><code>using A for B;</code> 指令仅在当前范围内（合约或当前模块&#x2F;源单元）有效，包括其所有功能，并且在使用它的合约或模块之外无效。</p>
+<p>当该指令在文件级使用，并应用于同一文件中在文件级定义的用户定义类型时，可以在末尾添加单词 <code>global</code>。这将使得函数被附加到任何可以使用该类型的地方(包括其他文件)，而不仅仅是在 using 语句的作用域中。</p>
+<p>使用示例可以从 <a target="_blank" rel="noopener" href="https://docs.soliditylang.org/en/latest/contracts.html#using-for">Contracts — Using For</a> 了解。注意，所有外部库调用都是实际的 EVM 函数调用。这意味着，如果传递内存或值类型，将执行复制，即使是 <code>self</code> 变量也是如此。不执行复制的唯一情况是使用存储引用变量或调用内部库函数时。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/" class="category-chain-item">区块链技术</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%BC%80%E5%8F%91/" class="category-chain-item">智能合约开发</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/">#区块链技术</a>
+      
+        <a href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%BC%80%E5%8F%91/">#智能合约开发</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Solidity 文档 0.8.17 笔记</div>
+      <div>https://alphafitz.com/2022/10/19/solidity-docs-0-8-17-notes/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>alphafitz</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年10月19日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                <i class="iconfont icon-nc"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                <i class="iconfont icon-sa"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/10/22/erc20-token-standard/" title="ERC20 代币标准">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ERC20 代币标准</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/10/17/diving-into-the-ethereum-vm-summary/" title="深入以太坊虚拟机 总结">
+                        <span class="hidden-mobile">深入以太坊虚拟机 总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

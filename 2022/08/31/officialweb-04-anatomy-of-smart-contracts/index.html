@@ -1,0 +1,1255 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fitz.png">
+  <link rel="icon" href="/img/fitz.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="alphafitz">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="智能合约剖析一个智能合约是运行在以太坊上一个地址处的程序。它们由数据和在收到交易时执行的函数组成。以下是构成智能合约的概述。 先决条件确保您首先阅读了有关智能合约的内容。本文档假设您已经熟悉 JavaScript 或 Python 等编程语言。 数据任何合约数据都必须分配到一个位置：storage 或 memory。修改智能合约中的存储成本很高，因此您需要考虑数据应该存放在哪里。 Storage持">
+<meta property="og:type" content="article">
+<meta property="og:title" content="以太坊开发者文档04 智能合约剖析">
+<meta property="og:url" content="https://alphafitz.com/2022/08/31/officialweb-04-anatomy-of-smart-contracts/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="智能合约剖析一个智能合约是运行在以太坊上一个地址处的程序。它们由数据和在收到交易时执行的函数组成。以下是构成智能合约的概述。 先决条件确保您首先阅读了有关智能合约的内容。本文档假设您已经熟悉 JavaScript 或 Python 等编程语言。 数据任何合约数据都必须分配到一个位置：storage 或 memory。修改智能合约中的存储成本很高，因此您需要考虑数据应该存放在哪里。 Storage持">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-31T09:48:09.000Z">
+<meta property="article:modified_time" content="2022-09-13T04:01:14.416Z">
+<meta property="article:author" content="alphafitz">
+<meta property="article:tag" content="区块链技术">
+<meta property="article:tag" content="以太坊">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>以太坊开发者文档04 智能合约剖析 - </title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alphafitz.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="null" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>alphafitz</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="以太坊开发者文档04 智能合约剖析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-31 17:48" pubdate>
+          2022年8月31日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          17k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          140 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">以太坊开发者文档04 智能合约剖析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="智能合约剖析"><a href="#智能合约剖析" class="headerlink" title="智能合约剖析"></a>智能合约剖析</h1><p>一个智能合约是运行在以太坊上一个地址处的程序。它们由数据和在收到交易时执行的函数组成。以下是构成智能合约的概述。</p>
+<h2 id="先决条件"><a href="#先决条件" class="headerlink" title="先决条件"></a>先决条件</h2><p>确保您首先阅读了有关<a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/docs/smart-contracts/">智能合约</a>的内容。本文档假设您已经熟悉 JavaScript 或 Python 等编程语言。</p>
+<h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><p>任何合约数据都必须分配到一个位置：<code>storage</code> 或 <code>memory</code>。修改智能合约中的存储成本很高，因此您需要考虑数据应该存放在哪里。</p>
+<h3 id="Storage"><a href="#Storage" class="headerlink" title="Storage"></a>Storage</h3><p>持久性数据称为 storage，由状态变量表示。这些值永久存储在区块链上。你需要声明类型，以便合约可以跟踪它在编译时需要多少区块链上的存储空间。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// Solidity example</span>
+<span class="token keyword">contract</span> <span class="token class-name">SimpleStorage</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">uint</span> storedData<span class="token punctuation">;</span> <span class="token comment">// State variable</span>
+    <span class="token comment">// ...</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>如果您已经编写过面向对象的语言，那么您可能会熟悉大多数类型。但是，如果您不熟悉以太坊开发，<code>address</code> 对您来说应该是新的。</p>
+<p><code>address</code> 类型可以保存相当于 20 字节或 160 位长的以太坊地址。它以带有前导 0x 的十六进制表示法返回。</p>
+<p>其他的类型包括：</p>
+<ul>
+<li>boolean (布尔)</li>
+<li>integer (整型)</li>
+<li>fixed point numbers (定点数)</li>
+<li>fixed-size byte arrays (固定大小字节数组)</li>
+<li>dynamically-sized byte arrays (动态大小字节数组)</li>
+<li>Rational and integer literals (有理字面量和整型字面量)</li>
+<li>String literals (字符串字面量)</li>
+<li>Hexadecimal literals (十六进制字面量)</li>
+<li>Enums (枚举)</li>
+</ul>
+<p>有关更多解释，请查看文档：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://vyper.readthedocs.io/en/v0.1.0-beta.6/types.html#value-types">See Vyper types</a></li>
+<li><a target="_blank" rel="noopener" href="https://solidity.readthedocs.io/en/latest/types.html#value-types">See Solidity types</a></li>
+</ul>
+<h3 id="Memory"><a href="#Memory" class="headerlink" title="Memory"></a>Memory</h3><p>仅在合约函数执行的生命周期内存储的值称为内存变量。由于这些不会永久存储在区块链上，因此使用起来要便宜得多。</p>
+<p>在 <a target="_blank" rel="noopener" href="https://solidity.readthedocs.io/en/latest/introduction-to-smart-contracts.html?highlight=memory#storage-memory-and-the-stack">Solidity 文档</a>中了解有关 EVM 如何存储数据（Storage、Memory 和 Stack）的更多信息。</p>
+<h3 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h3><p>除了你在合约中定义的变量外，还有一些特殊的全局变量。它们主要用于提供有关区块链或当前交易的信息。</p>
+<p>例如：</p>
+<table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>State variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>block.timestamp</td>
+<td>uint256</td>
+<td>Current block epoch timestamp</td>
+</tr>
+<tr>
+<td>msg.sender</td>
+<td>address</td>
+<td>Sender of the message (current call)</td>
+</tr>
+</tbody></table>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>用最简单的术语来说，函数可以获取信息或设置信息以响应传入的交易。</p>
+<p>有两种类型的函数调用：</p>
+<ul>
+<li><p><code>internal</code> - 不创建 EVM 调用</p>
+<ul>
+<li><code>internal</code> 函数和状态变量只能在内部访问（即从当前合约或从它派生的合约）</li>
+</ul>
+</li>
+<li><p><code>external</code> - 创建 EVM 调用</p>
+<ul>
+<li><code>external</code> 函数是合约接口的一部分，这意味着它们可以被其他合约和通过交易调用。外部函数 f 不能在内部调用（即 f() 不起作用，但 this.f() 起作用）</li>
+</ul>
+</li>
+</ul>
+<p>它们也可以是 <code>public</code> 或 <code>private</code></p>
+<ul>
+<li><code>public</code> 函数可以在合约内部调用，也可以通过消息在外部调用</li>
+<li><code>private</code> 函数仅在定义它们的合约中可见，在派生合约中不可见</li>
+</ul>
+<p>函数和状态变量都可以设为公有或私有。</p>
+<p>在合约上使用函数更新状态变量：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// Solidity example</span>
+<span class="token keyword">function</span> <span class="token function">update_name</span><span class="token punctuation">(</span><span class="token builtin">string</span> value<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+    dapp_name <span class="token operator">=</span> value<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>将 <code>string</code> 类型的参数 <code>value</code> 传入函数：<code>update_name</code></li>
+<li>它被声明为 <code>public</code>，这意味着任何人都可以访问它</li>
+<li>它没有被声明为 <code>view</code>，所以它可以修改合约状态</li>
+</ul>
+<h3 id="View-functions"><a href="#View-functions" class="headerlink" title="View functions"></a>View functions</h3><p>这些函数承诺不会修改合约数据的状态。常见的例子是“getter”函数——例如，您可以使用它来接收用户的余额。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// Solidity example</span>
+<span class="token keyword">function</span> <span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span> _owner<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span> _balance<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> ownerPizzaCount<span class="token punctuation">[</span>_owner<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>什么被认为是修改状态：</p>
+<ol>
+<li>写入状态变量</li>
+<li><a target="_blank" rel="noopener" href="https://solidity.readthedocs.io/en/v0.7.0/contracts.html#events">触发事件</a></li>
+<li><a target="_blank" rel="noopener" href="https://solidity.readthedocs.io/en/v0.7.0/control-structures.html#creating-contracts">创建其他合同</a></li>
+<li>使用 selfdestruct</li>
+<li>通过调用发送以太币</li>
+<li>调用任何未标记为 view 或 pure 的函数</li>
+<li>使用低级调用</li>
+<li>使用包含某些操作码的内联汇编</li>
+</ol>
+<h3 id="Constructor-functions"><a href="#Constructor-functions" class="headerlink" title="Constructor functions"></a>Constructor functions</h3><p>构造(<em>constructor</em>)函数仅在首次部署合约时执行一次。与许多基于类的编程语言中的构造函数一样，这些函数通常将状态变量初始化为其指定值。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// Solidity example</span>
+<span class="token comment">// Initializes the contract's data, setting the `owner`</span>
+<span class="token comment">// to the address of the contract creator.</span>
+<span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// All smart contracts rely on external transactions to trigger its functions.</span>
+    <span class="token comment">// `msg` is a global variable that includes relevant data on the given transaction,</span>
+    <span class="token comment">// such as the address of the sender and the ETH value included in the transaction.</span>
+    <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/units-and-global-variables.html#block-and-transaction-properties</span>
+    owner <span class="token operator">=</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="Built-in-functions"><a href="#Built-in-functions" class="headerlink" title="Built-in functions"></a>Built-in functions</h3><p>除了您在合约中定义的变量和函数外，还有一些特殊的内置函数。最明显的例子是：</p>
+<ul>
+<li>address.send() - Solidity</li>
+<li>send(address) - Vyper</li>
+</ul>
+<p>这些函数允许合约发送 ETH 给其他账户。</p>
+<h2 id="编写函数"><a href="#编写函数" class="headerlink" title="编写函数"></a>编写函数</h2><p>你的功能需要：</p>
+<ul>
+<li>参数变量和类型（如果它接受参数）</li>
+<li>internal&#x2F;external 声明</li>
+<li>pure&#x2F;view&#x2F;payable 声明</li>
+<li>返回类型（如果它返回一个值）</li>
+</ul>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">>=</span><span class="token version number">0.4.0</span> <span class="token operator">&lt;=</span><span class="token version number">0.6.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">ExampleDapp</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">string</span> dapp_name<span class="token punctuation">;</span> <span class="token comment">// state variable</span>
+
+    <span class="token comment">// Called when the contract is deployed and initializes the value</span>
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        dapp_name <span class="token operator">=</span> <span class="token string">"My Example dapp"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Get Function</span>
+    <span class="token keyword">function</span> <span class="token function">read_name</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> dapp_name<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Set Function</span>
+    <span class="token keyword">function</span> <span class="token function">update_name</span><span class="token punctuation">(</span><span class="token builtin">string</span> value<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        dapp_name <span class="token operator">=</span> value<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>一份完整的合约可能看起来像这样。这里构造函数为 <code>dapp_name</code> 变量提供了一个初始值。</p>
+<h2 id="事件和日志"><a href="#事件和日志" class="headerlink" title="事件和日志"></a>事件和日志</h2><p>事件让您可以从前端或其他订阅应用程序与您的智能合约进行通信。当交易被挖掘(<em>minded</em>)时，智能合约可以发出事件并将日志写入前端可以处理的区块链。</p>
+<h2 id="带注释的示例"><a href="#带注释的示例" class="headerlink" title="带注释的示例"></a>带注释的示例</h2><p>这些是用 Solidity 编写的一些示例。如果您想玩代码，可以在 <a target="_blank" rel="noopener" href="http://remix.ethereum.org/">Remix</a> 中与它们进行交互。</p>
+<h3 id="Hello-world"><a href="#Hello-world" class="headerlink" title="Hello world"></a>Hello world</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// Specifies the version of Solidity, using semantic versioning.</span>
+<span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/layout-of-source-files.html#pragma</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.5.10</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Defines a contract named `HelloWorld`.</span>
+<span class="token comment">// A contract is a collection of functions and data (its state).</span>
+<span class="token comment">// Once deployed, a contract resides at a specific address on the Ethereum blockchain.</span>
+<span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/structure-of-a-contract.html</span>
+<span class="token keyword">contract</span> <span class="token class-name">HelloWorld</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token comment">// Declares a state variable `message` of type `string`.</span>
+    <span class="token comment">// State variables are variables whose values are permanently stored in contract storage.</span>
+    <span class="token comment">// The keyword `public` makes variables accessible from outside a contract</span>
+    <span class="token comment">// and creates a function that other contracts or clients can call to access the value.</span>
+    <span class="token builtin">string</span> <span class="token keyword">public</span> message<span class="token punctuation">;</span>
+
+    <span class="token comment">// Similar to many class-based object-oriented languages, a constructor is</span>
+    <span class="token comment">// a special function that is only executed upon contract creation.</span>
+    <span class="token comment">// Constructors are used to initialize the contract's data.</span>
+    <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/contracts.html#constructors</span>
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token keyword">memory</span> initMessage<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// Accepts a string argument `initMessage` and sets the value</span>
+        <span class="token comment">// into the contract's `message` storage variable).</span>
+        message <span class="token operator">=</span> initMessage<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// A public function that accepts a string argument</span>
+    <span class="token comment">// and updates the `message` storage variable.</span>
+    <span class="token keyword">function</span> <span class="token function">update</span><span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token keyword">memory</span> newMessage<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        message <span class="token operator">=</span> newMessage<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="代币"><a href="#代币" class="headerlink" title="代币"></a>代币</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.5.10</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">Token</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// An `address` is comparable to an email address - it's used to identify an account on Ethereum.</span>
+    <span class="token comment">// Addresses can represent a smart contract or an external (user) accounts.</span>
+    <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/types.html#address</span>
+    <span class="token builtin">address</span> <span class="token keyword">public</span> owner<span class="token punctuation">;</span>
+
+    <span class="token comment">// A `mapping` is essentially a hash table data structure.</span>
+    <span class="token comment">// This `mapping` assigns an unsigned integer (the token balance) to an address (the token holder).</span>
+    <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/types.html#mapping-types</span>
+    <span class="token keyword">mapping</span> <span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token operator">=></span> <span class="token builtin">uint</span><span class="token punctuation">)</span> <span class="token keyword">public</span> balances<span class="token punctuation">;</span>
+
+    <span class="token comment">// Events allow for logging of activity on the blockchain.</span>
+    <span class="token comment">// Ethereum clients can listen for events in order to react to contract state changes.</span>
+    <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/contracts.html#events</span>
+    <span class="token keyword">event</span> <span class="token function">Transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">address</span> to<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// Initializes the contract's data, setting the `owner`</span>
+    <span class="token comment">// to the address of the contract creator.</span>
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// All smart contracts rely on external transactions to trigger its functions.</span>
+        <span class="token comment">// `msg` is a global variable that includes relevant data on the given transaction,</span>
+        <span class="token comment">// such as the address of the sender and the ETH value included in the transaction.</span>
+        <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/units-and-global-variables.html#block-and-transaction-properties</span>
+        owner <span class="token operator">=</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Creates an amount of new tokens and sends them to an address.</span>
+    <span class="token keyword">function</span> <span class="token function">mint</span><span class="token punctuation">(</span><span class="token builtin">address</span> receiver<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// `require` is a control structure used to enforce certain conditions.</span>
+        <span class="token comment">// If a `require` statement evaluates to `false`, an exception is triggered,</span>
+        <span class="token comment">// which reverts all changes made to the state during the current call.</span>
+        <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/control-structures.html#error-handling-assert-require-revert-and-exceptions</span>
+
+        <span class="token comment">// Only the contract owner can call this function</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender <span class="token operator">==</span> owner<span class="token punctuation">,</span> <span class="token string">"You are not the owner."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Enforces a maximum amount of tokens</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>amount <span class="token operator">&lt;</span> <span class="token number">1e60</span><span class="token punctuation">,</span> <span class="token string">"Maximum issuance exceeded"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Increases the balance of `receiver` by `amount`</span>
+        balances<span class="token punctuation">[</span>receiver<span class="token punctuation">]</span> <span class="token operator">+=</span> amount<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Sends an amount of existing tokens from any caller to an address.</span>
+    <span class="token keyword">function</span> <span class="token function">transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> receiver<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// The sender must have enough tokens to send</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>amount <span class="token operator">&lt;=</span> balances<span class="token punctuation">[</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">"Insufficient balance."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Adjusts token balances of the two addresses</span>
+        balances<span class="token punctuation">[</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">]</span> <span class="token operator">-=</span> amount<span class="token punctuation">;</span>
+        balances<span class="token punctuation">[</span>receiver<span class="token punctuation">]</span> <span class="token operator">+=</span> amount<span class="token punctuation">;</span>
+
+        <span class="token comment">// Emits the event defined earlier</span>
+        <span class="token keyword">emit</span> <span class="token function">Transfer</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> receiver<span class="token punctuation">,</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="数字资产"><a href="#数字资产" class="headerlink" title="数字资产"></a>数字资产</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.5.10</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Imports symbols from other files into the current contract.</span>
+<span class="token comment">// In this case, a series of helper contracts from OpenZeppelin.</span>
+<span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/layout-of-source-files.html#importing-other-source-files</span>
+
+<span class="token keyword">import</span> <span class="token string">"../node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">"../node_modules/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">"../node_modules/@openzeppelin/contracts/introspection/ERC165.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">"../node_modules/@openzeppelin/contracts/math/SafeMath.sol"</span><span class="token punctuation">;</span>
+
+<span class="token comment">// The `is` keyword is used to inherit functions and keywords from external contracts.</span>
+<span class="token comment">// In this case, `CryptoPizza` inherits from the `IERC721` and `ERC165` contracts.</span>
+<span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/contracts.html#inheritance</span>
+<span class="token keyword">contract</span> <span class="token class-name">CryptoPizza</span> <span class="token keyword">is</span> IERC721<span class="token punctuation">,</span> ERC165 <span class="token punctuation">&#123;</span>
+    <span class="token comment">// Uses OpenZeppelin's SafeMath library to perform arithmetic operations safely.</span>
+    <span class="token comment">// Learn more: https://docs.openzeppelin.com/contracts/2.x/api/math#SafeMath</span>
+    <span class="token keyword">using</span> <span class="token class-name">SafeMath</span> <span class="token keyword">for</span> <span class="token builtin">uint256</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// Constant state variables in Solidity are similar to other languages</span>
+    <span class="token comment">// but you must assign from an expression which is constant at compile time.</span>
+    <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/contracts.html#constant-state-variables</span>
+    <span class="token builtin">uint256</span> <span class="token keyword">constant</span> dnaDigits <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>
+    <span class="token builtin">uint256</span> <span class="token keyword">constant</span> dnaModulus <span class="token operator">=</span> <span class="token number">10</span> <span class="token operator">**</span> dnaDigits<span class="token punctuation">;</span>
+    <span class="token builtin">bytes4</span> <span class="token keyword">private</span> <span class="token keyword">constant</span> _ERC721_RECEIVED <span class="token operator">=</span> <span class="token number">0x150b7a02</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// Struct types let you define your own type</span>
+    <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/types.html#structs</span>
+    <span class="token keyword">struct</span> <span class="token class-name">Pizza</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">string</span> name<span class="token punctuation">;</span>
+        <span class="token builtin">uint256</span> dna<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Creates an empty array of Pizza structs</span>
+    Pizza<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">public</span> pizzas<span class="token punctuation">;</span>
+
+    <span class="token comment">// Mapping from pizza ID to its owner's address</span>
+    <span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> <span class="token operator">=></span> <span class="token builtin">address</span><span class="token punctuation">)</span> <span class="token keyword">public</span> pizzaToOwner<span class="token punctuation">;</span>
+
+    <span class="token comment">// Mapping from owner's address to number of owned token</span>
+    <span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token operator">=></span> <span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token keyword">public</span> ownerPizzaCount<span class="token punctuation">;</span>
+
+    <span class="token comment">// Mapping from token ID to approved address</span>
+    <span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> <span class="token operator">=></span> <span class="token builtin">address</span><span class="token punctuation">)</span> pizzaApprovals<span class="token punctuation">;</span>
+
+    <span class="token comment">// You can nest mappings, this example maps owner to operator approvals</span>
+    <span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token operator">=></span> <span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token operator">=></span> <span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">private</span> operatorApprovals<span class="token punctuation">;</span>
+
+    <span class="token comment">// Internal function to create a random Pizza from string (name) and DNA</span>
+    <span class="token keyword">function</span> <span class="token function">_createPizza</span><span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token keyword">memory</span> _name<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _dna<span class="token punctuation">)</span>
+        <span class="token comment">// The `internal` keyword means this function is only visible</span>
+        <span class="token comment">// within this contract and contracts that derive this contract</span>
+        <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/contracts.html#visibility-and-getters</span>
+        <span class="token keyword">internal</span>
+        <span class="token comment">// `isUnique` is a function modifier that checks if the pizza already exists</span>
+        <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/structure-of-a-contract.html#function-modifiers</span>
+        <span class="token function">isUnique</span><span class="token punctuation">(</span>_name<span class="token punctuation">,</span> _dna<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token comment">// Adds Pizza to array of Pizzas and get id</span>
+        <span class="token builtin">uint256</span> id <span class="token operator">=</span> SafeMath<span class="token punctuation">.</span><span class="token function">sub</span><span class="token punctuation">(</span>pizzas<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token function">Pizza</span><span class="token punctuation">(</span>_name<span class="token punctuation">,</span> _dna<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Checks that Pizza owner is the same as current user</span>
+        <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/control-structures.html#error-handling-assert-require-revert-and-exceptions</span>
+
+        <span class="token comment">// note that address(0) is the zero address,</span>
+        <span class="token comment">// indicating that pizza[id] is not yet allocated to a particular user.</span>
+
+        <span class="token keyword">assert</span><span class="token punctuation">(</span>pizzaToOwner<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Maps the Pizza to the owner</span>
+        pizzaToOwner<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">=</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">;</span>
+        ownerPizzaCount<span class="token punctuation">[</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">]</span> <span class="token operator">=</span> SafeMath<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>
+            ownerPizzaCount<span class="token punctuation">[</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token number">1</span>
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Creates a random Pizza from string (name)</span>
+    <span class="token keyword">function</span> <span class="token function">createRandomPizza</span><span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token keyword">memory</span> _name<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">uint256</span> randDna <span class="token operator">=</span> <span class="token function">generateRandomDna</span><span class="token punctuation">(</span>_name<span class="token punctuation">,</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">_createPizza</span><span class="token punctuation">(</span>_name<span class="token punctuation">,</span> randDna<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Generates random DNA from string (name) and address of the owner (creator)</span>
+    <span class="token keyword">function</span> <span class="token function">generateRandomDna</span><span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token keyword">memory</span> _str<span class="token punctuation">,</span> <span class="token builtin">address</span> _owner<span class="token punctuation">)</span>
+        <span class="token keyword">public</span>
+        <span class="token comment">// Functions marked as `pure` promise not to read from or modify the state</span>
+        <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/contracts.html#pure-functions</span>
+        <span class="token keyword">pure</span>
+        <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token comment">// Generates random uint from string (name) + address (owner)</span>
+        <span class="token builtin">uint256</span> rand <span class="token operator">=</span> <span class="token builtin">uint256</span><span class="token punctuation">(</span><span class="token function">keccak256</span><span class="token punctuation">(</span>abi<span class="token punctuation">.</span><span class="token function">encodePacked</span><span class="token punctuation">(</span>_str<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+            <span class="token builtin">uint256</span><span class="token punctuation">(</span>_owner<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        rand <span class="token operator">=</span> rand <span class="token operator">%</span> dnaModulus<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> rand<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Returns array of Pizzas found by owner</span>
+    <span class="token keyword">function</span> <span class="token function">getPizzasByOwner</span><span class="token punctuation">(</span><span class="token builtin">address</span> _owner<span class="token punctuation">)</span>
+        <span class="token keyword">public</span>
+        <span class="token comment">// Functions marked as `view` promise not to modify state</span>
+        <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/contracts.html#view-functions</span>
+        <span class="token keyword">view</span>
+        <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">memory</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token comment">// Uses the `memory` storage location to store values only for the</span>
+        <span class="token comment">// lifecycle of this function call.</span>
+        <span class="token comment">// Learn more: https://solidity.readthedocs.io/en/v0.5.10/introduction-to-smart-contracts.html#storage-memory-and-the-stack</span>
+        <span class="token builtin">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">memory</span> result <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">(</span>ownerPizzaCount<span class="token punctuation">[</span>_owner<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint256</span> counter <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> pizzas<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>pizzaToOwner<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">==</span> _owner<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                result<span class="token punctuation">[</span>counter<span class="token punctuation">]</span> <span class="token operator">=</span> i<span class="token punctuation">;</span>
+                counter<span class="token operator">++</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Transfers Pizza and ownership to other address</span>
+    <span class="token keyword">function</span> <span class="token function">transferFrom</span><span class="token punctuation">(</span><span class="token builtin">address</span> _from<span class="token punctuation">,</span> <span class="token builtin">address</span> _to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _pizzaId<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>_from <span class="token operator">!=</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> _to <span class="token operator">!=</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"Invalid address."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token function">_exists</span><span class="token punctuation">(</span>_pizzaId<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"Pizza does not exist."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>_from <span class="token operator">!=</span> _to<span class="token punctuation">,</span> <span class="token string">"Cannot transfer to the same address."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token function">_isApprovedOrOwner</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> _pizzaId<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"Address is not approved."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        ownerPizzaCount<span class="token punctuation">[</span>_to<span class="token punctuation">]</span> <span class="token operator">=</span> SafeMath<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>ownerPizzaCount<span class="token punctuation">[</span>_to<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ownerPizzaCount<span class="token punctuation">[</span>_from<span class="token punctuation">]</span> <span class="token operator">=</span> SafeMath<span class="token punctuation">.</span><span class="token function">sub</span><span class="token punctuation">(</span>ownerPizzaCount<span class="token punctuation">[</span>_from<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        pizzaToOwner<span class="token punctuation">[</span>_pizzaId<span class="token punctuation">]</span> <span class="token operator">=</span> _to<span class="token punctuation">;</span>
+
+        <span class="token comment">// Emits event defined in the imported IERC721 contract</span>
+        <span class="token keyword">emit</span> <span class="token function">Transfer</span><span class="token punctuation">(</span>_from<span class="token punctuation">,</span> _to<span class="token punctuation">,</span> _pizzaId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">_clearApproval</span><span class="token punctuation">(</span>_to<span class="token punctuation">,</span> _pizzaId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">/**
+     * Safely transfers the ownership of a given token ID to another address
+     * If the target address is a contract, it must implement `onERC721Received`,
+     * which is called upon a safe transfer, and return the magic value
+     * `bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"))`;
+     * otherwise, the transfer is reverted.
+    */</span>
+    <span class="token keyword">function</span> <span class="token function">safeTransferFrom</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">address</span> to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> pizzaId<span class="token punctuation">)</span>
+        <span class="token keyword">public</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token comment">// solium-disable-next-line arg-overflow</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">safeTransferFrom</span><span class="token punctuation">(</span><span class="token keyword">from</span><span class="token punctuation">,</span> to<span class="token punctuation">,</span> pizzaId<span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">/**
+     * Safely transfers the ownership of a given token ID to another address
+     * If the target address is a contract, it must implement `onERC721Received`,
+     * which is called upon a safe transfer, and return the magic value
+     * `bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"))`;
+     * otherwise, the transfer is reverted.
+     */</span>
+    <span class="token keyword">function</span> <span class="token function">safeTransferFrom</span><span class="token punctuation">(</span>
+        <span class="token builtin">address</span> <span class="token keyword">from</span><span class="token punctuation">,</span>
+        <span class="token builtin">address</span> to<span class="token punctuation">,</span>
+        <span class="token builtin">uint256</span> pizzaId<span class="token punctuation">,</span>
+        <span class="token builtin">bytes</span> <span class="token keyword">memory</span> _data
+    <span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">transferFrom</span><span class="token punctuation">(</span><span class="token keyword">from</span><span class="token punctuation">,</span> to<span class="token punctuation">,</span> pizzaId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token function">_checkOnERC721Received</span><span class="token punctuation">(</span><span class="token keyword">from</span><span class="token punctuation">,</span> to<span class="token punctuation">,</span> pizzaId<span class="token punctuation">,</span> _data<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"Must implement onERC721Received."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">/**
+     * Internal function to invoke `onERC721Received` on a target address
+     * The call is not executed if the target address is not a contract
+     */</span>
+    <span class="token keyword">function</span> <span class="token function">_checkOnERC721Received</span><span class="token punctuation">(</span>
+        <span class="token builtin">address</span> <span class="token keyword">from</span><span class="token punctuation">,</span>
+        <span class="token builtin">address</span> to<span class="token punctuation">,</span>
+        <span class="token builtin">uint256</span> pizzaId<span class="token punctuation">,</span>
+        <span class="token builtin">bytes</span> <span class="token keyword">memory</span> _data
+    <span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isContract</span><span class="token punctuation">(</span>to<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token builtin">bytes4</span> retval <span class="token operator">=</span> <span class="token function">IERC721Receiver</span><span class="token punctuation">(</span>to<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">onERC721Received</span><span class="token punctuation">(</span>
+            msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span>
+            <span class="token keyword">from</span><span class="token punctuation">,</span>
+            pizzaId<span class="token punctuation">,</span>
+            _data
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span>retval <span class="token operator">==</span> _ERC721_RECEIVED<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Burns a Pizza - destroys Token completely</span>
+    <span class="token comment">// The `external` function modifier means this function is</span>
+    <span class="token comment">// part of the contract interface and other contracts can call it</span>
+    <span class="token keyword">function</span> <span class="token function">burn</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _pizzaId<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender <span class="token operator">!=</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"Invalid address."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token function">_exists</span><span class="token punctuation">(</span>_pizzaId<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"Pizza does not exist."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token function">_isApprovedOrOwner</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> _pizzaId<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"Address is not approved."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        ownerPizzaCount<span class="token punctuation">[</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">]</span> <span class="token operator">=</span> SafeMath<span class="token punctuation">.</span><span class="token function">sub</span><span class="token punctuation">(</span>
+            ownerPizzaCount<span class="token punctuation">[</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token number">1</span>
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+        pizzaToOwner<span class="token punctuation">[</span>_pizzaId<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Returns count of Pizzas by address</span>
+    <span class="token keyword">function</span> <span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span> _owner<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span> _balance<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> ownerPizzaCount<span class="token punctuation">[</span>_owner<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Returns owner of the Pizza found by id</span>
+    <span class="token keyword">function</span> <span class="token function">ownerOf</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _pizzaId<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">address</span> _owner<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">address</span> owner <span class="token operator">=</span> pizzaToOwner<span class="token punctuation">[</span>_pizzaId<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>owner <span class="token operator">!=</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"Invalid Pizza ID."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> owner<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Approves other address to transfer ownership of Pizza</span>
+    <span class="token keyword">function</span> <span class="token function">approve</span><span class="token punctuation">(</span><span class="token builtin">address</span> _to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _pizzaId<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender <span class="token operator">==</span> pizzaToOwner<span class="token punctuation">[</span>_pizzaId<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">"Must be the Pizza owner."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        pizzaApprovals<span class="token punctuation">[</span>_pizzaId<span class="token punctuation">]</span> <span class="token operator">=</span> _to<span class="token punctuation">;</span>
+        <span class="token keyword">emit</span> <span class="token function">Approval</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> _to<span class="token punctuation">,</span> _pizzaId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Returns approved address for specific Pizza</span>
+    <span class="token keyword">function</span> <span class="token function">getApproved</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _pizzaId<span class="token punctuation">)</span>
+        <span class="token keyword">public</span>
+        <span class="token keyword">view</span>
+        <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">address</span> operator<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token function">_exists</span><span class="token punctuation">(</span>_pizzaId<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"Pizza does not exist."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> pizzaApprovals<span class="token punctuation">[</span>_pizzaId<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">/**
+     * Private function to clear current approval of a given token ID
+     * Reverts if the given address is not indeed the owner of the token
+     */</span>
+    <span class="token keyword">function</span> <span class="token function">_clearApproval</span><span class="token punctuation">(</span><span class="token builtin">address</span> owner<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _pizzaId<span class="token punctuation">)</span> <span class="token keyword">private</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>pizzaToOwner<span class="token punctuation">[</span>_pizzaId<span class="token punctuation">]</span> <span class="token operator">==</span> owner<span class="token punctuation">,</span> <span class="token string">"Must be pizza owner."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token function">_exists</span><span class="token punctuation">(</span>_pizzaId<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"Pizza does not exist."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>pizzaApprovals<span class="token punctuation">[</span>_pizzaId<span class="token punctuation">]</span> <span class="token operator">!=</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            pizzaApprovals<span class="token punctuation">[</span>_pizzaId<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">/*
+     * Sets or unsets the approval of a given operator
+     * An operator is allowed to transfer all tokens of the sender on their behalf
+     */</span>
+    <span class="token keyword">function</span> <span class="token function">setApprovalForAll</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">,</span> <span class="token builtin">bool</span> approved<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>to <span class="token operator">!=</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> <span class="token string">"Cannot approve own address"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        operatorApprovals<span class="token punctuation">[</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">]</span><span class="token punctuation">[</span>to<span class="token punctuation">]</span> <span class="token operator">=</span> approved<span class="token punctuation">;</span>
+        <span class="token keyword">emit</span> <span class="token function">ApprovalForAll</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> to<span class="token punctuation">,</span> approved<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Tells whether an operator is approved by a given owner</span>
+    <span class="token keyword">function</span> <span class="token function">isApprovedForAll</span><span class="token punctuation">(</span><span class="token builtin">address</span> owner<span class="token punctuation">,</span> <span class="token builtin">address</span> operator<span class="token punctuation">)</span>
+        <span class="token keyword">public</span>
+        <span class="token keyword">view</span>
+        <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> operatorApprovals<span class="token punctuation">[</span>owner<span class="token punctuation">]</span><span class="token punctuation">[</span>operator<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Takes ownership of Pizza - only for approved users</span>
+    <span class="token keyword">function</span> <span class="token function">takeOwnership</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _pizzaId<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token function">_isApprovedOrOwner</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> _pizzaId<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"Address is not approved."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">address</span> owner <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">ownerOf</span><span class="token punctuation">(</span>_pizzaId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">transferFrom</span><span class="token punctuation">(</span>owner<span class="token punctuation">,</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> _pizzaId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Checks if Pizza exists</span>
+    <span class="token keyword">function</span> <span class="token function">_exists</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> pizzaId<span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">address</span> owner <span class="token operator">=</span> pizzaToOwner<span class="token punctuation">[</span>pizzaId<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> owner <span class="token operator">!=</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Checks if address is owner or is approved to transfer Pizza</span>
+    <span class="token keyword">function</span> <span class="token function">_isApprovedOrOwner</span><span class="token punctuation">(</span><span class="token builtin">address</span> spender<span class="token punctuation">,</span> <span class="token builtin">uint256</span> pizzaId<span class="token punctuation">)</span>
+        <span class="token keyword">internal</span>
+        <span class="token keyword">view</span>
+        <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token builtin">address</span> owner <span class="token operator">=</span> pizzaToOwner<span class="token punctuation">[</span>pizzaId<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token comment">// Disable solium check because of</span>
+        <span class="token comment">// https://github.com/duaraghav8/Solium/issues/175</span>
+        <span class="token comment">// solium-disable-next-line operator-whitespace</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span>spender <span class="token operator">==</span> owner <span class="token operator">||</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getApproved</span><span class="token punctuation">(</span>pizzaId<span class="token punctuation">)</span> <span class="token operator">==</span> spender <span class="token operator">||</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">isApprovedForAll</span><span class="token punctuation">(</span>owner<span class="token punctuation">,</span> spender<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Check if Pizza is unique and doesn't exist yet</span>
+    <span class="token keyword">modifier</span> <span class="token function">isUnique</span><span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token keyword">memory</span> _name<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _dna<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">bool</span> result <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> pizzas<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>
+                <span class="token function">keccak256</span><span class="token punctuation">(</span>abi<span class="token punctuation">.</span><span class="token function">encodePacked</span><span class="token punctuation">(</span>pizzas<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span>
+                <span class="token function">keccak256</span><span class="token punctuation">(</span>abi<span class="token punctuation">.</span><span class="token function">encodePacked</span><span class="token punctuation">(</span>_name<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
+                pizzas<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>dna <span class="token operator">==</span> _dna
+            <span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                result <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>result<span class="token punctuation">,</span> <span class="token string">"Pizza with such name already exists."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">_</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Returns whether the target address is a contract</span>
+    <span class="token keyword">function</span> <span class="token function">isContract</span><span class="token punctuation">(</span><span class="token builtin">address</span> account<span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">uint256</span> size<span class="token punctuation">;</span>
+        <span class="token comment">// Currently there is no better way to check if there is a contract in an address</span>
+        <span class="token comment">// than to check the size of the code at that address.</span>
+        <span class="token comment">// See https://ethereum.stackexchange.com/a/14016/36603</span>
+        <span class="token comment">// for more details about how this works.</span>
+        <span class="token comment">// TODO Check this again before the Serenity release, because all addresses will be</span>
+        <span class="token comment">// contracts then.</span>
+        <span class="token comment">// solium-disable-next-line security/no-inline-assembly</span>
+        <span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+            size <span class="token operator">:=</span> <span class="token function">extcodesize</span><span class="token punctuation">(</span>account<span class="token punctuation">)</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">return</span> size <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="延伸阅读"><a href="#延伸阅读" class="headerlink" title="延伸阅读"></a>延伸阅读</h2><p>查看 Solidity 和 Vyper 的文档以获得更完整的智能合约概述：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://solidity.readthedocs.io/">Solidity</a></li>
+<li><a target="_blank" rel="noopener" href="https://vyper.readthedocs.io/">Vyper</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/" class="category-chain-item">区块链技术</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/%E4%BB%A5%E5%A4%AA%E5%9D%8A%E5%AE%98%E7%BD%91-%E5%BC%80%E5%8F%91%E8%80%85%E6%96%87%E6%A1%A3-%E4%BB%A5%E5%A4%AA%E5%9D%8A%E6%8A%80%E6%9C%AF%E6%A0%88/" class="category-chain-item">以太坊官网-开发者文档-以太坊技术栈</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/">#区块链技术</a>
+      
+        <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/">#以太坊</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>以太坊开发者文档04 智能合约剖析</div>
+      <div>https://alphafitz.com/2022/08/31/officialweb-04-anatomy-of-smart-contracts/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>alphafitz</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年8月31日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                <i class="iconfont icon-nc"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                <i class="iconfont icon-sa"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/08/31/officialweb-05-smart-contract-libraries/" title="以太坊开发者文档05 智能合约库">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">以太坊开发者文档05 智能合约库</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/31/officialweb-03-smart-contract-languages/" title="以太坊开发者文档03 智能合约语言">
+                        <span class="hidden-mobile">以太坊开发者文档03 智能合约语言</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,839 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fitz.png">
+  <link rel="icon" href="/img/fitz.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="alphafitz">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="ERC721 非同质化代币标准 以太坊改进建议：EIP-721: Non-Fungible Token Standard  摘要该标准允许在智能合约中实现用于 NFT 的标准 API。该标准提供了跟踪和转移 NFT 的基本功能，是一个允许钱包&#x2F;经纪人&#x2F;拍卖应用程序在以太坊上处理 NFT 的标准接口。 ERC721 接口任何 ERC721 兼容合约都必须实现 ERC721 和 E">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ERC721 非同质化代币标准">
+<meta property="og:url" content="https://alphafitz.com/2022/10/23/erc721-non-fungible-token-standard/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="ERC721 非同质化代币标准 以太坊改进建议：EIP-721: Non-Fungible Token Standard  摘要该标准允许在智能合约中实现用于 NFT 的标准 API。该标准提供了跟踪和转移 NFT 的基本功能，是一个允许钱包&#x2F;经纪人&#x2F;拍卖应用程序在以太坊上处理 NFT 的标准接口。 ERC721 接口任何 ERC721 兼容合约都必须实现 ERC721 和 E">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-23T09:56:30.000Z">
+<meta property="article:modified_time" content="2022-10-23T09:57:44.458Z">
+<meta property="article:author" content="alphafitz">
+<meta property="article:tag" content="区块链技术">
+<meta property="article:tag" content="ERC标准">
+<meta property="article:tag" content="以太坊">
+<meta property="article:tag" content="DeFi">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>ERC721 非同质化代币标准 - </title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alphafitz.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="null" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>alphafitz</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="ERC721 非同质化代币标准"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-10-23 17:56" pubdate>
+          2022年10月23日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          42 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">ERC721 非同质化代币标准</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="ERC721-非同质化代币标准"><a href="#ERC721-非同质化代币标准" class="headerlink" title="ERC721 非同质化代币标准"></a>ERC721 非同质化代币标准</h1><blockquote>
+<p>以太坊改进建议：<a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-721">EIP-721: Non-Fungible Token Standard</a></p>
+</blockquote>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>该标准允许在智能合约中实现用于 NFT 的标准 API。该标准提供了跟踪和转移 NFT 的基本功能，是一个允许钱包&#x2F;经纪人&#x2F;拍卖应用程序在以太坊上处理 NFT 的标准接口。</p>
+<h2 id="ERC721-接口"><a href="#ERC721-接口" class="headerlink" title="ERC721 接口"></a>ERC721 接口</h2><p>任何 ERC721 兼容合约都必须实现 ERC721 和 ERC165 接口。</p>
+<h3 id="Transfer"><a href="#Transfer" class="headerlink" title="Transfer"></a>Transfer</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">event</span> <span class="token function">Transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> _from<span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> _to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> <span class="token keyword">indexed</span> _tokenId<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>在 NFT 的所有权发生改变时需要触发。</li>
+<li>在 NFT 被创建（<code>_from == 0</code>）和被销毁（<code>_to == 0</code>）该事件触发。</li>
+</ul>
+<h3 id="Approval"><a href="#Approval" class="headerlink" title="Approval"></a>Approval</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">event</span> <span class="token function">Approval</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> _owner<span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> _approved<span class="token punctuation">,</span> <span class="token builtin">uint256</span> <span class="token keyword">indexed</span> _tokenId<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>在 NFT 的批准地址(approved address)改变或重新设置时触发。</li>
+<li>零地址意味着没有批准地址。</li>
+<li>当 Transfer 事件触发时，这也意味着该 NFT 的批准地址被设置为空(none)。</li>
+</ul>
+<h3 id="ApprovalForALL"><a href="#ApprovalForALL" class="headerlink" title="ApprovalForALL"></a>ApprovalForALL</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">event</span> <span class="token function">ApprovalForAll</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> _owner<span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> _operator<span class="token punctuation">,</span> <span class="token builtin">bool</span> _approved<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>在为所有者(owner)启用或禁用 operator 时触发。</li>
+<li>该 operator 可以管理该所有者的所有 NFT。</li>
+</ul>
+<h3 id="balanceOf"><a href="#balanceOf" class="headerlink" title="balanceOf"></a>balanceOf</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span> _owner<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 统计一个所有者的所有 NFT 数量。</li>
+<li>@dev 分配给零地址的 NFT 被认为是无效的，对于零地址的查询会 <code>throw</code>。</li>
+<li>@para 参数 <code>_owner</code> 是要查询的地址。</li>
+<li>@return 返回值是该地址的 NFT 数量。</li>
+</ul>
+<h3 id="ownerOf"><a href="#ownerOf" class="headerlink" title="ownerOf"></a>ownerOf</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">ownerOf</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _tokenId<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 找到 NFT 的所有者。</li>
+<li>@dev 分配给零地址的 NFT 被认为是无效的，对于它们的查询应当 <code>throw</code>。</li>
+<li>@para 参数 <code>_tokenId</code> 是 NFT 的标识符。</li>
+<li>@return 返回值是该 NFT 的所有者地址。</li>
+</ul>
+<h3 id="safeTransferFrom"><a href="#safeTransferFrom" class="headerlink" title="safeTransferFrom"></a>safeTransferFrom</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">safeTransferFrom</span><span class="token punctuation">(</span><span class="token builtin">address</span> _from<span class="token punctuation">,</span> <span class="token builtin">address</span> _to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _tokenIdm<span class="token punctuation">,</span> <span class="token builtin">bytes</span> data<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">payable</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 将一个 NFT 的所有权从一个地址转换到另一个地址。</li>
+<li>@dev 除非是 <code>msg.sender</code> 是该 NFT 的当前所有者、授权的 operator 或批准地址，否则会 <code>throw</code>。如果 <code>_from</code> 不是当前所有者则会 <code>throw</code>。如果 <code>_to</code> 是零地址则会 <code>throw</code>。如果 <code>_tokenId</code> 不是有效的 NFT 则会 <code>throw</code>。当转换完成，该函数会检查  <code>_to</code> 是否是一个智能合约（code size &gt; 0）。如果是，则会在 <code>_to</code> 上调用 <code>onERC721Received</code>，并且如果返回值不是 <code>bytes4(keccak256(&quot;onERC721Received(address,address,uint256,bytes)&quot;))</code> 则会 <code>throw</code>。</li>
+<li>@para 参数 <code>_from</code> 是当前 NFT 的所有者；<code>_to</code> 是新的所有者；<code>_tokenId</code> 是要转换的 NFT；<code>data</code> 是未指定格式的附加数据，在调用 <code>_to</code> 时发送。</li>
+</ul>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">safeTransferFrom</span><span class="token punctuation">(</span><span class="token builtin">address</span> _from<span class="token punctuation">,</span> <span class="token builtin">address</span> _to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _tokenId<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">payable</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 将一个 NFT 的所有权从一个地址转换到另一个地址。</li>
+<li>@dev&amp;para 与上一个函数工作原理相同，除了要发送的 <code>data</code> 被设为 <code>&quot;&quot;</code>。</li>
+</ul>
+<h3 id="transferFrom"><a href="#transferFrom" class="headerlink" title="transferFrom"></a>transferFrom</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span>  <span class="token function">transferFrom</span><span class="token punctuation">(</span><span class="token builtin">address</span> _from<span class="token punctuation">,</span> <span class="token builtin">address</span> _to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _tokenId<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">payable</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 转移一个 NFT 的所有权 - 调用者负责确认 <code>_to</code> 能够接收 NFT，否则它们可能会永久丢失。</li>
+<li>@dev 函数会 <code>throw</code> 除非 <code>msg.sender</code> 是该 NFT 的当前所有者、授权的 operater 或批准地址。如果 <code>_from</code> 不是当前所有者则会 <code>throw</code>。如果 <code>_to</code> 是零地址则会 <code>throw</code>。如果 <code>_tokenId</code> 不是有效的 NFT 则会 <code>throw</code>。</li>
+<li>@para 参数 <code>_from</code> 是 NFT 的当前所有者；<code>_to</code> 是新的所有者；<code>_tokenId</code> 是要转换的 NFT。</li>
+</ul>
+<h3 id="approve"><a href="#approve" class="headerlink" title="approve"></a>approve</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">approve</span><span class="token punctuation">(</span><span class="token builtin">address</span> _approved<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _tokenId<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">payable</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 改变或重申(reaffirm)一个 NFT 的批准地址。</li>
+<li>@dev 零地址意味着没有批准地址。除非 <code>msg.sender</code> 是当前 NFT 所有者或当前所有者的授权 operator，否则会 <code>throw</code>。</li>
+<li>@para 参数 <code>_approved</code> 是新的批准的 NFT controller；<code>_tokenId</code> 是要批准的 NFT。</li>
+</ul>
+<h3 id="setApprovalForAll"><a href="#setApprovalForAll" class="headerlink" title="setApprovalForAll"></a>setApprovalForAll</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">setApprovalForAll</span><span class="token punctuation">(</span><span class="token builtin">address</span> _operator<span class="token punctuation">,</span> <span class="token builtin">bool</span> _approved<span class="token punctuation">)</span> <span class="token keyword">external</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 启用或禁用第三方（“operator”）管理所有 <code>msg.sender</code> 资产的批准。</li>
+<li>@dev 触发 ApprovalForAll 事件。合约必须允许每个所有者的多个 operator。</li>
+<li>@para 参数 <code>_operator</code> 是要添加到授权 operator 集合中的地址；<code>_approved</code> 为 true 表示 operator 被批准，为 false 表示撤销批准。</li>
+</ul>
+<h3 id="getApproved"><a href="#getApproved" class="headerlink" title="getApproved"></a>getApproved</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getApproved</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _tokenId<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 获取单个 NFT 的批准地址。</li>
+<li>@dev 如果 <code>_tokenId</code> 不是有效的 NFT 则 <code>throw</code>。</li>
+<li>@para 参数 <code>_tokenId</code> 是要查询批准地址的 NFT。</li>
+<li>@return 返回值是该 NFT 的批准地址，为零则表示没有批准地址。</li>
+</ul>
+<h3 id="isApprovedForAll"><a href="#isApprovedForAll" class="headerlink" title="isApprovedForAll"></a>isApprovedForAll</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">isApprovedForAll</span><span class="token punctuation">(</span><span class="token builtin">address</span> _owner<span class="token punctuation">,</span> <span class="token builtin">address</span> _operator<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 查询一个地址是否是另一个地址的授权 operator。</li>
+<li>@para 参数 <code>_owner</code> 是拥有 NFT 的地址；<code>_operator</code> 是代表所有者执行的地址。</li>
+<li>@return 如果 <code>_operator</code> 是 <code>_owner</code> 的一个批准 operator 则返回 true，否则返回 false。</li>
+</ul>
+<h2 id="ERC165-接口"><a href="#ERC165-接口" class="headerlink" title="ERC165 接口"></a>ERC165 接口</h2><p><a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-165">EIP-165: Standard Interface Detection</a></p>
+<h3 id="supportsInterface"><a href="#supportsInterface" class="headerlink" title="supportsInterface"></a>supportsInterface</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">supportsInterface</span><span class="token punctuation">(</span><span class="token builtin">bytes4</span> interfaceID<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 查询一个合约是否实现了一个接口。</li>
+<li>@para 参数 <code>interfaceID</code> 是接口标识符(identifier)。</li>
+<li>@dev 接口标识在 ERC165 中规定。该函数使用小于 30,000 的 gas。</li>
+<li>@return 如果合约实现了 <code>interfaceId</code> 并且 <code>interfaceID</code> 不是 <code>0xffffffff</code>，则返回 <code>true</code>；否则返回 <code>false</code>。</li>
+</ul>
+<h2 id="ERC721TokenReceiver-接口"><a href="#ERC721TokenReceiver-接口" class="headerlink" title="ERC721TokenReceiver 接口"></a>ERC721TokenReceiver 接口</h2><p>如果一个钱包(wallet)&#x2F;经纪人(broker)&#x2F;拍卖应用程序(auction application)将接受安全转账，那么它必须实现钱包接口(wallet interface)。</p>
+<p>注意，该接口的 ERC-165 标识符为 <code>0x150b7a02</code>。</p>
+<h3 id="onERC721Received"><a href="#onERC721Received" class="headerlink" title="onERC721Received"></a>onERC721Received</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">onERC721Received</span><span class="token punctuation">(</span><span class="token builtin">address</span> _operator<span class="token punctuation">,</span> <span class="token builtin">address</span> _from<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _tokenId<span class="token punctuation">,</span> <span class="token builtin">bytes</span> _data<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">bytes4</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 处理一个 NFT 的收据。</li>
+<li>@dev ERC721 智能合约在 <code>transfer</code> 之后在接收者上调用该函数。该函数可能 <code>throw</code> 来回滚或拒绝转移(transfer)。除魔法值(magic value)之外的返回必须引起交易回滚。注意，合约地址永远是消息发送方。</li>
+<li>@para 参数 <code>_operator</code> 是调用 <code>safeTransferFrom</code> 函数的地址；<code>_from</code> 是之前拥有代币的地址；<code>_tokenId</code> 是被转移的 NFT 的标识符；<code>_data</code> 是没有指定格式的附加数据。</li>
+<li>@return <code>bytes4(keccak256(&quot;onERC721Received(address,address,uint256,bytes)&quot;))</code> 除非函数 <code>throw</code>。</li>
+</ul>
+<h2 id="ERC721Metadata-接口"><a href="#ERC721Metadata-接口" class="headerlink" title="ERC721Metadata 接口"></a>ERC721Metadata 接口</h2><p>**元数据扩展(metadata extension)**对于ERC-721智能合约是可选的。这允许查询智能合约的名称和关于 NFT 所代表的资产的详细信息。</p>
+<p>注意，该接口的 ERC-165 标识符为 <code>0x5b5e139f</code>。</p>
+<h3 id="name"><a href="#name" class="headerlink" title="name"></a>name</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">name</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">string</span> _name<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 本合约中 NFT 集合的描述性名称。</li>
+</ul>
+<h3 id="symbol"><a href="#symbol" class="headerlink" title="symbol"></a>symbol</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">symbol</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">string</span> _symbol<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 本合约中 NFT 的缩写名称。</li>
+</ul>
+<h3 id="tokenURL"><a href="#tokenURL" class="headerlink" title="tokenURL"></a>tokenURL</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">tokenURL</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _tokenId<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">string</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 给定资产的唯一的统一资源描述符(URL)。</li>
+<li>@dev 如果 <code>_tokenId</code> 不是有效的 NFT 则 <code>throw</code>。URL 在 RFC 3986 中定义。URL 可能指向一个符合 “ERC721 Metadata JSON Schema” 的 JSON 文件。</li>
+</ul>
+<h2 id="ERC721Enumerable-接口"><a href="#ERC721Enumerable-接口" class="headerlink" title="ERC721Enumerable 接口"></a>ERC721Enumerable 接口</h2><p>**枚举扩展(enumeration extension)**对于 ERC-721 智能合约是可选的。这允许您的合约发布完整的 NFT 列表，并使它们可被发现。</p>
+<p>注意，该接口的 ERC-165 标识符为 <code>0x780e9d63</code>。</p>
+<h3 id="totalSupply"><a href="#totalSupply" class="headerlink" title="totalSupply"></a>totalSupply</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">totalSupply</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 统计该合约的跟踪的 NFT。</li>
+<li>@return 该合约跟踪的有效 NFT 数量，其中的每一个都有已分配和可查询的不为零地址的所有者。</li>
+</ul>
+<h3 id="tokenByIndex"><a href="#tokenByIndex" class="headerlink" title="tokenByIndex"></a>tokenByIndex</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">tokenByIndex</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _index<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 枚举有效的 NFT</li>
+<li>@dev 如果 <code>_index</code> &gt;&#x3D; <code>totalSupply()</code> 则函数 <code>throw</code>。</li>
+<li>@para 参数 <code>_index</code> 表示小于 <code>totalSupply()</code> 的一个计数器。</li>
+<li>@return 返回值是第 <code>_index</code> 个 NFT 的代币标识符（未指定排序顺序）。</li>
+</ul>
+<h3 id="tokenOfOwnerByIndex"><a href="#tokenOfOwnerByIndex" class="headerlink" title="tokenOfOwnerByIndex"></a>tokenOfOwnerByIndex</h3><figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">tokenOfOwnerByIndex</span><span class="token punctuation">(</span><span class="token builtin">address</span> _owner<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _index<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>@notice 枚举分配给一个所有者的 NFT。</li>
+<li>@dev 如果 <code>_index</code> &gt;&#x3D; <code>balanceOf(_owner)</code> 或 <code>_owner</code> 是零地址，则函数 <code>throw</code>，这代表无效的 NFT。</li>
+<li>@para 参数 <code>_owner</code> 是我们对其拥有的 NFT 感兴趣的一个地址；<code>_index</code> 是一个小于 <code>balanceOf(_owner)</code> 的计数器。</li>
+<li>@return 返回值是分配给 <code>_owner</code> 的第 <code>_index</code> 个 NFT 的代币标识符（未指定排序顺序）。</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/" class="category-chain-item">区块链技术</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/ERC%E6%A0%87%E5%87%86/" class="category-chain-item">ERC标准</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/">#区块链技术</a>
+      
+        <a href="/tags/ERC%E6%A0%87%E5%87%86/">#ERC标准</a>
+      
+        <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/">#以太坊</a>
+      
+        <a href="/tags/DeFi/">#DeFi</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>ERC721 非同质化代币标准</div>
+      <div>https://alphafitz.com/2022/10/23/erc721-non-fungible-token-standard/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>alphafitz</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年10月23日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                <i class="iconfont icon-nc"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                <i class="iconfont icon-sa"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/10/24/security-flashload-attack/" title="智能合约安全：闪电贷攻击">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">智能合约安全：闪电贷攻击</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/10/22/erc20-token-standard/" title="ERC20 代币标准">
+                        <span class="hidden-mobile">ERC20 代币标准</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

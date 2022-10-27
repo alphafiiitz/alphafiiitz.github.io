@@ -1,0 +1,1175 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fitz.png">
+  <link rel="icon" href="/img/fitz.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="alphafitz">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="深入以太坊虚拟机 总结 本文是 Diving Into The Ethereum Virtual Machine 系列文章的总结篇，更加简洁地给出了该系列文章的知识要点。您也可以在 Other Parts 部分查看每篇文章的译稿。  1. 汇编与字节码智能合约在编译后的汇编代码中有一半都是样板(boilerplate)。另一半则是完成独有功能的汇编操作码指令。你可以从以太坊黄皮书(第30页左右的位">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入以太坊虚拟机 总结">
+<meta property="og:url" content="https://alphafitz.com/2022/10/17/diving-into-the-ethereum-vm-summary/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="深入以太坊虚拟机 总结 本文是 Diving Into The Ethereum Virtual Machine 系列文章的总结篇，更加简洁地给出了该系列文章的知识要点。您也可以在 Other Parts 部分查看每篇文章的译稿。  1. 汇编与字节码智能合约在编译后的汇编代码中有一半都是样板(boilerplate)。另一半则是完成独有功能的汇编操作码指令。你可以从以太坊黄皮书(第30页左右的位">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-17T04:01:18.000Z">
+<meta property="article:modified_time" content="2022-10-17T04:11:23.915Z">
+<meta property="article:author" content="alphafitz">
+<meta property="article:tag" content="区块链技术">
+<meta property="article:tag" content="智能合约开发">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>深入以太坊虚拟机 总结 - </title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alphafitz.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="null" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>alphafitz</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深入以太坊虚拟机 总结"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-10-17 12:01" pubdate>
+          2022年10月17日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          16k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          138 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">深入以太坊虚拟机 总结</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="深入以太坊虚拟机-总结"><a href="#深入以太坊虚拟机-总结" class="headerlink" title="深入以太坊虚拟机 总结"></a>深入以太坊虚拟机 总结</h1><blockquote>
+<p>本文是 <a target="_blank" rel="noopener" href="https://blog.qtum.org/diving-into-the-ethereum-vm-6e8d5d2f3c30">Diving Into The Ethereum Virtual Machine</a> 系列文章的总结篇，更加简洁地给出了该系列文章的知识要点。您也可以在 Other Parts 部分查看每篇文章的译稿。</p>
+</blockquote>
+<h2 id="1-汇编与字节码"><a href="#1-汇编与字节码" class="headerlink" title="1. 汇编与字节码"></a>1. 汇编与字节码</h2><p>智能合约在编译后的汇编代码中有一半都是样板(boilerplate)。另一半则是完成独有功能的汇编操作码指令。你可以从<a target="_blank" rel="noopener" href="https://ethereum.github.io/yellowpaper/paper.pdf">以太坊黄皮书</a>(第30页左右的位置)了解所有的操作码。EVM 基本上是一个循环，从上到下地执行每条指令。比如 EVM 对 <code>6001600081905550</code> 所做的基本上是：<code>sstore(0x0, 0x1)</code>，即把值 <code>0x1</code> 放在 <code>0x0</code> 的存储位置。</p>
+<p>EVM 是一个 256 位的堆栈机器（stack machine），指令可能使用堆栈上的值作为参数，并将值作为结果压入堆栈。在汇编代码中，单独的数值比如 <code>0x1</code> 实际上是 <code>push(0x1)</code> 的简写，表示将值 push 到堆栈顶端。</p>
+<p>以太坊的存储中，每个存储槽(storage slot)可以存储 32 个字节。因此 EVM 以 32 字节为单位处理数据是最自然的做法。如果可能，Solidity 通过将更小的数据类型打包(pack)到一个存储槽中来优化存储效率。打包的原因是目前为止最昂贵的操作是存储相关的操作：<code>sstore</code> 首次写入和后续写入、以及 <code>sload</code> 需要花费几百至几千 gas，而大多数指令只花费 3~10 gas。<a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/docs/evm/opcodes/">Opcodes for the EVM</a> 和 <a target="_blank" rel="noopener" href="https://github.com/wolflo/evm-opcodes/blob/main/gas.md">Appendix - Dynamic Gas Costs</a> 给出了所有操作码需要消耗的 gas 开销。</p>
+<p>可以在编译时通过打开 <code>optimize</code> 标志让 Solidity 进行优化：<code>solc --bin --asm --optimize xx.sol</code>。编译器在打包时会通过一些位操作来尽量减少存储相关指令的使用，从而节省 gas 费。</p>
+<p>交易中每个零字节数据或代码需要支付 4 gas，每个非零字节数据需要 68 gas。你可能会在编译生成的字节码中看到很长的 0，其实使用短的字节码也有可能达到同样的效果，但由于字节码普遍非零，因此不一定更省 gas。</p>
+<h2 id="2-固定长度数据类型的表示"><a href="#2-固定长度数据类型的表示" class="headerlink" title="2. 固定长度数据类型的表示"></a>2. 固定长度数据类型的表示</h2><p>在 EVM 语言中，了解数据类型的低级别表示非常重要，因为访问存储非常昂贵。<code>sstore</code> 比基本算术指令贵约 5000 倍，<code>sload</code> 比基本算数指令贵约 100 倍。因此运行和使用合约的成本很可能由 <code>sstore</code> 和 <code>sload</code> 主导。</p>
+<p>合约的 EVM 存储就像一个（几乎）无限长的磁带，长度为 2^256（相当于 256 位的寻址空间），磁带的每个插槽(slot)都保存 32 个字节。存储最初是空白的，默认为 0。拥有无限长的磁带不会花费任何费用。存储变量的声明不需要任何费用，因为不需要初始化。Solidity 为声明的存储变量保留了位置，并且只有在其中存储某些内容时才需要支付费用。</p>
+<p>不仅可以在存储中的任何位置写入，还可以立即从任何位置读取。从未初始化的位置读取只会返回 <code>0x0</code>。</p>
+<p>对于结构体来说，在结构体的实例中，字段按照结构体声明的顺序依次排布。同样的，未使用的结构体字段仅保留了位置而不需要支付费用，只有字段存储值的时候才需要支付费用。</p>
+<p>如果声明一个固定长度的数组，由于编译器确切地知道有多少变量，因此可以简单地将数组元素一个一个地放在存储中，仅保留位置而不支付费用，就像存储变量和结构体所做的一样。</p>
+<p>对于类似的代码，定长数组与结构体和状态变量有相同的存储布局（比如都是存储 6 个 uint 类型变量），但生成的汇编代码不同。原因是 Solidity 为数组访问生成边界检查。数组边界检查会使代码更安全，但同时也会干扰编译器优化，从而使固定长度数组的效率远低于存储变量或结构体。</p>
+<p>存储很昂贵，因此一项关键优化是将尽可能多的数据打包到一个 32 字节的存储槽中。比如在构造函数中有 4 个连续的 64 位整数初始化，那么可以直接打包为一个 <code>sstore</code> 命令。但如果分别使用两个函数调用（每个函数调用完成 2 个变量的初始化）来完成构造函数的话，优化就不再有效，此时会使用 2 个 <code>sstore</code>。因为优化器不会跨标签进行优化。（此结论在 Solidity 0.4.13 版本时正确，在 0.8.17 版本中是否已经有更好的解决方案本人还不确定，您可以直接在 <a target="_blank" rel="noopener" href="https://docs.soliditylang.org/en/v0.8.17/internals/optimizer.html">The Optimizer</a> 部分查看）</p>
+<p>总结来说，Solidity 会为存储变量一个一个地保留位置，放在存储中。如果可能的话，编译器会将数据紧密打包成 32 字节的块。对于存储变量和结构体字段，打包行为是可行的；但是对于定长数组，很可能会由于边界检查而破坏优化。在编写合约时，进行小型实验并检查程序集以了解编译器是否正确优化可能很有用。</p>
+<h2 id="3-动态数据类型的表示"><a href="#3-动态数据类型的表示" class="headerlink" title="3. 动态数据类型的表示"></a>3. 动态数据类型的表示</h2><p>Solidity 提供的动态类型主要有三个：</p>
+<ul>
+<li>映射：<code>mapping(bytes32 =&gt; uint256)</code>，<code>mapping(address =&gt; string)</code>，等等</li>
+<li>动态数组：<code>uint256[]</code>，<code>address[]</code>，等等</li>
+<li>字节数组，只有两种：<code>string</code>，<code>bytes</code></li>
+</ul>
+<p>动态数组和字节数组只是具有更高级特性的映射。</p>
+<h3 id="映射"><a href="#映射" class="headerlink" title="映射"></a>映射</h3><p>可以将 EVM 存储视为一个键值数据库，每个键限制为存储 32 个字节。对于映射类型，实际的实现是先使用 <code>keccak256</code> 哈希函数得到 32 字节的哈希值，然后将值存储在这个 32 字节哈希值对应的位置。</p>
+<p>对于只有一个映射的情况：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">contract</span> <span class="token class-name">C</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> <span class="token operator">=></span> <span class="token builtin">uint256</span><span class="token punctuation">)</span> items<span class="token punctuation">;</span>
+	
+	<span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		items<span class="token punctuation">[</span><span class="token number">0xC0FEFE</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0x42</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>在计算 <code>0xC0FEFE</code> 键对应的哈希的时候，需要使用到 <code>items</code> 变量的位置信息，在这个合约中，<code>items</code> 的位置为 <code>0x0</code>（第一个存储变量）。因此要获取值的地址，就分别将键和位置补齐到32字节，然后拼接起来并计算哈希值：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">keccak256<span class="token punctuation">(</span>bytes32<span class="token punctuation">(</span>key<span class="token punctuation">)</span> + bytes32<span class="token punctuation">(</span>position<span class="token punctuation">))</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>对于有两个映射的情况：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">contract</span> <span class="token class-name">C</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> <span class="token operator">=></span> <span class="token builtin">uint256</span><span class="token punctuation">)</span> itemsA<span class="token punctuation">;</span>
+	<span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> <span class="token operator">=></span> <span class="token builtin">uint256</span><span class="token punctuation">)</span> itemsB<span class="token punctuation">;</span>
+	
+	<span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		itemsA<span class="token punctuation">[</span><span class="token number">0xAAAA</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0xCCCC</span><span class="token punctuation">;</span>
+		itemsB<span class="token punctuation">[</span><span class="token number">0xBBBB</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0xDDDD</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>这里，<code>itemsA</code> 的位置是 <code>0</code>，那么键 <code>0xAAAA</code> 对应的值 <code>0xCCCC</code> 的存储位置就是 <code>keccak256(bytes32(0xAAAA) + bytes32(0)) = 8396...33f3</code>。<code>itemsB</code> 的位置是 <code>1</code>，那么键 <code>0xBBBB</code> 对应的值 <code>0xDDDD</code> 的存储位置就是 <code>keccak256(bytes32(0xBBBB) + bytes32(1)) = 34cb...d395</code>。（<a target="_blank" rel="noopener" href="https://emn178.github.io/online-tools/keccak_256.html">在线 Keccak256 计算</a>）</p>
+<p>如果使用的键是变量，就不会在编译的时候预先计算键的地址，而需要使用汇编代码进行哈希计算。<code>mstore</code> 指令在内存中写入 32 个字节（内存读写只需 3 gas）。通过分别将键和位置加载到相邻的内存块中来“连接”键和位置：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>    key <span class="token punctuation">(</span><span class="token number">32</span> bytes<span class="token punctuation">)</span>    <span class="token punctuation">]</span><span class="token punctuation">[</span> position <span class="token punctuation">(</span><span class="token number">32</span> bytes<span class="token punctuation">)</span> <span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>然后使用 <code>keccak</code> 指令对该内存区域中的数据进行哈希处理。<code>keccak</code> 指令的费用取决于哈希的数量：指令本身需要 30 gas，每处理 32 字节需要 6 gas，因此这里需要 30 + 6 * 2 &#x3D; 42 gas。</p>
+<p>对于以结构体为值的映射来说，结构体值的位置由上面的计算方式得到，值中各个字段依次排布，与结构体部分所描述的方式相同。即对于合约：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">contract</span> <span class="token class-name">C</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">struct</span> <span class="token class-name">Tuple</span> <span class="token punctuation">&#123;</span>
+		<span class="token builtin">uint256</span> a<span class="token punctuation">;</span>
+		<span class="token builtin">uint256</span> b<span class="token punctuation">;</span>
+		<span class="token builtin">uint256</span> c<span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> <span class="token operator">=></span> Tuple<span class="token punctuation">)</span> tuples<span class="token punctuation">;</span>
+
+	<span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		tuples<span class="token punctuation">[</span><span class="token number">0x1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>a <span class="token operator">=</span> <span class="token number">0x1A</span><span class="token punctuation">;</span>
+		tuples<span class="token punctuation">[</span><span class="token number">0x1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>b <span class="token operator">=</span> <span class="token number">0x1B</span><span class="token punctuation">;</span>
+		tuples<span class="token punctuation">[</span><span class="token number">0x1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>c <span class="token operator">=</span> <span class="token number">0x1C</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>三个字段的地址分别是：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">tuples<span class="token punctuation">[</span>0x1<span class="token punctuation">]</span>.a: 0xada5013122d395ba3c54772283fb069b10426056ef8ca54750cb9bb552a59e7d
+tuples<span class="token punctuation">[</span>0x1<span class="token punctuation">]</span>.b: 0xada5013122d395ba3c54772283fb069b10426056ef8ca54750cb9bb552a59e7e
+tuples<span class="token punctuation">[</span>0x1<span class="token punctuation">]</span>.c: 0xada5013122d395ba3c54772283fb069b10426056ef8ca54750cb9bb552a59e7f<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p><strong>映射不会打包（Mappings don’t pack）。</strong>考虑到映射的设计方式，您为每项支付的最小存储量是 32 字节，即使只存储 1 个字节。如果一个值大于 32 字节，则以 32 字节为增量支付存储费用。</p>
+<h3 id="动态数组"><a href="#动态数组" class="headerlink" title="动态数组"></a>动态数组</h3><p>对于大多数语言，数组比映射便宜。然而对于 Solidity，数组是更昂贵版本的映射。数组的项将在存储中按顺序排列。但对这些存储槽的每次访问实际上都是在数据库中进行键值查找。访问一个数组元素与访问映射元素没什么不同。</p>
+<p>比如 <code>uint256[]</code> 类型，本质上与 <code>mapping(uint256 =&gt; uint256)</code> 相同，并添加了使其“类似数组”的特性：</p>
+<ul>
+<li><code>length</code> 表示有多少个项；</li>
+<li>边界检查，读取和写入大于长度的索引时抛出错误（error）；</li>
+<li>比映射更复杂的存储打包行为；</li>
+<li>缩小数组时自动清零未使用的存储槽；</li>
+<li>对 <code>bytes</code> 和 <code>string</code> 进行特殊优化，使短数组（小于 31 字节）的存储效率更高。</li>
+</ul>
+<p>对于合约：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">contract</span> <span class="token class-name">C</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span> chunks<span class="token punctuation">;</span>
+	
+	<span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		chunks<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token number">0xAA</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		chunks<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token number">0xBB</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		chunks<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token number">0xCC</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p><code>chunks</code> 数组的位置(position)在 <code>0x0</code>。在存储中，<code>0x0</code> 位置存储的值是当前数组的长度。而实际存储数组数据的位置通过 <code>keccak256(bytes32(position))</code> 计算得出，在这里也就是从 <code>290d...e563</code> 到 <code>290d...e565</code>（<code>keccak256(bytes32(0)) = 290d...e563</code>）。</p>
+<p>数组优于映射的一个优点是可以使用打包，比如 <code>uint128[]</code> 数组的两个项正好适合两个存储槽（还有一个位置为 0 的存储槽用于存储长度）。</p>
+<h3 id="字节数组"><a href="#字节数组" class="headerlink" title="字节数组"></a>字节数组</h3><p><code>bytes</code> 和 <code>string</code> 是分别针对字节(bytes)和字符(characters)进行优化的特殊数组类型。如果数组的长度小于 31 字节，则只使用一个存储槽来存储整个字节数组。比如合约是下面这样：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">contract</span> <span class="token class-name">C</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin">bytes</span> s<span class="token punctuation">;</span>
+	
+	<span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		s<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token number">0xAA</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		s<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token number">0xBB</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		s<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token number">0xCC</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>此时只占用一个存储槽：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">key:   0x0000000000000000000000000000000000000000000000000000000000000000
+value: 0xaabbcc0000000000000000000000000000000000000000000000000000000006<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>如果数组大于 31 字节，则字节数组类似于 <code>[]byte</code>。此时存储槽 <code>0x0</code> 不再存储数据，而是存储编码的数组长度(<code>encodedLength</code>)，要获得实际长度需要计算：<code>length = (encodedLength - 1) / 2</code>。实际字节存储在  <code>0x290d...e563</code> 的位置，并且依次存储在后面的插槽中。</p>
+<p>数组有成员变量 <code>length</code>，返回数组的长度（定长数组固定，动态数组变化），该成员变量是只读函数，无法主动更改。动态存储数组和 <code>bytes</code>（不包括 <code>string</code>）有成员函数：<code>push()</code>、<code>push(x)</code> 和 <code>pop()</code>。</p>
+<p>字节数组的汇编代码很大。除了正常的边界检查和数组大小调整之外，还需要对长度进行编码&#x2F;解码，并注意在长字节数组和短字节数组之间进行转换。长数组的编码长度总是奇数，短数组则是偶数。汇编代码只需要查看变量位置处的最后一位，零表示偶数（短），一表示奇数（长）。</p>
+<h2 id="4-智能合约外部方法调用"><a href="#4-智能合约外部方法调用" class="headerlink" title="4. 智能合约外部方法调用"></a>4. 智能合约外部方法调用</h2><p>对于合约的外部调用交易，智能合约将交易的数据 <code>data</code> 字段解释为对合约的函数调用。<code>data</code> 字段的前 4 个字节始终是方法选择器(method selector)，其余的数据是 32 字节为单位的方法参数。如果没有参数那么 <code>data</code> 字段就只有 4 个字节。如果参数没有 32 字节长就用 0 补齐。方法选择器是方法签名的 <code>keccak256</code> 哈希。对于一个简单合约：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">contract</span> <span class="token class-name">C</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin">uint256</span> <span class="token keyword">public</span> a<span class="token punctuation">;</span>
+	<span class="token builtin">uint256</span> <span class="token keyword">public</span> b<span class="token punctuation">;</span>
+	
+	<span class="token keyword">function</span> <span class="token function">setAB</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _a<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _b<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+		a <span class="token operator">=</span> _a<span class="token punctuation">;</span>
+		b <span class="token operator">=</span> _b<span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>函数调用 <code>setAB(1, 2)</code> 的 <code>data</code> 字段为 <code>0x016aa20b00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002</code>，分别是 <code>setAB(uint256,uint256)</code> 的函数选择器，以及两个 32 字节的参数。</p>
+<p>智能合约可以通过结构化方式处理输入数据来模拟方法调用。合约应用程序二进制接口(ABI)指定了一个通用的编码方案。</p>
+<p>现在看看编译后的合约如何处理原始输入数据以进行方法调用。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">contract</span> <span class="token class-name">C</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin">uint256</span> a<span class="token punctuation">;</span>
+
+	<span class="token comment">// Note: `payable` makes the assembly a bit simpler</span>
+	<span class="token keyword">function</span> <span class="token function">setA</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _a<span class="token punctuation">)</span> <span class="token keyword">payable</span> <span class="token punctuation">&#123;</span>
+		a <span class="token operator">=</span> _a<span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>此处我们只看比较重要的两部分：</p>
+<ol>
+<li>匹配选择器并跳转到方法。</li>
+<li>加载参数，执行方法，并从方法返回。</li>
+</ol>
+<p>使用伪代码表示汇编代码逻辑：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">methodSelector <span class="token operator">=</span> calldata<span class="token punctuation">[</span><span class="token number">0</span>:4<span class="token punctuation">]</span>
+
+<span class="token keyword">if</span> methodSelector <span class="token operator">==</span> <span class="token string">"0xee919d50"</span><span class="token builtin class-name">:</span>
+  goto tag_2 // goto setA
+else:
+  // No matching method. Fail.
+  revert
+
+@returnTo <span class="token operator">=</span> tag_3
+tag_2: // setA<span class="token punctuation">(</span>uint256 _a<span class="token punctuation">)</span>
+  @arg1 <span class="token operator">=</span> calldata<span class="token punctuation">[</span><span class="token number">4</span>:36<span class="token punctuation">]</span>
+tag_4: // a <span class="token operator">=</span> _a
+  sstore<span class="token punctuation">(</span>0x0, @arg1<span class="token punctuation">)</span>
+tag_5 // <span class="token builtin class-name">return</span>
+  jump<span class="token punctuation">(</span>@returnTo<span class="token punctuation">)</span>
+tag_3:
+  stop<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>Solidity 编译器如何为具有多种方法的合约生成汇编代码？使用更多的 <code>if-else</code> 分支就可以了。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">methodSelector <span class="token operator">=</span> calldata<span class="token punctuation">[</span><span class="token number">0</span>:4<span class="token punctuation">]</span>
+
+<span class="token keyword">if</span> methodSelector <span class="token operator">==</span> <span class="token string">"0x9cdcf9b"</span><span class="token builtin class-name">:</span>
+  goto tag_2
+elsif methodSelector <span class="token operator">==</span> <span class="token string">"0xee919d50"</span><span class="token builtin class-name">:</span>
+  goto tag_3
+else:
+  // Cannot <span class="token function">find</span> a matching method. Fail.
+  revert<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p> <a target="_blank" rel="noopener" href="https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI">ABI 编码规范</a> 详细说明了如何对更复杂类型的参数进行编码，但阅读起来可能会非常痛苦。学习 ABI 编码的另一个策略是使用 <a target="_blank" rel="noopener" href="https://github.com/ethereum/pyethereum/blob/4e945e2a24554ec04eccb160cff689a82eed7e0d/ethereum/abi.py">pyethereum 的 ABI 编码函数</a> 来研究不同类型的数据是如何编码的。</p>
+<p>首先导入 <code>encode_abi</code> 函数：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> ethereum<span class="token punctuation">.</span>abi <span class="token keyword">import</span> encode_abi<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>对于有不同类型参数的方法，查看其对应的编码参数：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">></span> encode_abi<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">"int8"</span>, <span class="token string">"uint32"</span>, <span class="token string">"uint64"</span><span class="token punctuation">]</span>,<span class="token punctuation">[</span><span class="token number">1</span>, <span class="token number">2</span>, <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">)</span>.hex<span class="token punctuation">(</span><span class="token punctuation">)</span>
+0000000000000000000000000000000000000000000000000000000000000001
+0000000000000000000000000000000000000000000000000000000000000002
+0000000000000000000000000000000000000000000000000000000000000003
+
+<span class="token operator">></span> encode_abi<span class="token punctuation">(</span>
+   <span class="token punctuation">[</span><span class="token string">"int8[3]"</span>, <span class="token string">"int256[3]"</span><span class="token punctuation">]</span>,
+   <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">1</span>, <span class="token number">2</span>, <span class="token number">3</span><span class="token punctuation">]</span>, <span class="token punctuation">[</span><span class="token number">4</span>, <span class="token number">5</span>, <span class="token number">6</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+<span class="token punctuation">)</span>.hex<span class="token punctuation">(</span><span class="token punctuation">)</span>
+// int8<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span>. Zero-padded to <span class="token number">32</span> bytes.
+0000000000000000000000000000000000000000000000000000000000000001
+0000000000000000000000000000000000000000000000000000000000000002
+0000000000000000000000000000000000000000000000000000000000000003
+// int256<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span>.
+0000000000000000000000000000000000000000000000000000000000000004
+0000000000000000000000000000000000000000000000000000000000000005
+0000000000000000000000000000000000000000000000000000000000000006<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>对于动态数组，ABI 引入了一个间接层(layer of indirection)来编码动态数组，遵循称为 <a target="_blank" rel="noopener" href="https://github.com/ethereum/pyethereum/blob/4e945e2a24554ec04eccb160cff689a82eed7e0d/ethereum/abi.py#L735-L741">头尾编码(head-tail encoding)</a> 的方案。思想是动态数组的元素被打包在交易 calldata 的尾部。参数(“head”)是对数组元素所在的 calldata 的引用，指向尾部包含的三个动态数组的实际数据。示例如下：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">></span> encode_abi<span class="token punctuation">(</span>
+  <span class="token punctuation">[</span><span class="token string">"uint256[]"</span>, <span class="token string">"uint256[]"</span>, <span class="token string">"uint256[]"</span><span class="token punctuation">]</span>,
+  <span class="token punctuation">[</span><span class="token punctuation">[</span>0xa1, 0xa2, 0xa3<span class="token punctuation">]</span>, <span class="token punctuation">[</span>0xb1, 0xb2, 0xb3<span class="token punctuation">]</span>, <span class="token punctuation">[</span>0xc1, 0xc2, 0xc3<span class="token punctuation">]</span><span class="token punctuation">]</span>
+<span class="token punctuation">)</span>.hex<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+/************* HEAD <span class="token punctuation">(</span><span class="token number">32</span>*3 bytes<span class="token punctuation">)</span> *************/
+// arg1: <span class="token function">look</span> at position 0x60 <span class="token keyword">for</span> array data
+0000000000000000000000000000000000000000000000000000000000000060
+// arg2: <span class="token function">look</span> at position 0xe0 <span class="token keyword">for</span> array data
+00000000000000000000000000000000000000000000000000000000000000e0
+// arg3: <span class="token function">look</span> at position 0x160 <span class="token keyword">for</span> array data
+0000000000000000000000000000000000000000000000000000000000000160
+
+/************* TAIL <span class="token punctuation">(</span><span class="token number">128</span>**3 bytes<span class="token punctuation">)</span> *************/
+// position 0x60. Data <span class="token keyword">for</span> arg1.
+// Length followed by elements.
+0000000000000000000000000000000000000000000000000000000000000003
+00000000000000000000000000000000000000000000000000000000000000a1
+00000000000000000000000000000000000000000000000000000000000000a2
+00000000000000000000000000000000000000000000000000000000000000a3
+
+// position 0xe0. Data <span class="token keyword">for</span> arg2.
+0000000000000000000000000000000000000000000000000000000000000003
+00000000000000000000000000000000000000000000000000000000000000b1
+00000000000000000000000000000000000000000000000000000000000000b2
+00000000000000000000000000000000000000000000000000000000000000b3
+
+// position 0x160. Data <span class="token keyword">for</span> arg3.
+0000000000000000000000000000000000000000000000000000000000000003
+00000000000000000000000000000000000000000000000000000000000000c1
+00000000000000000000000000000000000000000000000000000000000000c2
+00000000000000000000000000000000000000000000000000000000000000c3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>可以混合使用动态和静态参数，两种参数会分别按照上述的两种方法进行编码。例如：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">></span> encode_abi<span class="token punctuation">(</span>
+  <span class="token punctuation">[</span><span class="token string">"uint256"</span>, <span class="token string">"uint256[]"</span>, <span class="token string">"uint256"</span><span class="token punctuation">]</span>,
+  <span class="token punctuation">[</span>0xaaaa, <span class="token punctuation">[</span>0xb1, 0xb2, 0xb3<span class="token punctuation">]</span>, 0xbbbb<span class="token punctuation">]</span>
+<span class="token punctuation">)</span>.hex<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+/************* HEAD <span class="token punctuation">(</span><span class="token number">32</span>*3 bytes<span class="token punctuation">)</span> *************/
+// arg1: 0xaaaa
+000000000000000000000000000000000000000000000000000000000000aaaa
+// arg2: <span class="token function">look</span> at position 0x60 <span class="token keyword">for</span> array data
+0000000000000000000000000000000000000000000000000000000000000060
+// arg3: 0xbbbb
+000000000000000000000000000000000000000000000000000000000000bbbb
+
+/************* TAIL <span class="token punctuation">(</span><span class="token number">128</span> bytes<span class="token punctuation">)</span> *************/
+// position 0x60. Data <span class="token keyword">for</span> arg2.
+0000000000000000000000000000000000000000000000000000000000000003
+00000000000000000000000000000000000000000000000000000000000000b1
+00000000000000000000000000000000000000000000000000000000000000b2
+00000000000000000000000000000000000000000000000000000000000000b3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>字符串和字节数组也是头尾编码的。唯一的区别是字节被紧密地打包成 32 个字节的块。对于每个字符串&#x2F;字节数组，前 32 个字节编码了长度，紧跟着是字节。如果字符串大于 32 字节，则使用多个 32 字节块。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">></span> encode_abi<span class="token punctuation">(</span>
+  <span class="token punctuation">[</span><span class="token string">"string"</span>, <span class="token string">"string"</span>, <span class="token string">"string"</span><span class="token punctuation">]</span>,
+  <span class="token punctuation">[</span><span class="token string">"aaaa"</span>, <span class="token string">"bbbb"</span>, <span class="token string">"cccc"</span><span class="token punctuation">]</span>
+<span class="token punctuation">)</span>.hex<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+// arg1: <span class="token function">look</span> at position 0x60 <span class="token keyword">for</span> string data
+0000000000000000000000000000000000000000000000000000000000000060
+// arg2: <span class="token function">look</span> at position 0xa0 <span class="token keyword">for</span> string data
+00000000000000000000000000000000000000000000000000000000000000a0
+// arg3: <span class="token function">look</span> at position 0xe0 <span class="token keyword">for</span> string data
+00000000000000000000000000000000000000000000000000000000000000e0
+
+// 0x60 <span class="token punctuation">(</span><span class="token number">96</span><span class="token punctuation">)</span>. Data <span class="token keyword">for</span> arg1
+0000000000000000000000000000000000000000000000000000000000000004
+<span class="token number">6161616100000000000000000000000000000000000000000000000000000000</span>
+
+// 0xa0 <span class="token punctuation">(</span><span class="token number">160</span><span class="token punctuation">)</span>. Data <span class="token keyword">for</span> arg2
+0000000000000000000000000000000000000000000000000000000000000004
+<span class="token number">6262626200000000000000000000000000000000000000000000000000000000</span>
+
+// 0xe0 <span class="token punctuation">(</span><span class="token number">224</span><span class="token punctuation">)</span>. Data <span class="token keyword">for</span> arg3
+0000000000000000000000000000000000000000000000000000000000000004
+<span class="token number">6363636300000000000000000000000000000000000000000000000000000000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>嵌套数组的每个嵌套都有一个间接寻址。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">></span> encode_abi<span class="token punctuation">(</span>
+  <span class="token punctuation">[</span><span class="token string">"uint256[][]"</span><span class="token punctuation">]</span>,
+  <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token punctuation">[</span>0xa1, 0xa2, 0xa3<span class="token punctuation">]</span>, <span class="token punctuation">[</span>0xb1, 0xb2, 0xb3<span class="token punctuation">]</span>, <span class="token punctuation">[</span>0xc1, 0xc2, 0xc3<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+<span class="token punctuation">)</span>.hex<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+// arg1: The outter array is at position 0x20.
+0000000000000000000000000000000000000000000000000000000000000020
+
+// 0x20. Each element is the position of an inner array.
+0000000000000000000000000000000000000000000000000000000000000003
+0000000000000000000000000000000000000000000000000000000000000060
+00000000000000000000000000000000000000000000000000000000000000e0
+0000000000000000000000000000000000000000000000000000000000000160
+
+// array<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> at 0x60
+0000000000000000000000000000000000000000000000000000000000000003
+00000000000000000000000000000000000000000000000000000000000000a1
+00000000000000000000000000000000000000000000000000000000000000a2
+00000000000000000000000000000000000000000000000000000000000000a3
+
+// array<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> at 0xe0
+0000000000000000000000000000000000000000000000000000000000000003
+00000000000000000000000000000000000000000000000000000000000000b1
+00000000000000000000000000000000000000000000000000000000000000b2
+00000000000000000000000000000000000000000000000000000000000000b3
+
+// array<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> at 0x160
+0000000000000000000000000000000000000000000000000000000000000003
+00000000000000000000000000000000000000000000000000000000000000c1
+00000000000000000000000000000000000000000000000000000000000000c2
+00000000000000000000000000000000000000000000000000000000000000c3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>交易中的每个零字节数据或代码需要支付 4 gas，而每个非零字节数据或代码需要支付 68，因此使用零填充并不像看起来那么糟。同时应该注意到，对于有符号整数的负值来说，填充该值会使用 <code>1</code>，这会花费非常多的 gas。</p>
+<h2 id="5-智能合约创建过程"><a href="#5-智能合约创建过程" class="headerlink" title="5. 智能合约创建过程"></a>5. 智能合约创建过程</h2><p>将合约编译后的字节码放在交易的 <code>data</code> 字段， <code>to</code> 字段留空，设置合适的 gas limit 和 gas price 后，发送这样的交易就可以创建一个合约。没有特殊的 RPC 调用或交易类型来创建合约。 在处理此交易时，EVM 会将输入数据作为代码执行，然后合约就诞生了。</p>
+<p>对于一个简单合约（此处仍使用 0.4.11 版本编译器的编译结果进行分析，与 0.8.17 版本的编译结果稍有差异）：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">contract</span> <span class="token class-name">C</span> <span class="token punctuation">&#123;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>0.4.11 版本编译器编译后的字节码是：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">60606040523415600e57600080fd5b5b603680601c6000396000f30060606040525b600080fd00a165627a7a723058209747525da0f525f1132dde30c8276ec70c4786d4b08a798eda3c8314bf796cc30029<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>字节码可分为三个部分：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// 部署代码 <span class="token punctuation">(</span>Deploy code<span class="token punctuation">)</span>: 
+60606040523415600e57600080fd5b5b603680601c6000396000f300
+
+// 合约代码 <span class="token punctuation">(</span>Contract code<span class="token punctuation">)</span>
+60606040525b600080fd00
+
+// 辅助数据 <span class="token punctuation">(</span>Auxdata<span class="token punctuation">)</span>
+a165627a7a723058209747525da0f525f1132dde30c8276ec70c4786d4b08a798eda3c8314bf796cc30029<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>部署代码在创建合约时运行。</li>
+<li>合约代码在合约创建后其方法被调用时运行。</li>
+<li>（可选）辅助数据是源代码的加密指纹，用于验证。只是数据，从未由 EVM 执行。</li>
+</ul>
+<p>部署代码负责：1）运行构造函数，并设置初始存储变量，2）计算合约代码，并将其返回给 EVM。第 2 部分中，部署代码将字节码 <code>60606040525b600080fd00</code> 加载到内存中，然后将其作为合约代码返回。</p>
+<p>在部署代码运行并返回合约代码之后会发生什么？详细过程可以查看 Go-Ethereum 的方法实现  <a target="_blank" rel="noopener" href="https://sourcegraph.com/github.com/ethereum/go-ethereum@e9295163aa25479e817efee4aac23eaeb7554bba/-/blob/core/vm/evm.go#L301">evm.Create</a>。总的来说，该方法会执行如下过程：</p>
+<ol>
+<li>检查调用者是否有足够的余额进行转账；</li>
+<li>从调用者的地址生成(derive)新合约的地址（使用调用者的地址和 <code>nonce</code>）；</li>
+<li>使用生成的合约地址创建新的合约账户（更改“世界状态(word state)” StateDB）；</li>
+<li>将初始 Ether 捐赠(endowment)从调用者转移到新合约；</li>
+<li>将输入数据设置为合约的部署代码，然后使用 EVM 执行；</li>
+<li>检查错误。如果合约代码太大，则失败；否则收取用户 gas，并设置合约代码。</li>
+</ol>
+<p>上面部署代码对应的汇编是：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// Reserve 0x60 bytes of memory <span class="token keyword">for</span> Solidity internal uses.
+mstore<span class="token punctuation">(</span>0x40, 0x60<span class="token punctuation">)</span>
+
+// Non-payable contract. Revert <span class="token keyword">if</span> <span class="token builtin class-name">caller</span> sent ether.
+jumpi<span class="token punctuation">(</span>tag_1, iszero<span class="token punctuation">(</span>callvalue<span class="token punctuation">))</span>
+0x0
+dup1
+revert
+
+// Copy contract code into memory, and return.
+tag_1:
+tag_2:
+  dataSize<span class="token punctuation">(</span>sub_0<span class="token punctuation">)</span>
+  dup1
+  dataOffset<span class="token punctuation">(</span>sub_0<span class="token punctuation">)</span>
+  0x0
+  codecopy
+  0x0
+  <span class="token builtin class-name">return</span>
+stop<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>跟踪执行上述部署汇编以返回合约代码：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// <span class="token number">60</span> <span class="token number">36</span> <span class="token punctuation">(</span>PUSH 0x36<span class="token punctuation">)</span>
+dataSize<span class="token punctuation">(</span>sub_0<span class="token punctuation">)</span>
+  stack: <span class="token punctuation">[</span>0x36<span class="token punctuation">]</span>
+dup1
+  stack: <span class="token punctuation">[</span>0x36 0x36<span class="token punctuation">]</span>
+// <span class="token number">60</span> 1c <span class="token operator">==</span> <span class="token punctuation">(</span>PUSH 0x1c<span class="token punctuation">)</span>
+dataOffset<span class="token punctuation">(</span>sub_0<span class="token punctuation">)</span>
+  stack: <span class="token punctuation">[</span>0x1c 0x36 0x36<span class="token punctuation">]</span>
+0x0
+  stack: <span class="token punctuation">[</span>0x0 0x1c 0x36 0x36<span class="token punctuation">]</span>
+codecopy
+  // Consumes <span class="token number">3</span> arguments
+  // Copy <span class="token variable"><span class="token variable">`</span>length<span class="token variable">`</span></span> of data from <span class="token variable"><span class="token variable">`</span>codeOffset<span class="token variable">`</span></span> to <span class="token variable"><span class="token variable">`</span>memoryOffset<span class="token variable">`</span></span>
+  // memoryOffset <span class="token operator">=</span> 0x0
+  // codeOffset   <span class="token operator">=</span> 0x1c
+  // length       <span class="token operator">=</span> 0x36
+  stack: <span class="token punctuation">[</span>0x36<span class="token punctuation">]</span>
+0x0
+  stack: <span class="token punctuation">[</span>0x0 0x36<span class="token punctuation">]</span>
+  memory: <span class="token punctuation">[</span>
+    0x0:0x36 <span class="token operator">=</span><span class="token operator">></span> calldata<span class="token punctuation">[</span>0x1c:0x36<span class="token punctuation">]</span>
+  <span class="token punctuation">]</span>
+<span class="token builtin class-name">return</span>
+  // Consumes <span class="token number">2</span> arguments
+  // Return <span class="token variable"><span class="token variable">`</span>length<span class="token variable">`</span></span> of data from <span class="token variable"><span class="token variable">`</span>memoryOffset<span class="token variable">`</span></span>
+  // memoryOffset  <span class="token operator">=</span> 0x0
+  // length        <span class="token operator">=</span> 0x36
+  stack: <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  memory: <span class="token punctuation">[</span>
+    0x0:0x36 <span class="token operator">=</span><span class="token operator">></span> calldata<span class="token punctuation">[</span>0x1c:0x36<span class="token punctuation">]</span>
+  <span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p><code>dataSize(sub_0)</code> 和 <code>dataOffset(sub_0)</code> 不是真正的指令。它们实际上是将常量放入堆栈的 PUSH 指令。<code>codecopy</code> 指令可以将交易的输入数据复制到内存。两个常量 <code>0x1C</code> (28) 和 <code>0x36</code> (54) 指定一个字节码子串作为合约代码返回。</p>
+<p>部署代码汇编做的事情大致对应如下的 Python3 代码：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-python" data-language="python"><code class="language-python">memory <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+calldata <span class="token operator">=</span> <span class="token builtin">bytes</span><span class="token punctuation">.</span>fromhex<span class="token punctuation">(</span><span class="token string">"60606040523415600e57600080fd5b5b603680601c6000396000f30060606040525b600080fd00a165627a7a72305820b5090d937cf89f134d30e54dba87af4247461dd3390acf19d4010d61bfdd983a0029"</span><span class="token punctuation">)</span>
+
+size <span class="token operator">=</span> <span class="token number">0x36</span>   <span class="token operator">//</span> dataSize<span class="token punctuation">(</span>sub_0<span class="token punctuation">)</span>
+offset <span class="token operator">=</span> <span class="token number">0x1c</span> <span class="token operator">//</span> dataOffset<span class="token punctuation">(</span>sub_0<span class="token punctuation">)</span>
+
+<span class="token operator">//</span> Copy substring of calldata to memory
+memory<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">:</span>size<span class="token punctuation">]</span> <span class="token operator">=</span> calldata<span class="token punctuation">[</span>offset<span class="token punctuation">:</span>offset<span class="token operator">+</span>size<span class="token punctuation">]</span>
+
+<span class="token operator">//</span> Instead of <span class="token keyword">return</span><span class="token punctuation">,</span> <span class="token keyword">print</span> the memory content <span class="token keyword">in</span> <span class="token builtin">hex</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token builtin">bytes</span><span class="token punctuation">(</span>memory<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">:</span>size<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token builtin">hex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>部署代码执行结束后，结果内存内容是：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">60606040525b600080fd00
+a165627a7a72305820b5090d937cf89f134d30e54dba87af4247461dd3390acf19d4010d61bfdd983a0029<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>此时内存中的内容对应于合约代码和辅助数据：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">sub_0: assembly <span class="token punctuation">&#123;</span>
+        /* <span class="token string">"c.sol"</span>:28:43  contract C <span class="token punctuation">&#123;</span><span class="token punctuation">..</span>. */
+      mstore<span class="token punctuation">(</span>0x40, 0x60<span class="token punctuation">)</span>
+      0x00
+      dup1
+      revert
+
+    auxdata: 0xa165627a7a72305820b5090d937cf89f134d30e54dba87af4247461dd3390acf19d4010d61bfdd983a0029
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>上面以 <code>sub_0</code> 为标签的汇编代码对应于字节码 <code>60606040525b600080fd00</code>，正是合约代码本身。从区块链浏览器也可以看到部署的合约代码的内容：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">PUSH1 0x60
+PUSH1 0x40
+MSTORE
+JUMPDEST
+PUSH1 0x00
+DUP1
+REVERT
+STOP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>除了返回合约代码之外，部署代码的另一个目的是运行构造函数进行设置。如果有构造函数参数，部署代码需要以某种方式从某个地方加载参数数据。Solidity 约定在交易的字节码末尾附加 ABI 编码的参数值，以传递构造函数的参数（<code>&quot;data&quot;: hexencode(compiledByteCode + encodedParams)</code>）。 比如下面的构造函数带有参数的合约：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">C</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin">uint256</span> a<span class="token punctuation">;</span>
+
+	<span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _a<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		a <span class="token operator">=</span> _a<span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>使用值 <code>66</code> 创建合约时，交易的 <code>calldata</code> 数据为：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">0x6080604052348015600f57600080fd5b5060405160e338038060e38339818101604052810190602d9190604c565b80600081905550506097565b6000815190506046816083565b92915050565b600060208284031215605f57605e607e565b5b6000606b848285016039565b91505092915050565b6000819050919050565b600080fd5b608a816074565b8114609457600080fd5b50565b603f8060a46000396000f3fe6080604052600080fdfea26469706673582212203f18e0d6b17cc4774d87b4703a0c9b647f0760cc4819f0fcecd0107747005bac64736f6c634300080700330000000000000000000000000000000000000000000000000000000000000042<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>字段数据中，最后是编码为 32 字节的数字。</p>
+<p>为了处理构造函数中的参数，部署代码将 ABI 参数从 <code>calldata</code> 的末尾复制到内存中，然后从内存复制到堆栈中。</p>
+<h3 id="创建合约的合约"><a href="#创建合约的合约" class="headerlink" title="创建合约的合约"></a>创建合约的合约</h3><p><code>FooFactory</code> 合约可以通过调用 <code>makeNewFoo</code> 创建新的 <code>Foo</code> 实例：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.4.11</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">Foo</span> <span class="token punctuation">&#123;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">FooFactory</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin">address</span> fooInstance<span class="token punctuation">;</span>
+
+	<span class="token keyword">function</span> <span class="token function">makeNewFoo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		fooInstance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>该合约的完整汇编在 <a target="_blank" rel="noopener" href="https://gist.github.com/hayeah/a94aa4e87b7b42e9003adf64806c84e4">This Gist</a> 中。编译器输出的结构比较复杂，它是这样组织的：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">FooFactoryDeployCode
+FooFactoryContractCode
+	FooDeployCode
+	FooContractCode
+	FooAUXData
+FooFactoryAUXData<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p><code>FooFactoryContractCode</code> 基本上是复制 <code>tag_8</code> 中 <code>Foo</code> 的字节码，然后跳转回 <code>tag_7</code> 以执行 <code>create</code> 指令。<code>create</code> 指令类似于发送交易的 RPC 调用，提供了一种在 EVM 内创建新合约的方法。有关 go-ethereum 源代码，请参见 <a target="_blank" rel="noopener" href="https://sourcegraph.com/github.com/ethereum/go-ethereum@e9295163aa25479e817efee4aac23eaeb7554bba/-/blob/core/vm/instructions.go#L572:6">opCreate</a>。该指令调用 <code>evm.Create</code> 来创建一个合约。</p>
+<p>辅助数据 <code>auxdata</code> 是一个哈希值，可以用它来获取有关已部署合约的元数据，其格式为：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">0xa1 0x65 <span class="token string">'b'</span> <span class="token string">'z'</span> <span class="token string">'z'</span> <span class="token string">'r'</span> <span class="token string">'0'</span> 0x58 0x20 <span class="token operator">&lt;</span><span class="token number">32</span> bytes swarm hash<span class="token operator">></span> 0x00 0x29<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>总的来说，合约被创建的方式类似于自解压软件安装程序的工作方式。当安装程序运行时，会配置系统环境，然后通过读取其程序包将目标程序提取到系统中。这对应于 <code>calldata</code> 中的部署代码和合约代码。智能合约可以使用和交易相同的过程来创建其他智能合约。构造函数如果有参数的话会将用于部署合约的参数放在字节码的最后。<code>data</code> 的字节码分布像这样：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"data"</span><span class="token operator">:</span> constructorCode + contractCode + auxdata + constructorData
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="Other-Parts"><a href="#Other-Parts" class="headerlink" title="Other Parts"></a>Other Parts</h2><p>‍在这一系列文章中，我翻译了 <a target="_blank" rel="noopener" href="https://medium.com/@hayeah">Howard</a> 的 <a target="_blank" rel="noopener" href="https://blog.qtum.org/diving-into-the-ethereum-vm-6e8d5d2f3c30">Diving Into The Ethereum VM</a> 系列文章。译文链接如下：</p>
+<ul>
+<li><a href="http://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part1-zh/">深入以太坊虚拟机 Part1 — 汇编与字节码</a></li>
+<li><a href="http://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part2-zh/">深入以太坊虚拟机 Part2 — 固定长度数据类型的表示</a></li>
+<li><a href="http://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part3-zh/">深入以太坊虚拟机 Part3 — 动态数据类型的表示</a></li>
+<li><a href="http://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part4-zh/">深入以太坊虚拟机 Part4 — 智能合约外部方法调用</a></li>
+<li><a href="http://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part5-zh/">深入以太坊虚拟机 Part5 — 智能合约创建过程</a></li>
+<li><a href="http://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part6-zh/">深入以太坊虚拟机 Part6 — Solidity 事件实现</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/" class="category-chain-item">区块链技术</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/%E4%BB%A5%E5%A4%AA%E5%9D%8A%E8%99%9A%E6%8B%9F%E6%9C%BA/" class="category-chain-item">以太坊虚拟机</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/">#区块链技术</a>
+      
+        <a href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%BC%80%E5%8F%91/">#智能合约开发</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深入以太坊虚拟机 总结</div>
+      <div>https://alphafitz.com/2022/10/17/diving-into-the-ethereum-vm-summary/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>alphafitz</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年10月17日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                <i class="iconfont icon-nc"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                <i class="iconfont icon-sa"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/10/19/solidity-docs-0-8-17-notes/" title="Solidity 文档 0.8.17 笔记">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Solidity 文档 0.8.17 笔记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/10/13/tools-about-blockchain-and-smart-contract/" title="区块链 &amp; 智能合约工具">
+                        <span class="hidden-mobile">区块链 &amp; 智能合约工具</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

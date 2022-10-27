@@ -1,0 +1,784 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fitz.png">
+  <link rel="icon" href="/img/fitz.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="alphafitz">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="智能合约安全：闪电贷攻击闪电贷攻击 本文是视频 详解闪电贷攻击手段@BuidlerDAO 的学习笔记。  1. 什么是闪电贷？闪电贷与区块链安全讲解闪电贷就是在单笔交易中贷出借款人的金额，在交易结束时，借款人必须偿还不少于贷款金额的数目。如果借款人做不到，则交易就会自动回滚，就像贷款根本没有发生一样。主要包括三点特征：  ​闪电贷是一种无抵押贷款； 所有闪电贷都是通过区块链上的智能合约完成的； 贷">
+<meta property="og:type" content="article">
+<meta property="og:title" content="智能合约安全：闪电贷攻击">
+<meta property="og:url" content="https://alphafitz.com/2022/10/24/security-flashload-attack/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="智能合约安全：闪电贷攻击闪电贷攻击 本文是视频 详解闪电贷攻击手段@BuidlerDAO 的学习笔记。  1. 什么是闪电贷？闪电贷与区块链安全讲解闪电贷就是在单笔交易中贷出借款人的金额，在交易结束时，借款人必须偿还不少于贷款金额的数目。如果借款人做不到，则交易就会自动回滚，就像贷款根本没有发生一样。主要包括三点特征：  ​闪电贷是一种无抵押贷款； 所有闪电贷都是通过区块链上的智能合约完成的； 贷">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-24T03:12:39.000Z">
+<meta property="article:modified_time" content="2022-10-24T03:24:56.900Z">
+<meta property="article:author" content="alphafitz">
+<meta property="article:tag" content="区块链技术">
+<meta property="article:tag" content="以太坊">
+<meta property="article:tag" content="DeFi">
+<meta property="article:tag" content="智能合约安全">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>智能合约安全：闪电贷攻击 - </title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alphafitz.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="null" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>alphafitz</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="智能合约安全：闪电贷攻击"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-10-24 11:12" pubdate>
+          2022年10月24日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">智能合约安全：闪电贷攻击</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="智能合约安全：闪电贷攻击"><a href="#智能合约安全：闪电贷攻击" class="headerlink" title="智能合约安全：闪电贷攻击"></a>智能合约安全：闪电贷攻击</h1><h1 id="闪电贷攻击"><a href="#闪电贷攻击" class="headerlink" title="闪电贷攻击"></a>闪电贷攻击</h1><blockquote>
+<p>本文是视频 <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Fd4y1B7k3">详解闪电贷攻击手段@BuidlerDAO</a> 的学习笔记。</p>
+</blockquote>
+<h2 id="1-什么是闪电贷？闪电贷与区块链安全讲解"><a href="#1-什么是闪电贷？闪电贷与区块链安全讲解" class="headerlink" title="1. 什么是闪电贷？闪电贷与区块链安全讲解"></a>1. 什么是闪电贷？闪电贷与区块链安全讲解</h2><p>闪电贷就是在单笔交易中贷出借款人的金额，在交易结束时，借款人必须偿还不少于贷款金额的数目。如果借款人做不到，则交易就会自动回滚，就像贷款根本没有发生一样。主要包括三点特征：</p>
+<ol>
+<li>​闪电贷是一种无抵押贷款；</li>
+<li>所有闪电贷都是通过区块链上的智能合约完成的；</li>
+<li>贷款过程是即时的，一个区块内完成贷款和还款。</li>
+</ol>
+<h3 id="Uniswap-Swap-闪电贷"><a href="#Uniswap-Swap-闪电贷" class="headerlink" title="Uniswap Swap() 闪电贷"></a>Uniswap Swap() 闪电贷</h3><p>V2 核心合约 Pair（即供给池）的 swap 函数实现了 calldata 调用，并且可以让用户先兑后还。假设有一个支持 DAI&#x2F;ETH 的 Pair（供给池），一开始 ETH 会从 Pair 借出到外部套利合约，然后 Pair 会去调用套利合约实现的 uniswapV2Call 接口。uniswapV2Call 中可以完成一系列的“闪电”业务，之后 uniswapV2Call 再将相应的 ETH 或者 DAI 返还给 Pair。Pair 对 uniswapV2Call 调用结束后，会进行最终的账目核对。如果 Pair 没有收到足够的 ETH 或者 DAI，那么整个交易都将回滚。因此对于套利者，借出一笔 ETH 后，必须在该原子交易结束前再将 ETH 或 DAI 返还（并付上 0.3% 的费率），才能保证整个闪电兑换的成功。</p>
+<p>闪电贷交互分为三部分：</p>
+<ul>
+<li>借贷<ul>
+<li>兑换数量和储备校验</li>
+<li>检查：接收方地址（to）不能是 tokenA 和 tokenB 的地址</li>
+<li>将 tokenA 和 tokenB 贷出</li>
+</ul>
+</li>
+<li>调用目标合约接口<ul>
+<li>​<code>IUniswapV2Callee(to).uniswapV2Call(msg.sender, amount0Out, amount1Out, data);</code>​ 调用闪电贷接口完成业务逻辑</li>
+</ul>
+</li>
+<li>还款<ul>
+<li>校验还款金额 &gt;&#x3D; 贷款 + 费用</li>
+<li>K 值校验</li>
+<li>更新储备金</li>
+</ul>
+</li>
+</ul>
+<h3 id="Aave-flashLoan-闪电贷"><a href="#Aave-flashLoan-闪电贷" class="headerlink" title="Aave flashLoan() 闪电贷"></a>Aave flashLoan() 闪电贷</h3><ul>
+<li>函数参数：<code>function flashLoan(address _receiver, address _reserve, uint256 _amount, bytes memory _apras) ...</code>​<ul>
+<li>参数：接收地址、Token 地址、数量、接收方接口参数（跨合约调用时传入参数）</li>
+</ul>
+</li>
+<li>函数流程<ul>
+<li>查询可借贷的流动性</li>
+<li>确保有足够的数量能够借出</li>
+<li>计算费用：借贷费用 + 协议费用</li>
+<li>代币转给接收地址</li>
+<li>跨合约调用目标闪电贷接口</li>
+<li>检查借贷+费用是否还清</li>
+<li>更新合约状态</li>
+</ul>
+</li>
+</ul>
+<h3 id="闪电贷与区块链安全"><a href="#闪电贷与区块链安全" class="headerlink" title="闪电贷与区块链安全"></a>闪电贷与区块链安全</h3><p>闪电贷本身的存在是没有漏洞的，但使用者可以以极低的成本撬动巨量资金，在多个协议之间进行价格操纵等。2022 年上半年使用闪电贷进行黑客攻击的案例总计 21 次，占比 26.6%，涉及金额高达 3 亿 3291 万美元。其中上半年影响较大的攻击手段有闪电贷加治理攻击，闪电贷加价格操纵攻击，闪电贷加重入攻击等。</p>
+<h3 id="闪电贷攻击案例一"><a href="#闪电贷攻击案例一" class="headerlink" title="闪电贷攻击案例一"></a>闪电贷攻击案例一</h3><p>2021 年 6 月 23 日，基于币安智能链（BSC）的稳定币交易平台 Nerve Finance 受到闪电贷加逻辑漏洞攻击，损失高达 460 万美元。</p>
+<p>其原因在于紧急提取功能<code>emergencyBurn</code>​ 没有销毁存放在合约中的 NRV-LP 代币。</p>
+<p>攻击过程：</p>
+<ol>
+<li>闪电贷 242W BUSD 并在稳定币 Nerve 3Pool 中兑换为 241 万枚 3NVR-LP；</li>
+<li>攻击者将 241 万枚 3NRV-LP 添加至 ElevenNeverSellVault 合约后获得 241 万枚 11Pool3 Nerve。紧急取出在 ElevenNeverSellVault 合约添加的 241 万枚 3NRV-LP；</li>
+<li>重复过程 2；</li>
+<li>将通过攻击的 3NRC-LP 兑换为 BUSD，偿还闪电贷并将获利的资金转给钱包。</li>
+</ol>
+<h3 id="闪电贷攻击案例二"><a href="#闪电贷攻击案例二" class="headerlink" title="闪电贷攻击案例二"></a>闪电贷攻击案例二</h3><p>2022 年 4 月 17 日，算法稳定币项目 Beanstalk Farms 遭到闪电贷加治理攻击，黑客获利 7600 万美元，协议损失 8200 万美元。</p>
+<p>攻击过程大致如下：准备阶段：由于在 BEAN 合约中，所有治理行动都有 1 天的延迟，即提案后 1 天才能开始投票，所以攻击者实际上是在前一天提出两个治理提案，其中，第一个提案（提议18）提取合约中所有的钱。下一个提案（提议19）将价值 25 万美元的 $BEAN 发送到乌克兰的捐款地址。该攻击主要利用了投票合约中的投票是通过代币余额查询和校验的，然后调用 <code>emergencyCommit</code>​ 进行紧急提交以执行该提议。</p>
+<p>攻击阶段：</p>
+<ol>
+<li>攻击者从 Synapse 协议桥（最初来自 Tornado.cash）获取初始资金；</li>
+<li>利用闪电贷获得价值超 10 亿资金：从 Aave 获得 3.5 亿 DAI，5 亿 USDC 和 1.5 亿 USDT；从 Uniswap v2 获得 3200 万 BEAN；从 SushiSwap 获得 1160 万 LUSD；</li>
+<li>这些代币被用来为 Curve 池子增加流动性，临时获得巨额的提案代币，保证了提案不需要其他人投票也能通过。<ul>
+<li>Curve.fi DAI&#x2F;USDC&#x2F;USDT 交易池新增 DAI、USDC、USDT，最终获得了 979,691,328 3Crv流动性代币</li>
+<li>其中 15,000,000 3Crv 兑换 15,251,318 LUSD</li>
+<li>将 964,691,328 个 3Crv 代币兑换成 795,425,740 BEAN3CRV-f 进行投票，并为 32,100,950 BEAN 和 26,894,383 LUSD 增加流动性，获得 58,924,887 BEANLUSD-f 流动性代币。</li>
+</ul>
+</li>
+</ol>
+<p>本案例中是通过闪电贷获得大量的治理代币发起攻击。</p>
+<h3 id="闪电贷攻击案例三"><a href="#闪电贷攻击案例三" class="headerlink" title="闪电贷攻击案例三"></a>闪电贷攻击案例三</h3><p>2022 年 6 月 22 日，PandoraDAO 遭遇闪电贷加价格操纵攻击，造成了约 12.8 万美元的损失。</p>
+<p>其原因在于查询价格的预言机设计存在问题。</p>
+<p>攻击步骤：</p>
+<ol>
+<li>通过从 USDT-PCD 合约中闪贷大量 USDT 来准备价格操纵；</li>
+<li>此时数量发生变化，价格也发生了变化，调用 <code>shouchan</code>​ 函数以极低价格购买 PCD 代币，并锁仓；</li>
+<li>解锁，并通过 PancakeSwap 卖出。</li>
+</ol>
+<p>本案例中是直接通过闪电贷获得代币发起攻击。</p>
+<h3 id="闪电贷攻击案例四"><a href="#闪电贷攻击案例四" class="headerlink" title="闪电贷攻击案例四"></a>闪电贷攻击案例四</h3><p>​2022 年 3 月 15 日，OMNI 协议遭受闪电贷加重入攻击，黑客共获取了 362 万枚 USDC，169 万枚 xDAI，16 枚 WBTC，24 枚 WETH，价值超过 600 万美元。</p>
+<p>其原因在于：</p>
+<ol>
+<li>ERC667BridgeToken 中的 <code>transfer</code>​ 函数中的钩子 <code>callafterTransfer</code>​ 实现了调用目标合约的功能（使得能够多次发起调用）；</li>
+<li>​<code>borrow</code>​ 函数中并未按照检查-生效-交互模式实现逻辑，并且没有防重入修饰器修饰该函数（可以实现回调）；</li>
+</ol>
+<p>攻击流程：</p>
+<ol>
+<li>从 SushiSwap 中进行闪电贷，209 万 USDC，337 万 WXDAI；</li>
+<li>随后，攻击者创建了多个合约同时存款借贷然后进行重入获利，可以查看其中一个地址 <code>0xbE8fe2aE087aeCcB1E46EF206368421c9212637B</code>​。</li>
+</ol>
+<h2 id="2-如何减缓闪电贷攻击？"><a href="#2-如何减缓闪电贷攻击？" class="headerlink" title="2. 如何减缓闪电贷攻击？"></a>2. 如何减缓闪电贷攻击？</h2><h3 id="1-要求关键交易跨越两个区块"><a href="#1-要求关键交易跨越两个区块" class="headerlink" title="1. 要求关键交易跨越两个区块"></a>1. 要求关键交易跨越两个区块</h3><p>如果一个资本密集型交易需要跨越至少两个区块，用户需要至少在两个区块时间段取出贷款，那么闪电贷攻击将会失效。但是要达到这一效果，两个区块之间用户价值必须锁定，以防止其偿还贷款。</p>
+<h3 id="2-时间加权平均定价"><a href="#2-时间加权平均定价" class="headerlink" title="2. 时间加权平均定价"></a>2. 时间加权平均定价</h3><p>在价格操纵案例中，建议使用时间加权平均价格（TWAP）来跨多个区块计算流动性池中的价格。因为整个攻击交易序列需要在同一个区块内处理，但如果不操纵整个区块链就无法操纵 TWAP，从而可以避免闪电贷导致的瞬时价格异常。</p>
+<h3 id="3-更高频率的价格更新机制"><a href="#3-更高频率的价格更新机制" class="headerlink" title="3. 更高频率的价格更新机制"></a>3. 更高频率的价格更新机制</h3><p>同样在价格操作案例中，可以适当增加流动性池向预言机查询并更新价格的频率，随着更新次数的增加，池中代币的价格会更新得更快，并使价格操纵无效。</p>
+<h3 id="4-更严格的治理逻辑"><a href="#4-更严格的治理逻辑" class="headerlink" title="4. 更严格的治理逻辑"></a>4. 更严格的治理逻辑</h3><p>在涉及到项目治理时，应该多方面考虑治理逻辑的严谨性，避免出现 Beanstalk Farms 那样的逻辑漏洞，一旦有个微小的漏洞，就有可能通过闪电贷无限放大，最后造成巨大的损失。</p>
+<h3 id="5-必要时禁止跨合约调用"><a href="#5-必要时禁止跨合约调用" class="headerlink" title="5. 必要时禁止跨合约调用"></a>5. 必要时禁止跨合约调用</h3><p>使用 <code>require(tx.origin == msg.sender)</code>​ 禁止跨合约调用。</p>
+<h2 id="3-如何监控闪电贷攻击？"><a href="#3-如何监控闪电贷攻击？" class="headerlink" title="3. 如何监控闪电贷攻击？"></a>3. 如何监控闪电贷攻击？</h2><p>上述建议一定程度上可以减缓闪电贷攻击，但是有些方案过程复杂，且代价过大，在实际项目中难以实现。在无法完全解决闪电贷攻击的前提下，能及时准确的监控闪电贷攻击就显得尤为重要。比如使用监控平台或风险预警系统来对交易进行实时监控。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/" class="category-chain-item">区块链技术</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" class="category-chain-item">智能合约安全</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/">#区块链技术</a>
+      
+        <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/">#以太坊</a>
+      
+        <a href="/tags/DeFi/">#DeFi</a>
+      
+        <a href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/">#智能合约安全</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>智能合约安全：闪电贷攻击</div>
+      <div>https://alphafitz.com/2022/10/24/security-flashload-attack/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>alphafitz</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年10月24日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                <i class="iconfont icon-nc"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                <i class="iconfont icon-sa"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/10/24/security-reentrancy-attack/" title="智能合约安全：重入攻击">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">智能合约安全：重入攻击</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/10/23/erc721-non-fungible-token-standard/" title="ERC721 非同质化代币标准">
+                        <span class="hidden-mobile">ERC721 非同质化代币标准</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,1136 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fitz.png">
+  <link rel="icon" href="/img/fitz.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="alphafitz">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="深入以太坊虚拟机 Part1 — 汇编与字节码 原文：Diving Into The Ethereum Virtual Machine | by Howard | Aug 6, 2017  Solidity 提供了许多高级语言抽象，但是这些特性使得人们很难理解程序运行时到底发生了什么。阅读 Solidity 文档仍然使我对非常基本的事情感到困惑。 string，bytes32，byte[]，byt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入以太坊虚拟机 Part1 — 汇编与字节码">
+<meta property="og:url" content="https://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part1-zh/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="深入以太坊虚拟机 Part1 — 汇编与字节码 原文：Diving Into The Ethereum Virtual Machine | by Howard | Aug 6, 2017  Solidity 提供了许多高级语言抽象，但是这些特性使得人们很难理解程序运行时到底发生了什么。阅读 Solidity 文档仍然使我对非常基本的事情感到困惑。 string，bytes32，byte[]，byt">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-07T08:39:34.000Z">
+<meta property="article:modified_time" content="2022-10-17T04:05:43.233Z">
+<meta property="article:author" content="alphafitz">
+<meta property="article:tag" content="区块链技术">
+<meta property="article:tag" content="智能合约开发">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>深入以太坊虚拟机 Part1 — 汇编与字节码 - </title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alphafitz.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="null" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>alphafitz</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深入以太坊虚拟机 Part1 — 汇编与字节码"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-10-07 16:39" pubdate>
+          2022年10月7日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          57 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">深入以太坊虚拟机 Part1 — 汇编与字节码</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="深入以太坊虚拟机-Part1-—-汇编与字节码"><a href="#深入以太坊虚拟机-Part1-—-汇编与字节码" class="headerlink" title="深入以太坊虚拟机 Part1 — 汇编与字节码"></a>深入以太坊虚拟机 Part1 — 汇编与字节码</h1><blockquote>
+<p>原文：<a target="_blank" rel="noopener" href="https://blog.qtum.org/diving-into-the-ethereum-vm-6e8d5d2f3c30">Diving Into The Ethereum Virtual Machine | by Howard | Aug 6, 2017</a></p>
+</blockquote>
+<p>Solidity 提供了许多高级语言抽象，但是这些特性使得人们很难理解程序运行时到底发生了什么。阅读 Solidity 文档仍然使我对非常基本的事情感到困惑。</p>
+<p><code>string</code>，<code>bytes32</code>，<code>byte[]</code>，<code>bytes</code> 有什么区别？</p>
+<ul>
+<li>我该使用哪一个？何时使用？</li>
+<li>当我把 <code>string</code> 转换为 <code>bytes</code> 时会发生什么？能转换为 <code>byte[]</code> 吗？</li>
+<li>它们费用是多少？</li>
+</ul>
+<p>EVM 中如何存储映射(<em>mapping</em>)？</p>
+<ul>
+<li>为什么不能删除一个映射？</li>
+<li>可以使用映射的映射吗？（可以，但它是如何工作的？）</li>
+<li>为什么有存储映射(<em>storage mapping</em>)但没有内存映射(<em>memory mapping</em>)？</li>
+</ul>
+<p>编译后的合约对 EVM 来说是怎样的？</p>
+<ul>
+<li>合约是如何创建的？</li>
+<li>什么是 <code>constructor</code>​？真的吗？</li>
+<li>什么是 <code>fallback</code> 函数？</li>
+</ul>
+<p>我认为学习像 Solidity 这样的高级语言如何在以太坊 VM(EVM) 上运行是一项很好的投资。出于几个原因。</p>
+<ol>
+<li><strong>Solidity 不是最后的语言</strong>​。更好的 EVM 语言将会到来。</li>
+<li><strong>EVM 是一个数据库引擎</strong>。要了解智能合约如何以任何一门 EVM 语言工作，必须理解数据是如何组织、存储和操纵的。</li>
+<li><strong>知道如何成为贡献者</strong>。以太坊工具链还很早。深入了解 EVM 将会帮助您为自己和他人制作出色的工具。</li>
+<li><strong>智力挑战</strong>。EVM 为在密码学、数据结构和编程语言设计的交叉点上发挥作用提供了一个很好的机会。</li>
+</ol>
+<p>在一系列文章中，我想解构简单的 Solidity 合约，以了解它是如何作为 EVM 字节码工作的。</p>
+<p>希望学习和写的内容的大纲：</p>
+<ul>
+<li>EVM 字节码的基础知识</li>
+<li>如何表示不同的类型（映射(<em>mapping</em>)、数组(<em>array</em>)）</li>
+<li>创建新合约时发生了什么</li>
+<li>方法被调用时发生了什么</li>
+<li>ABI 如何桥接不同的 EVM 语言</li>
+</ul>
+<p>我的最终目标是能够完整地理解编译好的 Solidity 合约。让我们从阅读一些基本的 EVM 字节码开始吧！</p>
+<p>这个 <a target="_blank" rel="noopener" href="https://gist.github.com/hayeah/bd37a123c02fecffbe629bf98a8391df">EVM 指令集</a> 将是一个有用的参考。</p>
+<h2 id="A-Simple-Contract"><a href="#A-Simple-Contract" class="headerlink" title="A Simple Contract"></a>A Simple Contract</h2><p>我们的第一个合约有一个构造函数和一个状态变量：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// c1.sol</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.4.11</span><span class="token punctuation">;</span>
+<span class="token keyword">contract</span> <span class="token class-name">C</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin">uint256</span> a<span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">C</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		a <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>（注：当前 Solidity 已使用 <code>constructor</code> 关键字声明构造函数）</p>
+<p>用 <code>solc</code> 编译这个合约：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ solc --bin --asm c1.sol
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span> c1.sol:C <span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span>
+EVM assembly:
+    /* <span class="token string">"c1.sol"</span>:26:94  contract C <span class="token punctuation">&#123;</span><span class="token punctuation">..</span>. */
+  mstore<span class="token punctuation">(</span>0x40, 0x60<span class="token punctuation">)</span>
+    /* <span class="token string">"c1.sol"</span>:59:92  <span class="token keyword">function</span> <span class="token function-name function">C</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">..</span>. */
+  jumpi<span class="token punctuation">(</span>tag_1, iszero<span class="token punctuation">(</span>callvalue<span class="token punctuation">))</span>
+  0x0
+  dup1
+  revert
+tag_1:
+tag_2:
+    /* <span class="token string">"c1.sol"</span>:84:85  <span class="token number">1</span> */
+  0x1
+    /* <span class="token string">"c1.sol"</span>:80:81  a */
+  0x0
+    /* <span class="token string">"c1.sol"</span>:80:85  a <span class="token operator">=</span> <span class="token number">1</span> */
+  dup2
+  swap1
+  sstore
+  pop
+    /* <span class="token string">"c1.sol"</span>:59:92  <span class="token keyword">function</span> <span class="token function-name function">C</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">..</span>. */
+tag_3:
+    /* <span class="token string">"c1.sol"</span>:26:94  contract C <span class="token punctuation">&#123;</span><span class="token punctuation">..</span>. */
+tag_4:
+  dataSize<span class="token punctuation">(</span>sub_0<span class="token punctuation">)</span>
+  dup1
+  dataOffset<span class="token punctuation">(</span>sub_0<span class="token punctuation">)</span>
+  0x0
+  codecopy
+  0x0
+  <span class="token builtin class-name">return</span>
+stop
+sub_0: assembly <span class="token punctuation">&#123;</span>
+        /* <span class="token string">"c1.sol"</span>:26:94  contract C <span class="token punctuation">&#123;</span><span class="token punctuation">..</span>. */
+      mstore<span class="token punctuation">(</span>0x40, 0x60<span class="token punctuation">)</span>
+    tag_1:
+      0x0
+      dup1
+      revert
+auxdata: 0xa165627a7a72305820af3193f6fd31031a0e0d2de1ad2c27352b1ce081b4f3c92b5650ca4dd542bb770029
+<span class="token punctuation">&#125;</span>
+Binary:
+60606040523415600e57600080fd5b5b60016000819055505b5b60368060266000396000f30060606040525b600080fd00a165627a7a72305820af3193f6fd31031a0e0d2de1ad2c27352b1ce081b4f3c92b5650ca4dd542bb770029<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>数字 <code>6060604052...</code> 是 EVM 实际运行的字节码。</p>
+<h2 id="In-Baby-Steps"><a href="#In-Baby-Steps" class="headerlink" title="In Baby Steps"></a>In Baby Steps</h2><p>编译后的汇编语言中一半是样板(boilerplate)，在大多数 Solidity 程序中都是相似的。我们稍后会来回顾。现在，让我们检查一下合约的独特部分，即不起眼的存储变量赋值：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">a <span class="token operator">=</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>此赋值由字节码 <code>6001600081905550</code>表示。让我们将其分解为每行一条指令：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">60</span> 01
+<span class="token number">60</span> 00
+<span class="token number">81</span>
+<span class="token number">90</span>
+<span class="token number">55</span>
+<span class="token number">50</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>EVM 基本上是一个循环，从上到下执行每条指令。让我们用相应的字节码注释汇编代码（在标签 <code>tag_2</code> 下缩进）以更好地了解它们是如何关联的：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">tag_2:
+  // <span class="token number">60</span> 01
+  0x1
+  // <span class="token number">60</span> 00
+  0x0
+  // <span class="token number">81</span>
+  dup2
+  // <span class="token number">90</span>
+  swap1
+  // <span class="token number">55</span>
+  sstore
+  // <span class="token number">50</span>
+  pop<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>请注意，汇编代码中的 <code>0x1</code> 实际上是 <code>push(0x1)</code> 的简写。该指令将数字 1 压入堆栈。</p>
+<p>只是盯着它仍然很难理解发生了什么。不过不用担心，逐行模拟 EVM 很简单。</p>
+<h2 id="Simulating-The-EVM"><a href="#Simulating-The-EVM" class="headerlink" title="Simulating The EVM"></a>Simulating The EVM</h2><p>EVM 是一个堆栈机器(stack machine)。指令可能使用堆栈上的值作为参数，并将值作为结果压入堆栈。让我们考虑 <code>add</code> 操作。</p>
+<p>假设堆栈上有两个值：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span><span class="token number">1</span>, <span class="token number">2</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>当 EVM 看到 <code>add</code> 时，它将顶端的 2 个项加起来，并将结果 push 到堆栈顶端，结果就是：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>在下文中，我们将使用 <code>[]</code> 标记堆栈：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// 空堆栈
+stack: <span class="token punctuation">[</span><span class="token punctuation">]</span>
+// 有 <span class="token number">3</span> 个项的堆栈。顶端是 <span class="token number">3</span>，底部是 <span class="token number">1</span>。
+stack: <span class="token punctuation">[</span><span class="token number">3</span> <span class="token number">2</span> <span class="token number">1</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>并使用 <code>&#123;&#125;</code> 标注合约存储：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// 存储中什么都没有
+store: <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+// 值 0x1 存储在位置 0x0
+store: <span class="token punctuation">&#123;</span> 0x0 <span class="token operator">=</span><span class="token operator">></span> 0x1 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>现在让我们看一些真正的字节码。我们将像 EVM 一样模拟字节码序列 <code>6001600081905550</code> 并在每条指令之后打印机器状态：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// <span class="token number">60</span> 01: 将 <span class="token number">1</span> 压入堆栈
+0x1
+  stack: <span class="token punctuation">[</span>0x1<span class="token punctuation">]</span>
+// <span class="token number">60</span> 00: 将 <span class="token number">0</span> 压入堆栈
+0x0
+  stack: <span class="token punctuation">[</span>0x0 0x1<span class="token punctuation">]</span>
+// <span class="token number">81</span>: 复制堆栈上的第 <span class="token number">2</span> 个项
+dup2
+  stack: <span class="token punctuation">[</span>0x1 0x0 0x1<span class="token punctuation">]</span>
+// <span class="token number">90</span>: 交换顶端的 <span class="token number">2</span> 个项
+swap1
+  stack: <span class="token punctuation">[</span>0x0 0x1 0x1<span class="token punctuation">]</span>
+// <span class="token number">55</span>: 存储值 0x1 到位置 0x0
+// 该指令消耗了顶端 <span class="token number">2</span> 个项
+sstore
+  stack: <span class="token punctuation">[</span>0x1<span class="token punctuation">]</span>
+  store: <span class="token punctuation">&#123;</span> 0x0 <span class="token operator">=</span><span class="token operator">></span> 0x1 <span class="token punctuation">&#125;</span>
+// <span class="token number">50</span>: pop <span class="token punctuation">(</span>弹出顶端项<span class="token punctuation">)</span>
+pop
+  stack: <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  store: <span class="token punctuation">&#123;</span> 0x0 <span class="token operator">=</span><span class="token operator">></span> 0x1 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>结束。堆栈是空的，并且有一个项在存储中。</p>
+<p>值得注意的是，Solidity 决定将状态变量 <code>uint256 a</code> 存储在位置 <code>0x0</code>。其他语言完全有可能选择将状态变量存储在其他地方。</p>
+<p>在伪代码中，EVM 对 <code>6001600081905550</code> 所做的基本上是：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// a <span class="token operator">=</span> <span class="token number">1</span>
+sstore<span class="token punctuation">(</span>0x0, 0x1<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>仔细看，你会发现 dup2, swap1, pop 都是多余的。汇编代码可以更简单。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">0x1
+0x0
+sstore<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>你可以尝试模拟上面 3 条指令，并确信它们确实会导致相同的机器状态：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">stack: <span class="token punctuation">[</span><span class="token punctuation">]</span>
+store: <span class="token punctuation">&#123;</span> 0x0 <span class="token operator">=</span><span class="token operator">></span> 0x1 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="Two-Storage-Variables"><a href="#Two-Storage-Variables" class="headerlink" title="Two Storage Variables"></a>Two Storage Variables</h2><p>让我们添加一个相同类型的额外存储变量：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// c2.sol</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.4.11</span><span class="token punctuation">;</span>
+<span class="token keyword">contract</span> <span class="token class-name">C</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin">uint256</span> a<span class="token punctuation">;</span>
+	<span class="token builtin">uint256</span> b<span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">C</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		a <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+		b <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>编译，重点关注 <code>tag_2</code>：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ solc --bin --asm c2.sol
+// <span class="token punctuation">..</span>. <span class="token function">more</span> stuff omitted
+tag_2:
+    /* <span class="token string">"c2.sol"</span>:99:100  <span class="token number">1</span> */
+  0x1
+    /* <span class="token string">"c2.sol"</span>:95:96  a */
+  0x0
+    /* <span class="token string">"c2.sol"</span>:95:100  a <span class="token operator">=</span> <span class="token number">1</span> */
+  dup2
+  swap1
+  sstore
+  pop
+    /* <span class="token string">"c2.sol"</span>:112:113  <span class="token number">2</span> */
+  0x2
+    /* <span class="token string">"c2.sol"</span>:108:109  b */
+  0x1
+    /* <span class="token string">"c2.sol"</span>:108:113  b <span class="token operator">=</span> <span class="token number">2</span> */
+  dup2
+  swap1
+  sstore
+  pop<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>伪代码形式的汇编：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// a <span class="token operator">=</span> <span class="token number">1</span>
+sstore<span class="token punctuation">(</span>0x0, 0x1<span class="token punctuation">)</span>
+// b <span class="token operator">=</span> <span class="token number">2</span>
+sstore<span class="token punctuation">(</span>0x1, 0x2<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>我们在这里了解到的是，两个存储变量一个接一个地定位，<code>a</code> 位于 <code>0x0</code> 位置，<code>b</code> 位于 <code>0x1</code> 位置。</p>
+<h2 id="Storage-Packing"><a href="#Storage-Packing" class="headerlink" title="Storage Packing"></a>Storage Packing</h2><p>每个槽存储(slot storage)可以存储 32 个字节。如果一个变量只需要 16 个字节，那么使用所有 32 个字节是很浪费的。如果可能，Solidity 通过将两种更小的数据类型打包(pack)到一个存储槽中来优化存储效率。</p>
+<p>让我们改变 <code>a</code> 和 <code>b</code>，使它们每个都只有 16 个字节：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.4.11</span><span class="token punctuation">;</span>
+<span class="token keyword">contract</span> <span class="token class-name">C</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin">uint128</span> a<span class="token punctuation">;</span>
+	<span class="token builtin">uint128</span> b<span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">C</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		a <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+		b <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>编译合约：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ solc --bin --asm c3.sol<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>生成的汇编更加复杂：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">tag_2:
+  // a <span class="token operator">=</span> <span class="token number">1</span>
+  0x1
+  0x0
+  dup1
+  0x100
+  exp
+  dup2
+  sload
+  dup2
+  0xffffffffffffffffffffffffffffffff
+  mul
+  not
+  and
+  swap1
+  dup4
+  0xffffffffffffffffffffffffffffffff
+  and
+  mul
+  or
+  swap1
+  sstore
+  pop
+  // b <span class="token operator">=</span> <span class="token number">2</span>
+  0x2
+  0x0
+  0x10
+  0x100
+  exp
+  dup2
+  sload
+  dup2
+  0xffffffffffffffffffffffffffffffff
+  mul
+  not
+  and
+  swap1
+  dup4
+  0xffffffffffffffffffffffffffffffff
+  and
+  mul
+  or
+  swap1
+  sstore
+  pop<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>上面的汇编代码将两个变量打包到一个存储位置(<code>0x0</code>)，就像这样：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>         b         <span class="token punctuation">]</span><span class="token punctuation">[</span>         a         <span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token number">16</span> bytes / <span class="token number">128</span> bits<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">16</span> bytes / <span class="token number">128</span> bits<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>打包的原因是因为到目前为止最昂贵的操作是存储：</p>
+<ul>
+<li><code>sstore</code> 首次写入新位置需要 20000 gas</li>
+<li><code>sstore</code> 需要 5000 gas 用于后续写入已有位置</li>
+<li><code>sload</code> 花费 500 gas</li>
+<li>大多数指令花费 3~10 gas</li>
+</ul>
+<p>通过使用相同的存储位置，Solidity 为第二个存储变量支付 5000 而不是 20000，从而为我们节省了 15000 gas。</p>
+<h2 id="More-Optimization"><a href="#More-Optimization" class="headerlink" title="More Optimization"></a>More Optimization</h2><p>与其用两个单独的 <code>sstore</code> 指令存储 <code>a</code> 和 <code>b</code>，不如将两个 128 位数字一起打包到内存中，然后只使用一个 <code>sstore</code> 存储它们，从而节省额外的 5000 gas。</p>
+<p>您可以通过打开 <code>optimize</code> 标志让 Solidity 进行此优化：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ solc --bin --asm --optimize c3.sol<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>生成的汇编代码只使用一个 <code>sload</code> 和一个 <code>sstore</code>：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">tag_2:
+    /* <span class="token string">"c3.sol"</span>:95:96  a */
+  0x0
+    /* <span class="token string">"c3.sol"</span>:95:100  a <span class="token operator">=</span> <span class="token number">1</span> */
+  dup1
+  sload
+    /* <span class="token string">"c3.sol"</span>:108:113  b <span class="token operator">=</span> <span class="token number">2</span> */
+  0x200000000000000000000000000000000
+  not<span class="token punctuation">(</span>sub<span class="token punctuation">(</span>exp<span class="token punctuation">(</span>0x2, 0x80<span class="token punctuation">)</span>, 0x1<span class="token punctuation">))</span>
+    /* <span class="token string">"c3.sol"</span>:95:100  a <span class="token operator">=</span> <span class="token number">1</span> */
+  swap1
+  swap2
+  and
+    /* <span class="token string">"c3.sol"</span>:99:100  <span class="token number">1</span> */
+  0x1
+    /* <span class="token string">"c3.sol"</span>:95:100  a <span class="token operator">=</span> <span class="token number">1</span> */
+  or
+  sub<span class="token punctuation">(</span>exp<span class="token punctuation">(</span>0x2, 0x80<span class="token punctuation">)</span>, 0x1<span class="token punctuation">)</span>
+    /* <span class="token string">"c3.sol"</span>:108:113  b <span class="token operator">=</span> <span class="token number">2</span> */
+  and
+  or
+  swap1
+  sstore<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>字节码是：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">600080547002000000000000000000000000000000006001608060020a03199091166001176001608060020a0316179055<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>将字节码格式化为每行一条指令：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// push 0x0
+<span class="token number">60</span> 00
+// dup1
+<span class="token number">80</span>
+// sload
+<span class="token number">54</span>
+// push17 push the the next <span class="token number">17</span> bytes as a <span class="token number">32</span> bytes number
+<span class="token number">70</span> 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+/* not<span class="token punctuation">(</span>sub<span class="token punctuation">(</span>exp<span class="token punctuation">(</span>0x2, 0x80<span class="token punctuation">)</span>, 0x1<span class="token punctuation">))</span> */
+// push 0x1
+<span class="token number">60</span> 01
+// push 0x80 <span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span>
+<span class="token number">60</span> <span class="token number">80</span>
+// push 0x80 <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
+<span class="token number">60</span> 02
+// exp
+0a
+// sub
+03
+// not
+<span class="token number">19</span>
+
+// swap1
+<span class="token number">90</span>
+// swap2
+<span class="token number">91</span>
+// and
+<span class="token number">16</span>
+// push 0x1
+<span class="token number">60</span> 01
+// or
+<span class="token number">17</span>
+
+/* sub<span class="token punctuation">(</span>exp<span class="token punctuation">(</span>0x2, 0x80<span class="token punctuation">)</span>, 0x1<span class="token punctuation">)</span> */
+// push 0x1
+<span class="token number">60</span> 01
+// push 0x80
+<span class="token number">60</span> <span class="token number">80</span>
+// push 0x02
+<span class="token number">60</span> 02
+// exp
+0a
+// sub
+03
+
+// and
+<span class="token number">16</span>
+// or
+<span class="token number">17</span>
+// swap1
+<span class="token number">90</span>
+// sstore
+<span class="token number">55</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>汇编代码中使用了四个魔法值(magic values)：</p>
+<ul>
+<li>0x1 (16 字节)，使用低 16 字节</li>
+</ul>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// 用字节码表示为 0x01
+<span class="token number">16</span>:32 0x00000000000000000000000000000000
+00:16 0x00000000000000000000000000000001<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<ul>
+<li>0x2 (16 字节)，使用更高的 16 字节</li>
+</ul>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// 用字节码表示为 0x200000000000000000000000000000000
+<span class="token number">16</span>:32 0x00000000000000000000000000000002
+00:16 0x00000000000000000000000000000000<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<ul>
+<li><code>not(sub(exp(0x2, 0x80), 0x1))</code>​</li>
+</ul>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// 高 <span class="token number">16</span> 字节的位掩码
+<span class="token number">16</span>:32 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+00:16 0x00000000000000000000000000000000<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<ul>
+<li><code>sub(exp(0x2, 0x80), 0x1)</code>​</li>
+</ul>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// 低 <span class="token number">16</span> 字节的位掩码
+<span class="token number">16</span>:32 0x00000000000000000000000000000000 
+00:16 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>该代码对这些值进行了一些位操作以达到所需的结果：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">16</span>:32 0x00000000000000000000000000000002 
+00:16 0x00000000000000000000000000000001<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>最后，这个 32 字节的值存储在位置 <code>0x0</code>。</p>
+<h2 id="Gas-Usage"><a href="#Gas-Usage" class="headerlink" title="Gas Usage"></a>Gas Usage</h2><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">600080547002000000000000000000000000000000006001608060020a03199091166001176001608060020a0316179055<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>注意，字节码中嵌入了 <code>0x200000000000000000000000000000000</code>。但编译器也可以选择使用指令 <code>exp(0x2, 0x81)</code>来计算值，这会产生更短的字节码序列。</p>
+<p>但事实证明，<code>0x200000000000000000000000000000000</code> 比 <code>exp(0x2, 0x81)</code> 更便宜。让我们看一下所涉及的 gas 费用：</p>
+<ul>
+<li>为交易的每个零字节数据或代码支付 4 gas</li>
+<li>交易的每个非零字节数据或代码需要 68 gas</li>
+</ul>
+<p>让我们比较一下两种表示在 gas 中的成本。</p>
+<ul>
+<li>字节码 <code>0x200000000000000000000000000000000</code> 有很多 0，很便宜：(1 * 68) + ( 16 * 4) &#x3D; 196</li>
+<li>字节码 <code>608160020a</code> 更短但没有 0：5 * 68 &#x3D; 340</li>
+</ul>
+<p>具有更多零的较长序列实际上更便宜！</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>EVM 编译器并未针对字节码大小或速度或内存效率进行精确优化。相反，它优化了 gas 使用，这是一层间接(indirection)以激励以太坊区块链可以有效进行的计算。</p>
+<p>我们已经看到了 EVM 的一些古怪方面：</p>
+<ul>
+<li>EVM 是一个 256 位的机器。以 32 字节为单位处理数据是最自然的做法。</li>
+<li>持久性存储非常昂贵。</li>
+<li>Solidity 编译器做出了有趣的选择，以尽量减少 gas 使用。</li>
+</ul>
+<p>Gas 成本的设定有些武断，未来很可能会发生变化。随着成本的变化，编译器会做出不同的选择。</p>
+<h2 id="Other-Parts"><a href="#Other-Parts" class="headerlink" title="Other Parts"></a>Other Parts</h2><p>在这一系列文章中，我翻译了 <a target="_blank" rel="noopener" href="https://medium.com/@hayeah">Howard</a> 的 <a target="_blank" rel="noopener" href="https://blog.qtum.org/diving-into-the-ethereum-vm-6e8d5d2f3c30">Diving Into The Ethereum VM</a> 系列文章。译文链接如下：</p>
+<ul>
+<li><a href="http://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part1-zh/">深入以太坊虚拟机 Part1 — 汇编与字节码</a></li>
+<li><a href="http://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part2-zh/">深入以太坊虚拟机 Part2 — 固定长度数据类型的表示</a></li>
+<li><a href="http://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part3-zh/">深入以太坊虚拟机 Part3 — 动态数据类型的表示</a></li>
+<li><a href="http://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part4-zh/">深入以太坊虚拟机 Part4 — 智能合约外部方法调用</a></li>
+<li><a href="http://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part5-zh/">深入以太坊虚拟机 Part5 — 智能合约创建过程</a></li>
+<li><a href="http://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part6-zh/">深入以太坊虚拟机 Part6 — Solidity 事件实现</a><br>也可以直接看总结篇：</li>
+<li><a href="http://alphafitz.com/2022/10/17/diving-into-the-ethereum-vm-summary">深入以太坊虚拟机 总结</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/" class="category-chain-item">区块链技术</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/%E4%BB%A5%E5%A4%AA%E5%9D%8A%E8%99%9A%E6%8B%9F%E6%9C%BA/" class="category-chain-item">以太坊虚拟机</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/">#区块链技术</a>
+      
+        <a href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%BC%80%E5%8F%91/">#智能合约开发</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深入以太坊虚拟机 Part1 — 汇编与字节码</div>
+      <div>https://alphafitz.com/2022/10/07/diving-into-the-ethereum-vm-part1-zh/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>alphafitz</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年10月7日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                <i class="iconfont icon-nc"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                <i class="iconfont icon-sa"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/10/07/diving-into-the-ethereum-vm-part2-zh/" title="深入以太坊虚拟机 Part2 — 固定长度数据类型的表示">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深入以太坊虚拟机 Part2 — 固定长度数据类型的表示</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/10/01/learning-materials-blockchain-security/" title="区块链安全学习资料">
+                        <span class="hidden-mobile">区块链安全学习资料</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

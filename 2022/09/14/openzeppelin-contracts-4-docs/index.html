@@ -1,0 +1,1132 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fitz.png">
+  <link rel="icon" href="/img/fitz.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="alphafitz">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="OpenZeppelin Contracts 4.x 文档 本文是对 OpenZeppelin Contracts 4.x 文档(截止2022.9.14)的部分翻译。  OverviewOpenZeppelin Contracts 是建立在经过社区审查的代码的坚实基础之上的用于安全智能合约开发的库。当前有 2.x、3.x 和 4.x 三个版本。 其包含有：  ERC20 和 ERC721 等标准的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenZeppelin Contracts 4.x 文档">
+<meta property="og:url" content="https://alphafitz.com/2022/09/14/openzeppelin-contracts-4-docs/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="OpenZeppelin Contracts 4.x 文档 本文是对 OpenZeppelin Contracts 4.x 文档(截止2022.9.14)的部分翻译。  OverviewOpenZeppelin Contracts 是建立在经过社区审查的代码的坚实基础之上的用于安全智能合约开发的库。当前有 2.x、3.x 和 4.x 三个版本。 其包含有：  ERC20 和 ERC721 等标准的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-14T14:02:44.000Z">
+<meta property="article:modified_time" content="2022-10-07T04:11:34.092Z">
+<meta property="article:author" content="alphafitz">
+<meta property="article:tag" content="区块链技术">
+<meta property="article:tag" content="智能合约开发">
+<meta property="article:tag" content="以太坊">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>OpenZeppelin Contracts 4.x 文档 - </title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alphafitz.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="null" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>alphafitz</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="OpenZeppelin Contracts 4.x 文档"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-09-14 22:02" pubdate>
+          2022年9月14日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          17k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          142 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">OpenZeppelin Contracts 4.x 文档</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="OpenZeppelin-Contracts-4-x-文档"><a href="#OpenZeppelin-Contracts-4-x-文档" class="headerlink" title="OpenZeppelin Contracts 4.x 文档"></a>OpenZeppelin Contracts 4.x 文档</h1><blockquote>
+<p>本文是对 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/">OpenZeppelin Contracts 4.x</a> 文档(截止2022.9.14)的部分翻译。</p>
+</blockquote>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>OpenZeppelin Contracts 是建立在经过社区审查的代码的坚实基础之上的<strong>用于安全智能合约开发的库</strong>。当前有 2.x、3.x 和 4.x 三个版本。</p>
+<p>其包含有：</p>
+<ul>
+<li>ERC20 和 ERC721 等标准的实施</li>
+<li>灵活的基于角色的许可方案</li>
+<li>可重用的 Solidity 组件，用于构建自定义合约和复杂的去中心化系统</li>
+</ul>
+<p>OpenZeppelin Contracts 具有<a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/releases-stability#api-stability">稳定的 API</a>，这意味着合约在升级到新的次版本(minor version)时不会意外中断。</p>
+<p>使用 <code>npm</code> 即可安装：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">npm</span> <span class="token function">install</span> @openzeppelin/contracts<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>安装后，在项目中导入库中的合约即可使用：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// contracts/MyNFT.sol</span>
+<span class="token comment">// SPDX-License-Identifier: MIT</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/token/ERC721/ERC721.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">MyNFT</span> <span class="token keyword">is</span> ERC721 <span class="token punctuation">&#123;</span>
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token function">ERC721</span><span class="token punctuation">(</span><span class="token string">"MyNFT"</span><span class="token punctuation">,</span> <span class="token string">"MNFT"</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>如果不熟悉智能合约开发，可以前往 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/learn/developing-smart-contracts">Developing Smart Contracts</a> 来了解有关创建新项目和变异合约的信息。</p>
+<p>为了保证系统安全，应该始终按照原样使用已安装的代码，既不要从在线资源复制粘贴，也不要执行修改。<strong>该库被设计为仅您使用的合约和函数会被部署，因此您无需担心它会不必要地增加 gas 成本。</strong></p>
+<p>官网的 <a target="_blank" rel="noopener" href="https://blog.openzeppelin.com/guides/">guides</a> 上给出了几个常见的用例和良好实践。以下文章提供了很好的阅读背景，但应注意，随着生态系统中工具继续快速发展，一些引用的工具已经发生了变化。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.openzeppelin.com/the-hitchhikers-guide-to-smart-contracts-in-ethereum-848f08001f05">The Hitchhiker’s Guide to Smart Contracts in Ethereum</a> 帮助您了解可用于智能合约开发的各种工具，并帮助您设置环境。</li>
+<li><a target="_blank" rel="noopener" href="https://blog.openzeppelin.com/a-gentle-introduction-to-ethereum-programming-part-1-783cc7796094">A Gentle Introduction to Ethereum Programming, Part 1</a> 提供了非常有用的介绍性信息，包括来自以太坊平台的许多基本概念。</li>
+<li><a target="_blank" rel="noopener" href="https://blog.openzeppelin.com/designing-the-architecture-for-your-ethereum-application-9cec086f8317">Designing the architecture for your Ethereum application</a> 讨论了如何更好地构建应用程序及其与现实世界的关系。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/wizard">合约向导</a> 页面提供的交互式生成器可以帮助引导您的合约来了解 OpenZeppelin Contracts 中提供的组件。使用交互式生成器，可以根据多种需求来生成定制化的合约，比如可以选择 FEATURES、ACCESS CONTROL、UPGRADEABILITY 等特性。生成的合约可以使用 Hardhat 或 Truffle 等工具编译部署。</p>
+<h2 id="Extending-Contracts"><a href="#Extending-Contracts" class="headerlink" title="Extending Contracts"></a>Extending Contracts</h2><p>大多数的 OpenZeppelin Contracts 被期望通过继承(<em><a target="_blank" rel="noopener" href="https://docs.soliditylang.org/en/latest/contracts.html#inheritance">inheritance</a></em>)来使用：通过继承库中的合约来编写自己的合约。</p>
+<p>常见的是 <code>is</code> 语法，比如 <code>contract MyToken is ERC20</code>。</p>
+<p>NOTE：与 <code>contract</code> 不同，Solidity <code>library</code> 不是继承而是依赖于 <code>using for</code> 语法。Openzeppelin Contracts 有一些 <code>library</code>，大部分都在 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils">Utils</a> 目录中。</p>
+<h3 id="Overriding"><a href="#Overriding" class="headerlink" title="Overriding"></a>Overriding</h3><p>继承通常用于将父合约的功能添加到自己的合约中，但这并不是它所能做的全部。还可以使用 <em>overrides</em> 来改变父合约某些部分的行为。</p>
+<p>例如，假设想要更改 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access#AccessControl">AccessControl</a> 以便不再调用 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access#AccessControl-revokeRole-bytes32-address-">revokeRole</a>，可以使用 overrides 来实现：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// contracts/ModifiedAccessControl.sol</span>
+<span class="token comment">// SPDX-License-Identifier: MIT</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/access/AccessControl.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">ModifiedAccessControl</span> <span class="token keyword">is</span> AccessControl <span class="token punctuation">&#123;</span>
+    <span class="token comment">// Override the revokeRole function</span>
+    <span class="token keyword">function</span> <span class="token function">revokeRole</span><span class="token punctuation">(</span><span class="token builtin">bytes32</span><span class="token punctuation">,</span> <span class="token builtin">address</span><span class="token punctuation">)</span> <span class="token keyword">public</span> override <span class="token punctuation">&#123;</span>
+        <span class="token keyword">revert</span><span class="token punctuation">(</span><span class="token string">"ModifiedAccessControl: cannot revoke roles"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>然后旧的 revokeRole 就被替换了，任何对它的调用都会立即 revert。我们无法从合约从删除(<em>remove</em>)该函数，但 revert 所有的调用就足够了。</p>
+<h3 id="Calling-super"><a href="#Calling-super" class="headerlink" title="Calling super"></a>Calling <code>super</code></h3><p>有时想要 <em>extend</em> 父合约的行为，而不是将其更改为其他行为，就需要用到 <code>super</code>。</p>
+<p><code>super</code> 关键字允许您调用父合约中定义的函数，即使它被覆盖(overridden)。该机制可用于向函数添加额外的检查、发出事件或以其他方式添加您认为合适的功能。</p>
+<p>TIP：有关 overrides 如何工作的信息，请参阅 <a target="_blank" rel="noopener" href="https://solidity.readthedocs.io/en/latest/contracts.html#index-17">Solidity 官方文档</a>。</p>
+<p>下面是 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access#AccessControl"><code>AccessControl</code></a> 的修改版本，其中 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access#AccessControl-revokeRole-bytes32-address-"><code>revokeRole</code></a> 不能用于 revoke DEFAULT_ADMIN_ROLE：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// contracts/ModifiedAccessControl.sol</span>
+<span class="token comment">// SPDX-License-Identifier: MIT</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/access/AccessControl.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">ModifiedAccessControl</span> <span class="token keyword">is</span> AccessControl <span class="token punctuation">&#123;</span>
+    <span class="token keyword">function</span> <span class="token function">revokeRole</span><span class="token punctuation">(</span><span class="token builtin">bytes32</span> role<span class="token punctuation">,</span> <span class="token builtin">address</span> account<span class="token punctuation">)</span> <span class="token keyword">public</span> override <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>
+            role <span class="token operator">!=</span> DEFAULT_ADMIN_ROLE<span class="token punctuation">,</span>
+            <span class="token string">"ModifiedAccessControl: cannot revoke default admin role"</span>
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        super<span class="token punctuation">.</span><span class="token function">revokeRole</span><span class="token punctuation">(</span>role<span class="token punctuation">,</span> account<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>最后的 <code>super.revokeRole</code> 语句将调用 <code>AccessControl</code> 的原始版本的 <code>revokeRole</code>，如果没有 override 那么相同的代码会运行。</p>
+<p>NOTE：从 v3.0.0 开始，<code>view</code> 函数在 OpenZeppelin 中不是 <code>virtual</code>，因此不能被覆盖。我们正在考虑在即将发布的版本中<a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/openzeppelin-contracts/issues/2154">取消此限制</a>。</p>
+<h3 id="Using-Hooks"><a href="#Using-Hooks" class="headerlink" title="Using Hooks"></a>Using Hooks</h3><p>有时，为了扩展父合约，需要覆盖多个相关函数，这会导致代码重复并增加 bug 的可能性。</p>
+<p>例如，考虑以 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/token/ERC721#IERC721Receiver"><code>IERC721Receiver</code></a> 的方式实现安全的 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/token/ERC20#ERC20"><code>ERC20</code></a> transfer。您可能认为覆盖 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/token/ERC20#ERC20-transfer-address-uint256-"><code>transfer</code></a> 和 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/token/ERC20#ERC20-transferFrom-address-address-uint256-"><code>transferFrom</code></a> 就足够了，但是 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/token/ERC20#ERC20-_transfer-address-address-uint256-"><code>_transfer</code></a> 和 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/token/ERC20#ERC20-_mint-address-uint256-"><code>_mint</code></a> 呢？为了避免你不得不处理这些细节，我们引入了钩子(<em><strong>hooks</strong></em>)。</p>
+<p>Hooks 只是在某些操作发生之前或之后调用的函数。它们提供了一个集中的点来钩入(<em>hook into</em>)和扩展原始行为。</p>
+<p>以下是在 <code>ERC20</code> 中使用 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/token/ERC20#ERC20-_beforeTokenTransfer-address-address-uint256-"><code>_beforeTokenTransfer</code></a> 实现 <code>IERC721Receiver</code> 模式的方法：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/token/ERC20/ERC20.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">ERC20WithSafeTransfer</span> <span class="token keyword">is</span> ERC20 <span class="token punctuation">&#123;</span>
+    <span class="token keyword">function</span> <span class="token function">_beforeTokenTransfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">address</span> to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span>
+        <span class="token keyword">internal</span> virtual override
+    <span class="token punctuation">&#123;</span>
+        super<span class="token punctuation">.</span><span class="token function">_beforeTokenTransfer</span><span class="token punctuation">(</span><span class="token keyword">from</span><span class="token punctuation">,</span> to<span class="token punctuation">,</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token function">_validRecipient</span><span class="token punctuation">(</span>to<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"ERC20WithSafeTransfer: invalid recipient"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">_validRecipient</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">)</span> <span class="token keyword">private</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>以这种方式使用钩子会使代码更干净、更安全，而不必依赖对父合约内部的深入了解。</p>
+<p>NOTE：Hooks 是 OpenZeppelin Contracts v3.0.0 的新功能，我们渴望了解您打算如何使用它们！到目前为止，唯一可用的钩子是 <code>_beforeTransferHook</code>，在所有的<a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/token/ERC20#ERC20-_beforeTokenTransfer-address-address-uint256-"><code>ERC20</code></a>, <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/token/ERC721#ERC721-_beforeTokenTransfer-address-address-uint256-"><code>ERC721</code></a>, <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/token/ERC777#ERC777-_beforeTokenTransfer-address-address-address-uint256-"><code>ERC777</code></a> 和 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/token/ERC1155#ERC1155-_beforeTokenTransfer-address-address-address-uint256---uint256---bytes-"><code>ERC1155</code></a> 中。</p>
+<h4 id="Rules-of-Hooks"><a href="#Rules-of-Hooks" class="headerlink" title="Rules of Hooks"></a>Rules of Hooks</h4><p>为了防止在编写使用钩子的代码出现问题，您应该遵循一些准则。它们非常简单，但请确保您遵循它们：</p>
+<ol>
+<li>每当您覆盖(override)父合约的钩子时，将 <code>virtual</code> 属性重新应用于钩子。这将允许子合约向钩子添加更多的功能。</li>
+<li>总是在你的覆盖中使用 <code>super</code> 调用父合约的钩子。这将确保调用继承树中的所有钩子：像 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/token/ERC20#ERC20Pausable"><code>ERC20Pausable</code></a> 这样的合约依赖于这种行为。</li>
+</ol>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">contract</span> <span class="token class-name">MyToken</span> <span class="token keyword">is</span> ERC20 <span class="token punctuation">&#123;</span>
+    <span class="token keyword">function</span> <span class="token function">_beforeTokenTransfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">address</span> to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span>
+        <span class="token keyword">internal</span> virtual override <span class="token comment">// Add virtual here!</span>
+    <span class="token punctuation">&#123;</span>
+        super<span class="token punctuation">.</span><span class="token function">_beforeTokenTransfer</span><span class="token punctuation">(</span><span class="token keyword">from</span><span class="token punctuation">,</span> to<span class="token punctuation">,</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Call parent hook</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="Using-with-Upgrades"><a href="#Using-with-Upgrades" class="headerlink" title="Using with Upgrades"></a>Using with Upgrades</h2><p>如果您的合约要部署可升级，例如使用 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/upgrades-plugins/1.x/">OpenZeppelin Upgrades Plugins</a>，您将需要使用 OpenZeppelin Contracts 的可升级变体。</p>
+<p>此变体可作为名为 <code>@openzeppelin/contracts-upgradeable</code> 的单独包提供，该软件包托管在仓库 <a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable">OpenZeppelin&#x2F;openzeppelin-contracts-upgradeable</a> 中。</p>
+<p>它遵循 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable">编写可升级合约</a> 的所有规则：构造函数替换为初始化函数，状态变量在初始化函数中初始化，我们还检查次要版本之间的存储不兼容性。</p>
+<h3 id="Overview-1"><a href="#Overview-1" class="headerlink" title="Overview"></a>Overview</h3><p>使用 <code>npm</code> 命令安装：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">npm</span> <span class="token function">install</span> @openzeppelin/contracts-upgradeable<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>这个包复制了主 OpenZeppelin Contracts 包结构，但每个文件和合约都有后缀 <code>Upgradeable</code>。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token operator">-</span><span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/token/ERC721/ERC721.sol"</span><span class="token punctuation">;</span>
+<span class="token operator">+</span><span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol"</span><span class="token punctuation">;</span>
+
+<span class="token operator">-</span><span class="token keyword">contract</span> <span class="token class-name">MyCollectible</span> <span class="token keyword">is</span> ERC721 <span class="token punctuation">&#123;</span>
+<span class="token operator">+</span><span class="token keyword">contract</span> <span class="token class-name">MyCollectible</span> <span class="token keyword">is</span> ERC721Upgradeable <span class="token punctuation">&#123;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>构造函数被内部初始化函数替换，遵循命名约定 <code>__&#123;ContractName&#125;_init</code>。由于这些是 internal，因此您必须始终定义自己的公共初始化函数(public initializer function) 并调用您扩展的合约的父合约初始化程序。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token operator">-</span>    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token function">ERC721</span><span class="token punctuation">(</span><span class="token string">"MyCollectible"</span><span class="token punctuation">,</span> <span class="token string">"MCO"</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+<span class="token operator">+</span>    <span class="token keyword">function</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> initializer <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+<span class="token operator">+</span>        <span class="token function">__ERC721_init</span><span class="token punctuation">(</span><span class="token string">"MyCollectible"</span><span class="token punctuation">,</span> <span class="token string">"MCO"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>CAUTION：与多重继承一起使用需要特别注意。请参阅下面标题为<a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/upgradeable#multiple-inheritance">多重继承</a>的部分。</p>
+<h3 id="Further-Notes"><a href="#Further-Notes" class="headerlink" title="Further Notes"></a>Further Notes</h3><h4 id="Multiple-Inheritance"><a href="#Multiple-Inheritance" class="headerlink" title="Multiple Inheritance"></a>Multiple Inheritance</h4><p>初始化函数不像构造函数那样被编译器线性化。因此，每个 <code>__&#123;ContractName&#125;_init</code> 函数都将线性化调用嵌入到了所有父合约初始化函数中。因此，调用其中两个 <code>init</code> 函数可能会初始化同一个合约两次。</p>
+<p>每个合约中的 <code>__&#123;ContractName&#125;_init_unchained</code> 函数是初始化函数减去对父合约初始化函数的调用，可用于避免双重初始化问题，但不建议手动执行此操作。我们希望能够在 Upgrades Plugins 的未来版本中对此进行安全检查。</p>
+<h4 id="Storage-Gaps"><a href="#Storage-Gaps" class="headerlink" title="Storage Gaps"></a>Storage Gaps</h4><p>您可能会注意到每个合约都包含一个名为 <code>__gap</code> 的状态变量。这是在可升级合约中放置的存储(sotrage)中的空的保留空间。它允许我们在未来自由添加新的状态变量，而不会影响与现有部署的存储兼容性。</p>
+<p>简单地添加一个状态变量是不安全的，因为它会“向下移动(shifts down)”继承链中下面的所有状态变量。这使得存储布局不兼容，如 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable#modifying-your-contracts">Writing Upgradeable Contracts</a> 中所述。计算 <code>__gap</code> 数组的大小，以便合约使用的存储量加起来总是相同的数字（在本例中为 50 storage slots）。</p>
+<h2 id="Access-Control"><a href="#Access-Control" class="headerlink" title="Access Control"></a>Access Control</h2><p>访问控制——即“谁被允许做这件事”—— 在智能合约的世界中非常重要。你的合约的访问控制可以控制谁可以铸造代币、对提案进行投票、冻结转账和许多其他事情。因此，了解您如何实现它<strong>至关重要</strong>，以免其他人<a target="_blank" rel="noopener" href="https://blog.openzeppelin.com/on-the-parity-wallet-multisig-hack-405a8c12e8f7">窃取您的整个系统</a>。</p>
+<h3 id="Ownership-and-Ownable"><a href="#Ownership-and-Ownable" class="headerlink" title="Ownership and Ownable"></a>Ownership and <code>Ownable</code></h3><p>最常见和最基本的访问控制形式是所有权(<em>ownership</em>)的概念：有一个账户是合约的 <code>owner</code>，可以对其执行管理任务。这种方法对于只有一个管理用户的合约来说是完全合理的。</p>
+<p>OpenZeppelin Contracts 提供 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access#Ownable"><code>Ownable</code></a> 用于在您的合约中实现所有权。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// contracts/MyContract.sol</span>
+<span class="token comment">// SPDX-License-Identifier: MIT</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/access/Ownable.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">MyContract</span> <span class="token keyword">is</span> Ownable <span class="token punctuation">&#123;</span>
+    <span class="token keyword">function</span> <span class="token function">normalThing</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// anyone can call this normalThing()</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">specialThing</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> onlyOwner <span class="token punctuation">&#123;</span>
+        <span class="token comment">// only the owner can call specialThing()!</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>默认情况下，Ownable 合约的 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access#Ownable-owner--"><code>owner</code></a> 是部署它的帐户，这通常正是您想要的。</p>
+<p>Ownable 还可以让您：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access#Ownable-transferOwnership-address-"><code>transferOwnership</code></a> 从所有者账户到新账户，以及</li>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access#Ownable-renounceOwnership--"><code>renounceOwnership</code></a> 让所有者放弃此管理特权，这是集中管理初始阶段结束后的常见模式。</li>
+</ul>
+<p>WARNING：完全删除所有者将意味着受 <code>onlyOwner</code> 保护的管理任务将不再可调用！</p>
+<p>请注意，<strong>一个合约也可以是另一个合约的所有者</strong>！例如，这为使用 <a target="_blank" rel="noopener" href="https://gnosis-safe.io/">Gnosis Safe</a>、<a target="_blank" rel="noopener" href="https://aragon.org/">Aragon DAO</a> 或您创建的完全自定义合约打开了大门。</p>
+<p>通过这种方式，您可以使用可组合性(<em>composability</em>)为您的合约添加额外的访问控制复杂性层。例如，您可以使用由项目负责人运行的 2-of-3 多重签名，而不是将单个常规以太坊账户（外部拥有的账户，或 EOA）作为所有者。该领域的知名项目，例如 <a target="_blank" rel="noopener" href="https://makerdao.com/">MakerDAO</a>，使用与此类似的系统。</p>
+<h3 id="Role-Based-Access-Control"><a href="#Role-Based-Access-Control" class="headerlink" title="Role-Based Access Control"></a>Role-Based Access Control</h3><p>虽然 <code>ownership</code> 的简单性对于简单的系统或快速原型设计很有用，但通常需要不同级别的授权。您可能希望帐户有权禁止用户进入系统，但不能创建新代币。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Role-based_access_control"><em>Role-Based Access Control (RBAC)</em></a> 在这方面提供了灵活性。</p>
+<p>本质上，我们将定义多个角色，每个角色都允许执行不同的操作集。例如，一个帐户可能具有“moderator”、“minter”或“admin”角色，然后您将检查这些角色，而不是简单地使用 <code>onlyOwner</code>。可以通过 <code>onlyRole</code> 修饰符强制执行此检查。另外，您将能够定义如何向帐户授予角色、撤销角色等规则。</p>
+<p>大多数软件使用基于角色的访问控制系统：一些用户是普通用户，一些可能是主管(supervisor)或经理(manager)，还有一些通常具有管理权限。</p>
+<h3 id="Using-AccessControl"><a href="#Using-AccessControl" class="headerlink" title="Using AccessControl"></a>Using <code>AccessControl</code></h3><p>OpenZeppelin Contracts 为实现基于角色的访问控制提供了 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access#AccessControl"><code>AccessControl</code></a>。它的用法很简单：对于您要定义的每个角色，您将创建一个新的角色标识符(<em>role identifier</em>)，用于授予(grant)、撤销(revoke)和检查(check)帐户是否具有该角色。</p>
+<p>这是一个在 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/tokens#ERC20"><code>ERC20</code> token</a> 中使用 <code>AccessControl</code> 来定义“minter”角色的简单示例，该角色允许拥有它的帐户创建新的 token：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// contracts/MyToken.sol</span>
+<span class="token comment">// SPDX-License-Identifier: MIT</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/access/AccessControl.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/token/ERC20/ERC20.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">MyToken</span> <span class="token keyword">is</span> ERC20<span class="token punctuation">,</span> AccessControl <span class="token punctuation">&#123;</span>
+    <span class="token comment">// Create a new role identifier for the minter role</span>
+    <span class="token builtin">bytes32</span> <span class="token keyword">public</span> <span class="token keyword">constant</span> MINTER_ROLE <span class="token operator">=</span> <span class="token function">keccak256</span><span class="token punctuation">(</span><span class="token string">"MINTER_ROLE"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token builtin">address</span> minter<span class="token punctuation">)</span> <span class="token function">ERC20</span><span class="token punctuation">(</span><span class="token string">"MyToken"</span><span class="token punctuation">,</span> <span class="token string">"TKN"</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// Grant the minter role to a specified account</span>
+        <span class="token function">_setupRole</span><span class="token punctuation">(</span>MINTER_ROLE<span class="token punctuation">,</span> minter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">mint</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// Check that the calling account has the minter role</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token function">hasRole</span><span class="token punctuation">(</span>MINTER_ROLE<span class="token punctuation">,</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"Caller is not a minter"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">_mint</span><span class="token punctuation">(</span>to<span class="token punctuation">,</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>NOTE：在您的系统上使用 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access#AccessControl"><code>AccessControl</code></a>  或复制粘贴本指南中的示例之前，请确保您完全了解其工作原理。</p>
+<p>虽然清晰明确，但这并不是我们使用 <code>Ownable</code> 无法实现的。事实上，<code>AccessControl</code> 的亮点在于需要细粒度权限的场景，这可以通过定义多个角色来实现。</p>
+<p>让我们通过定义一个“burner”角色来扩充我们的 ERC20 代币示例，该角色允许帐户销毁代币，并使用 <code>onlyRole</code> 修饰符：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// contracts/MyToken.sol</span>
+<span class="token comment">// SPDX-License-Identifier: MIT</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/access/AccessControl.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/token/ERC20/ERC20.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">MyToken</span> <span class="token keyword">is</span> ERC20<span class="token punctuation">,</span> AccessControl <span class="token punctuation">&#123;</span>
+    <span class="token builtin">bytes32</span> <span class="token keyword">public</span> <span class="token keyword">constant</span> MINTER_ROLE <span class="token operator">=</span> <span class="token function">keccak256</span><span class="token punctuation">(</span><span class="token string">"MINTER_ROLE"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token builtin">bytes32</span> <span class="token keyword">public</span> <span class="token keyword">constant</span> BURNER_ROLE <span class="token operator">=</span> <span class="token function">keccak256</span><span class="token punctuation">(</span><span class="token string">"BURNER_ROLE"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token builtin">address</span> minter<span class="token punctuation">,</span> <span class="token builtin">address</span> burner<span class="token punctuation">)</span> <span class="token function">ERC20</span><span class="token punctuation">(</span><span class="token string">"MyToken"</span><span class="token punctuation">,</span> <span class="token string">"TKN"</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">_setupRole</span><span class="token punctuation">(</span>MINTER_ROLE<span class="token punctuation">,</span> minter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">_setupRole</span><span class="token punctuation">(</span>BURNER_ROLE<span class="token punctuation">,</span> burner<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">mint</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token function">onlyRole</span><span class="token punctuation">(</span>MINTER_ROLE<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">_mint</span><span class="token punctuation">(</span>to<span class="token punctuation">,</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">burn</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token function">onlyRole</span><span class="token punctuation">(</span>BURNER_ROLE<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">_burn</span><span class="token punctuation">(</span><span class="token keyword">from</span><span class="token punctuation">,</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>多干净！通过这种方式拆分关注点，可以实现比使用更简单的 <em>ownership</em> 方法进行访问控制更细化的权限级别。限制系统的每个组件能够执行的操作被称为 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">最小权限原则</a>，并且是一种良好的安全实践。请注意，如果需要，每个帐户可能仍具有多个角色。</p>
+<h3 id="Granting-and-Revoking-Roles"><a href="#Granting-and-Revoking-Roles" class="headerlink" title="Granting and Revoking Roles"></a>Granting and Revoking Roles</h3><p>上面的 ERC20 token 示例使用 <code>_setupRole</code>，这是一个 <code>internal</code> 函数，在以编程方式分配角色时（例如在构造期间）很有用。但是，如果我们稍后想将“minter”角色授予其他帐户怎么办？</p>
+<p>默认情况下，<strong>具有角色的帐户无法从其他帐户授予或撤销它</strong>：拥有角色所做的只是使 <code>hasRole</code> 检查通过。要动态授予和撤销角色，您需要角色管理员(<em>role’s admin</em>)的帮助。</p>
+<p>每个角色都有一个关联的管理员角色，该角色授予调用 <code>grantRole</code> 和 <code>revokeRole</code> 函数的权限。如果调用帐户具有相应的管理员角色，则可以使用这些来授予或撤销角色。多个角色可能具有相同的管理员角色，以便于管理。一个角色的管理员甚至可以是同一个角色本身，这将导致具有该角色的帐户也能够授予和撤销它。</p>
+<p>这种机制可用于创建类似于组织结构图的复杂许可结构，但它也提供了一种管理简单应用程序的简单方法。 <code>AccessControl</code> 包含一个特殊角色，称为 <code>DEFAULT_ADMIN_ROLE</code>，它充当<strong>所有角色的默认管理员角色</strong>。具有此角色的帐户将能够管理任何其他角色，除非 <code>_setRoleAdmin</code> 用于选择新的管理员角色。</p>
+<p>让我们看一下 ERC20 代币示例，这一次利用了默认管理员角色：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// contracts/MyToken.sol</span>
+<span class="token comment">// SPDX-License-Identifier: MIT</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/access/AccessControl.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/token/ERC20/ERC20.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">MyToken</span> <span class="token keyword">is</span> ERC20<span class="token punctuation">,</span> AccessControl <span class="token punctuation">&#123;</span>
+    <span class="token builtin">bytes32</span> <span class="token keyword">public</span> <span class="token keyword">constant</span> MINTER_ROLE <span class="token operator">=</span> <span class="token function">keccak256</span><span class="token punctuation">(</span><span class="token string">"MINTER_ROLE"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token builtin">bytes32</span> <span class="token keyword">public</span> <span class="token keyword">constant</span> BURNER_ROLE <span class="token operator">=</span> <span class="token function">keccak256</span><span class="token punctuation">(</span><span class="token string">"BURNER_ROLE"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token function">ERC20</span><span class="token punctuation">(</span><span class="token string">"MyToken"</span><span class="token punctuation">,</span> <span class="token string">"TKN"</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// Grant the contract deployer the default admin role: it will be able</span>
+        <span class="token comment">// to grant and revoke any roles</span>
+        <span class="token function">_setupRole</span><span class="token punctuation">(</span>DEFAULT_ADMIN_ROLE<span class="token punctuation">,</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">mint</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token function">onlyRole</span><span class="token punctuation">(</span>MINTER_ROLE<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">_mint</span><span class="token punctuation">(</span>to<span class="token punctuation">,</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">burn</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token function">onlyRole</span><span class="token punctuation">(</span>BURNER_ROLE<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">_burn</span><span class="token punctuation">(</span><span class="token keyword">from</span><span class="token punctuation">,</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>请注意，与前面的示例不同，没有帐户被授予“minter”或“burner”角色。但是，由于这些角色的管理员角色是默认管理员角色，并且该角色已授予 <code>msg.sender</code>，因此同一帐户可以调用 <code>grantRole</code> 授予铸币或销毁权限，也可以调用 <code>revokeRole</code> 将其删除。</p>
+<p>动态角色分配通常是理想的属性，例如在对参与者的信任可能随时间变化的系统中。它还可用于支持诸如 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Know_your_customer">KYC</a> 之类的用例，其中角色承担者的列表可能事先不知道，或者包含在单个交易中可能过于昂贵。</p>
+<h3 id="Querying-Privileged-Accounts"><a href="#Querying-Privileged-Accounts" class="headerlink" title="Querying Privileged Accounts"></a>Querying Privileged Accounts</h3><p>由于帐户可能会动态<a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/access-control#granting-and-revoking">授予和撤销角色</a>，因此并不总是可以确定哪些帐户拥有特定角色。这很重要，因为它可以证明系统的某些属性，例如管理帐户是多重签名或 DAO，或者某个角色已从所有用户中删除，从而有效地禁用任何相关功能。</p>
+<p>在底层，<code>AccessControl</code> 使用 <code>EnumerableSet</code>，这是 Solidity <code>mapping</code> 类型的一个更强大的变体，它允许键枚举。 <code>getRoleMemberCount</code> 可用于检索具有特定角色的帐户的数量，然后可以调用 <code>getRoleMember</code> 来获取每个帐户的地址。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> minterCount <span class="token operator">=</span> <span class="token keyword">await</span> myToken<span class="token punctuation">.</span><span class="token function">getRoleMemberCount</span><span class="token punctuation">(</span><span class="token constant">MINTER_ROLE</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> members <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> minterCount<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    members<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token keyword">await</span> myToken<span class="token punctuation">.</span><span class="token function">getRoleMember</span><span class="token punctuation">(</span><span class="token constant">MINTER_ROLE</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="Delayed-operation"><a href="#Delayed-operation" class="headerlink" title="Delayed operation"></a>Delayed operation</h3><p>访问控制对于防止未经授权访问关键函数来说至关重要。这些函数可用于铸造代币、冻结转账或执行完全改变智能合约逻辑的升级。虽然 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access#Ownable"><code>Ownable</code></a> 和 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access#AccessControl"><code>AccessControl</code></a> 可以防止未经授权的访问，但它们并没有解决行为不端的管理员攻击他们自己的系统以损害其用户的问题。</p>
+<p>这是 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/governance#TimelockController"><code>TimelockController</code></a> 正在解决的问题。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/governance#TimelockController"><code>TimelockController</code></a> 是由提议者(proposer)和执行者(executor)管理的代理。当设置为智能合约的所有者(owner)&#x2F;管理员(admin)&#x2F;控制者(controller)时，它确保提议者下令的任何维护操作都会受到延迟。这种延迟保护了智能合约的用户，让他们有时间审查维护操作并在他们认为这样做最符合他们利益的情况下退出系统。</p>
+<h3 id="Using-TimelockController"><a href="#Using-TimelockController" class="headerlink" title="Using TimelockController"></a>Using <code>TimelockController</code></h3><p>默认情况下，部署了 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/governance#TimelockController"><code>TimelockController</code></a> 的地址获得对时间锁的管理权限。此角色授予指定提议者、执行者和其他管理员的权利。</p>
+<p>配置 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/governance#TimelockController"><code>TimelockController</code></a> 的第一步是至少分配一个提议者和一个执行者。这些可以在构建期间或以后由具有管理员角色的任何人分配。这些角色不是独占的，这意味着一个帐户可以同时拥有这两个角色。</p>
+<p>角色由 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access#AccessControl"><code>AccessControl</code></a> 接口管理，每个角色的 <code>bytes32</code> 值可通过 <code>ADMIN_ROLE</code>、<code>PROPOSER_ROLE</code> 和 <code>EXECUTOR_ROLE</code> 常量访问。</p>
+<p>在 <code>AccessControl</code> 之上构建了一个附加特性：将执行者角色赋予 <code>address(0)</code> 可以在时间锁到期后向任何人开放执行提案的权限。此功能虽然有用，但应谨慎使用。</p>
+<p>此时，同时分配了提议者和执行者，时间锁就可以执行操作了。</p>
+<p>可选的下一步是部署者放弃其管理权限并让时间锁自行管理。如果部署者决定这样做，所有进一步的维护，包括分配新的提议者&#x2F;调度者或更改时间锁持续时间都必须遵循时间锁工作流程。这将时间锁的治理与附加到时间锁的合约的治理联系起来，并强制延迟时间锁维护操作。</p>
+<p>WARNING：如果部署者放弃管理权限以支持 timelock 本身，则分配新的提议者或执行者将需要 timelocked 操作。这意味着，如果负责这两个角色中的任何一个的账户不可用，那么整个合约（以及它控制的任何合约）都会被无限期锁定。</p>
+<p>通过分配提议者和执行者角色以及负责其自身管理的时间锁，您现在可以将任何合约的所有权&#x2F;控制权转移到时间锁。</p>
+<p>TIP：推荐的配置是将这两个角色授予安全治理合约（例如 DAO 或多重签名），并将执行者角色授予负责帮助维护操作的人员持有的一些 EOA。这些钱包无法接管时间锁，但它们可以帮助简化工作流程。</p>
+<h3 id="Minimum-delay"><a href="#Minimum-delay" class="headerlink" title="Minimum delay"></a>Minimum delay</h3><p><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/governance#TimelockController"><code>TimelockController</code></a> 执行的操作不受固定延迟的影响，而是最小延迟。一些主要更新可能需要更长的延迟。例如，如果仅仅几天的延迟可能足以让用户审核铸币操作，那么在安排智能合约升级时使用几周甚至几个月的延迟是有意义的。</p>
+<p>可以通过调用 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/governance#TimelockController-updateDelay-uint256-"><code>updateDelay</code></a>  函数来更新最小延迟（可通过 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/governance#TimelockController-getMinDelay--"><code>getMinDelay</code></a>  方法访问）。请记住，只有时间锁本身才能访问此功能，这意味着此维护操作必须通过时间锁本身。</p>
+<h2 id="Tokens"><a href="#Tokens" class="headerlink" title="Tokens"></a>Tokens</h2><p>啊，“代币”：区块链最强大也是最容易被误解的工具。</p>
+<p><strong>代币是区块链中某物的表示。</strong>这可以是金钱、时间、服务、公司股份、虚拟宠物，任何东西。通过将事物表示为代币，我们可以允许智能合约与它们交互、交换、创建或销毁它们。</p>
+<h4 id="But-First-Coffee-a-Primer-on-Token-Contracts"><a href="#But-First-Coffee-a-Primer-on-Token-Contracts" class="headerlink" title="But First, Coffee a Primer on Token Contracts"></a>But First, <del>Coffee</del> a Primer on Token Contracts</h4><p>围绕代币的大部分混淆来自于两个概念的混淆：代币合约(<em>token contracts</em>)和实际代币(<em>token</em>)。</p>
+<p>代币合约只是一个以太坊智能合约。 “发送代币”实际上意味着“调用某人编写和部署的智能合约上的方法”。归根结底，代币合约只不过是地址到余额的映射，加上一些从这些余额中加减的方法。</p>
+<p>正是这些余额代表了代币本身。当代币合约中的余额不为零时，某人“拥有代币”。That’s it！这些余额可以被视为金钱、游戏中的经验值、所有权契约或投票权，并且这些代币中的每一个都将存储在不同的代币合约中。</p>
+<h4 id="Different-Kinds-of-Tokens"><a href="#Different-Kinds-of-Tokens" class="headerlink" title="Different Kinds of Tokens"></a>Different Kinds of Tokens</h4><p>请注意，拥有两个投票权和两个所有权契约之间有很大的区别：每个投票都等于所有其他投票，但房子通常不是！这称为可替代性(<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Fungibility">fungibility</a>)。可替代商品(<em>Fungible goods</em>)是等价且可互换的，例如以太币、法定货币和投票权。不可替代的(<em>Non-fungible</em>)商品是独一无二的，就像所有权契约或收藏品一样。</p>
+<p>简而言之，在处理不可替代的资产（例如您的房子）时，您关心的是您拥有<em>哪些</em>资产，而在可替代资产（例如您的银行账户对账单）中，重要的是您拥有<em>多少</em>。</p>
+<h4 id="Standards"><a href="#Standards" class="headerlink" title="Standards"></a>Standards</h4><p>尽管代币的概念很简单，但它们在实现中具有各种复杂性。因为以太坊中的一切都只是一个智能合约，并且没有关于智能合约必须做什么的规则，社区已经开发了各种<strong>标准</strong>（称为 EIP 或 ERC）来记录合约如何与其他合约互操作。</p>
+<p>您可能听说过 ERC20 或 ERC721 代币标准，这就是您来这里的原因。前往我们的专业指南了解更多信息：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/erc20">ERC20</a>：可替代资产最广泛的代币标准，尽管在某种程度上受到其简单性的限制。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/erc721">ERC721</a>：不可替代代币的实际解决方案，通常用于收藏品和游戏。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/erc777">ERC777</a>：更丰富的可替代代币标准，支持新的用例并建立在过去的学习基础上。向后兼容 ERC20。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/erc1155">ERC1155</a>：一种新的多代币标准，允许单个合约代表多个可替代和不可替代的代币，以及批量操作以提高gas效率。</li>
+</ul>
+<h3 id="ERC20"><a href="#ERC20" class="headerlink" title="ERC20"></a>ERC20</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/erc20">ERC20 (OpenZeppelin Docs)</a></li>
+</ul>
+<h3 id="ERC721"><a href="#ERC721" class="headerlink" title="ERC721"></a>ERC721</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/erc721">ERC721 (OpenZeppelin Docs)</a></li>
+</ul>
+<h3 id="ERC777"><a href="#ERC777" class="headerlink" title="ERC777"></a>ERC777</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/erc777">ERC777 (OpenZeppelin Docs)</a></li>
+</ul>
+<h3 id="ERC1155"><a href="#ERC1155" class="headerlink" title="ERC1155"></a>ERC1155</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/erc1155#sending-to-contracts">ERC1155 (OpenZeppelin Docs)</a></li>
+</ul>
+<h2 id="Governance"><a href="#Governance" class="headerlink" title="Governance"></a>Governance</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/governance">How to set up on-chain governance (OpenZeppelin Docs)</a></li>
+</ul>
+<h2 id="CrossChain"><a href="#CrossChain" class="headerlink" title="CrossChain"></a>CrossChain</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/crosschain">Adding cross-chain support to contracts (OpenZeppelin Docs)</a></li>
+</ul>
+<h2 id="Utilities"><a href="#Utilities" class="headerlink" title="Utilities"></a>Utilities</h2><p>OpenZeppelin Contracts 提供了大量有用的实用程序，您可以在项目中使用它们。这里有一些比较流行的。</p>
+<h3 id="Cryptography"><a href="#Cryptography" class="headerlink" title="Cryptography"></a>Cryptography</h3><h4 id="Checking-Signatures-On-Chain"><a href="#Checking-Signatures-On-Chain" class="headerlink" title="Checking Signatures On-Chain"></a>Checking Signatures On-Chain</h4><p><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#ECDSA"><code>ECDSA</code></a> 提供了恢复和管理以太坊账户 ECDSA 签名的功能。这些通常是通过 <a target="_blank" rel="noopener" href="https://web3js.readthedocs.io/en/v1.7.3/web3-eth.html#sign"><code>web3.eth.sign</code></a> 生成的，是一个 65 字节的数组（Solidity 中的 <code>bytes</code> 类型），排列方式如下：<code>[[v (1)], [r (32)], [s (32)]]</code>。</p>
+<p>可以使用 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#ECDSA-recover-bytes32-bytes-"><code>ECDSA.recover</code></a> 恢复数据签名者，并将其地址进行比较以验证签名。大多数钱包会对数据进行哈希签名并添加前缀“\x19Ethereum Signed Message:\n”，因此在尝试恢复以太坊签名消息哈希的签名者时，您需要使用 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#ECDSA-toEthSignedMessageHash-bytes32-"><code>toEthSignedMessageHash</code></a>。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">using</span> <span class="token class-name">ECDSA</span> <span class="token keyword">for</span> <span class="token builtin">bytes32</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">_verify</span><span class="token punctuation">(</span><span class="token builtin">bytes32</span> data<span class="token punctuation">,</span> <span class="token builtin">bytes</span> <span class="token keyword">memory</span> signature<span class="token punctuation">,</span> <span class="token builtin">address</span> account<span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> data
+        <span class="token punctuation">.</span><span class="token function">toEthSignedMessageHash</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">recover</span><span class="token punctuation">(</span>signature<span class="token punctuation">)</span> <span class="token operator">==</span> account<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>WARNING：正确进行签名验证并非易事：确保您完全阅读并理解 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#ECDSA"><code>ECDSA</code></a> 的文档。</p>
+<h4 id="Verifying-Merkle-Proofs"><a href="#Verifying-Merkle-Proofs" class="headerlink" title="Verifying Merkle Proofs"></a>Verifying Merkle Proofs</h4><p><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#MerkleProof"><code>MerkleProof</code></a> 提供：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#MerkleProof-verify-bytes32---bytes32-bytes32-"><code>verify</code></a> - 可以证明某个值是 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Merkle_tree">Merkle tree</a> 的一部分。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#MerkleProof-multiProofVerify-bytes32-bytes32---bytes32---bool---"><code>multiProofVerify</code></a> - 可以证明多个值是 Merkle 树的一部分。</li>
+</ul>
+<h3 id="Introspection"><a href="#Introspection" class="headerlink" title="Introspection"></a>Introspection</h3><p>在 Solidity 中，了解合约是否支持您想要使用的接口通常很有帮助。 ERC165 是一个有助于进行运行时接口检测的标准。合约为在你的合约中实现 ERC165 和查询其他合约提供了帮助：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#IERC165"><code>IERC165</code></a> - 这是定义 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#IERC165-supportsInterface-bytes4-"><code>supportsInterface</code></a> 的 ERC165 接口。实现 ERC165 时，您将遵守此接口。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#ERC165"><code>ERC165</code></a> - 如果您想使用合约存储中的查找表支持接口检测，请继承此合约。您可以使用 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#ERC165-_registerInterface-bytes4-"><code>_registerInterface(bytes4)</code></a> 注册接口：查看示例用法作为 ERC721 实现的一部分。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#ERC165Checker"><code>ERC165Checker</code></a> - ERC165Checker 简化了检查合约是否支持您关心的接口的过程。</li>
+<li>包括使用 ERC165Checker 作为地址；</li>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#ERC165Checker-_supportsInterface-address-bytes4-"><code>myAddress._supportsInterface(bytes4)</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#ERC165Checker-_supportsAllInterfaces-address-bytes4---"><code>myAddress._supportsAllInterfaces(bytes4[])</code></a></li>
+</ul>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">contract</span> <span class="token class-name">MyContract</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">using</span> <span class="token class-name">ERC165Checker</span> <span class="token keyword">for</span> <span class="token builtin">address</span><span class="token punctuation">;</span>
+
+    <span class="token builtin">bytes4</span> <span class="token keyword">private</span> InterfaceId_ERC721 <span class="token operator">=</span> <span class="token number">0x80ac58cd</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * @dev transfer an ERC721 token from this contract to someone else
+     */</span>
+    <span class="token keyword">function</span> <span class="token function">transferERC721</span><span class="token punctuation">(</span>
+        <span class="token builtin">address</span> token<span class="token punctuation">,</span>
+        <span class="token builtin">address</span> to<span class="token punctuation">,</span>
+        <span class="token builtin">uint256</span> tokenId
+    <span class="token punctuation">)</span>
+        <span class="token keyword">public</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>token<span class="token punctuation">.</span><span class="token function">supportsInterface</span><span class="token punctuation">(</span>InterfaceId_ERC721<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"IS_NOT_721_TOKEN"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">IERC721</span><span class="token punctuation">(</span>token<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">transferFrom</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">,</span> to<span class="token punctuation">,</span> tokenId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="Math"><a href="#Math" class="headerlink" title="Math"></a>Math</h3><p>OpenZeppelin Contracts 提供的最流行的数学相关库是 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#SafeMath"><code>SafeMath</code></a>，它提供了保护您的合约免受上溢和下溢的数学函数。</p>
+<p>通过 <code>using SafeMath for uint256;</code> 包含合约；然后调用函数：</p>
+<ul>
+<li><code>myNumber.add(otherNumber)</code></li>
+<li><code>myNumber.sub(otherNumber)</code></li>
+<li><code>myNumber.div(otherNumber)</code></li>
+<li><code>myNumber.mul(otherNumber)</code></li>
+<li><code>myNumber.mod(otherNumber)</code></li>
+</ul>
+<h3 id="Payment"><a href="#Payment" class="headerlink" title="Payment"></a>Payment</h3><p>想要在多人之间分摊一些付款？也许你有一个应用程序，将 30% 的艺术品购买发送给原始创作者，将 70% 的利润发送给当前所有者；您可以使用 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/finance#PaymentSplitter"><code>PaymentSplitter</code></a>  构建它！</p>
+<p>在 Solidity 中，盲目地向账户汇款存在一些安全问题，因为它允许账户执行任意代码。您可以在 <a target="_blank" rel="noopener" href="https://consensys.github.io/smart-contract-best-practices/">Ethereum Smart Contract Best Practices</a> 网站上阅读这些安全问题。解决重入和停滞问题的方法之一是，您可以使用 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/security#PullPayment"><code>PullPayment</code></a>，而不是立即将 Ether 发送到需要它的帐户，它提供了一个 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/security#PullPayment-_asyncTransfer-address-uint256-"><code>_asyncTransfer</code></a>  函数，用于向某物汇款并要求他们稍后再 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/security#PullPayment-withdrawPayments-address-payable-"><code>withdrawPayments()</code></a>。</p>
+<p>如果你想托管一些资金，请查看 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#Escrow"><code>Escrow</code></a> 和 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#ConditionalEscrow"><code>ConditionalEscrow</code></a> 以管理一些托管 Ether 的释放。</p>
+<h3 id="Collections"><a href="#Collections" class="headerlink" title="Collections"></a>Collections</h3><p>如果您需要比 Solidity 的原生数组和映射更强大的集合支持，请查看 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#EnumerableSet"><code>EnumerableSet</code></a>  和 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#EnumerableMap"><code>EnumerableMap</code></a>。它们类似于映射，因为它们在恒定时间内存储和删除元素并且不允许重复条目，但它们还支持枚举(<em>enumeration</em>)，这意味着您可以轻松地查询链上和链下的所有存储条目。</p>
+<h3 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h3><p>想检查地址是否为合约？使用 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#Address"><code>Address</code></a> 和 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#Address-isContract-address-"><code>Address.isContract()</code></a>。</p>
+<p>想要跟踪一些每次需要另一个数字时递增 1 的数字？查看 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#Counters"><code>Counters</code></a>。这对很多事情都很有用，例如创建增量标识符，如 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/erc721">ERC721 指南</a> 中所示。</p>
+<h4 id="Base64"><a href="#Base64" class="headerlink" title="Base64"></a>Base64</h4><p><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/utils#Base64"><code>Base64</code></a> 实用程序允许您将 <code>bytes32</code> 数据转换为其 Base64 <code>string</code> 表示。</p>
+<p>这对于为 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/token/ERC721#IERC721Metadata-tokenURI-uint256-"><code>ERC721</code></a> 或 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/token/ERC1155#IERC1155MetadataURI-uri-uint256-"><code>ERC1155</code></a> 构建 URL 安全的 tokenURI 特别有用。该库提供了一种巧妙的方式来提供符合 URL 安全的 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/Data_URIs/">Data URI</a> 兼容字符串以提供链上数据结构。</p>
+<p>考虑这是一个使用 ERC721 通过 Base64 Data URI 发送 JSON 元数据的示例：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// contracts/My721Token.sol</span>
+<span class="token comment">// SPDX-License-Identifier: MIT</span>
+
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/token/ERC721/ERC721.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/utils/Strings.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/utils/Base64.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">My721Token</span> <span class="token keyword">is</span> ERC721 <span class="token punctuation">&#123;</span>
+    <span class="token keyword">using</span> <span class="token class-name">Strings</span> <span class="token keyword">for</span> <span class="token builtin">uint256</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token function">ERC721</span><span class="token punctuation">(</span><span class="token string">"My721Token"</span><span class="token punctuation">,</span> <span class="token string">"MTK"</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token keyword">function</span> <span class="token function">tokenURI</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> tokenId<span class="token punctuation">)</span>
+        <span class="token keyword">public</span>
+        <span class="token keyword">pure</span>
+        override
+        <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token keyword">memory</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token builtin">bytes</span> <span class="token keyword">memory</span> dataURI <span class="token operator">=</span> abi<span class="token punctuation">.</span><span class="token function">encodePacked</span><span class="token punctuation">(</span>
+            <span class="token string">'&#123;'</span><span class="token punctuation">,</span>
+                <span class="token string">'"name": "My721Token #'</span><span class="token punctuation">,</span> tokenId<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'"'</span><span class="token punctuation">,</span>
+                <span class="token comment">// Replace with extra ERC721 Metadata properties</span>
+            <span class="token string">'&#125;'</span>
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">return</span> <span class="token builtin">string</span><span class="token punctuation">(</span>
+            abi<span class="token punctuation">.</span><span class="token function">encodePacked</span><span class="token punctuation">(</span>
+                <span class="token string">"data:application/json;base64,"</span><span class="token punctuation">,</span>
+                Base64<span class="token punctuation">.</span><span class="token function">encode</span><span class="token punctuation">(</span>dataURI<span class="token punctuation">)</span>
+            <span class="token punctuation">)</span>
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h4 id="Multicall"><a href="#Multicall" class="headerlink" title="Multicall"></a>Multicall</h4><p>Multicall 抽象合约带有一个 <code>multicall</code> 函数，该函数将多个调用捆绑在一个外部调用中。有了它，外部帐户可以执行包含多个函数调用的原子操作。这不仅对 EOA 在单个交易中进行多次调用很有用，它也是一种在后续调用失败时恢复先前调用的方法。</p>
+<p>考虑这个虚拟合约：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// contracts/Box.sol</span>
+<span class="token comment">// SPDX-License-Identifier: MIT</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/utils/Multicall.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">Box</span> <span class="token keyword">is</span> Multicall <span class="token punctuation">&#123;</span>
+    <span class="token keyword">function</span> <span class="token function">foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">bar</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>这是使用 Truffle 调用 <code>multicall</code> 函数的方法，允许在单个交易中调用 <code>foo</code>和<code>bar</code>：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// scripts/foobar.js</span>
+
+<span class="token keyword">const</span> Box <span class="token operator">=</span> artifacts<span class="token punctuation">.</span><span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'Box'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> instance <span class="token operator">=</span> <span class="token keyword">await</span> Box<span class="token punctuation">.</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">await</span> instance<span class="token punctuation">.</span><span class="token function">multicall</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+    instance<span class="token punctuation">.</span>contract<span class="token punctuation">.</span>methods<span class="token punctuation">.</span><span class="token function">foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">encodeABI</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    instance<span class="token punctuation">.</span>contract<span class="token punctuation">.</span>methods<span class="token punctuation">.</span><span class="token function">bar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">encodeABI</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><p><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access">OpenZeppelin Docs API</a> 文档提供了库中所有 合约(<em>Contract</em>)、库(<em>Library</em>)、接口(<em>Interface</em>) 的 修饰符(<em>Modifier</em>)、函数(<em>Function</em>) 和 事件(<em>Events</em>) 等的用法和 API 说明，以供检索查阅。</p>
+<p><strong>可以在顶部的搜索栏中检索关键字，搜索栏会在整个文档中查找匹配的对应关键字。</strong></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/" class="category-chain-item">区块链技术</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%BC%80%E5%8F%91/" class="category-chain-item">智能合约开发</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/">#区块链技术</a>
+      
+        <a href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%BC%80%E5%8F%91/">#智能合约开发</a>
+      
+        <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/">#以太坊</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>OpenZeppelin Contracts 4.x 文档</div>
+      <div>https://alphafitz.com/2022/09/14/openzeppelin-contracts-4-docs/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>alphafitz</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年9月14日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                <i class="iconfont icon-nc"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                <i class="iconfont icon-sa"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/09/21/tools-hardhat-tutorial-guides/" title="Hardhat Tutorial &amp; Guides">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Hardhat Tutorial &amp; Guides</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/09/13/mastering-ethereum-smart-contract-security/" title="精通以太坊：智能合约安全">
+                        <span class="hidden-mobile">精通以太坊：智能合约安全</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

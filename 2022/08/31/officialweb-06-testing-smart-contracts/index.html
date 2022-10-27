@@ -1,0 +1,827 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fitz.png">
+  <link rel="icon" href="/img/fitz.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="alphafitz">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="测试智能合约测试智能合约是提高智能合约安全性的最重要措施之一。与传统软件不同，智能合约通常在启动后无法更新，因此在以太坊网络上部署合约之前必须进行严格测试。 什么是智能合约测试？智能合约测试是指对智能合约进行详细的分析和评估，以在开发周期内评估其源代码的质量。测试智能合约可以更容易地识别错误和漏洞，并减少可能导致代价高昂的漏洞利用的软件错误的可能性。 智能合约测试有多种形式，不同的方法有着对应的好">
+<meta property="og:type" content="article">
+<meta property="og:title" content="以太坊开发者文档06 测试智能合约">
+<meta property="og:url" content="https://alphafitz.com/2022/08/31/officialweb-06-testing-smart-contracts/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="测试智能合约测试智能合约是提高智能合约安全性的最重要措施之一。与传统软件不同，智能合约通常在启动后无法更新，因此在以太坊网络上部署合约之前必须进行严格测试。 什么是智能合约测试？智能合约测试是指对智能合约进行详细的分析和评估，以在开发周期内评估其源代码的质量。测试智能合约可以更容易地识别错误和漏洞，并减少可能导致代价高昂的漏洞利用的软件错误的可能性。 智能合约测试有多种形式，不同的方法有着对应的好">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-31T13:58:23.000Z">
+<meta property="article:modified_time" content="2022-09-13T04:01:22.191Z">
+<meta property="article:author" content="alphafitz">
+<meta property="article:tag" content="区块链技术">
+<meta property="article:tag" content="以太坊">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>以太坊开发者文档06 测试智能合约 - </title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alphafitz.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="null" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>alphafitz</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="以太坊开发者文档06 测试智能合约"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-31 21:58" pubdate>
+          2022年8月31日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          41 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">以太坊开发者文档06 测试智能合约</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="测试智能合约"><a href="#测试智能合约" class="headerlink" title="测试智能合约"></a>测试智能合约</h1><p>测试<a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/docs/smart-contracts/">智能合约</a>是提高<a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/docs/smart-contracts/security/">智能合约安全性</a>的最重要措施之一。与传统软件不同，智能合约通常在启动后无法更新，因此在以太坊网络上部署合约之前必须进行严格测试。</p>
+<h2 id="什么是智能合约测试？"><a href="#什么是智能合约测试？" class="headerlink" title="什么是智能合约测试？"></a>什么是智能合约测试？</h2><p>智能合约测试是指对智能合约进行详细的分析和评估，以在开发周期内评估其源代码的质量。测试智能合约可以更容易地识别错误和漏洞，并减少可能导致代价高昂的漏洞利用的软件错误的可能性。</p>
+<p>智能合约测试有多种形式，不同的方法有着对应的好处。测试以太坊智能合约的策略可以分为两大类：<strong>自动测试和手动测试</strong>。</p>
+<h3 id="自动测试"><a href="#自动测试" class="headerlink" title="自动测试"></a>自动测试</h3><p>自动测试涉及使用自动化工具对智能合约进行脚本测试。该技术依赖于可以执行重复测试以发现智能合约缺陷的自动化软件。</p>
+<p>与手动分析相比，自动化测试是高效的，使用的资源更少，并且覆盖率更高。自动化测试工具也可以配置测试数据，允许他们将预测的行为与实际结果进行比较。</p>
+<h3 id="手动测试"><a href="#手动测试" class="headerlink" title="手动测试"></a>手动测试</h3><p>手动测试是人工辅助的，涉及手动执行测试步骤的个人。代码审计，开发人员和&#x2F;或审计人员检查每一行合约代码，是智能合约手动测试的一个例子。</p>
+<p>智能合约的手动测试需要相当高的技能和大量的时间、金钱和精力投入。此外，手动测试有时容易受到人为错误问题的影响。</p>
+<p>然而，对智能合约应用手动测试也是有益的。代码审计利用人类智能来发现合同代码中可能在自动化测试期间未被发现的缺陷。</p>
+<p>手动测试你的智能合约也可以揭示代码之外存在但仍会影响它的漏洞。例如，智能合约审计可以发现因与链下组件的有缺陷的交互而产生的漏洞。</p>
+<h2 id="为什么测试智能合约是重要的？"><a href="#为什么测试智能合约是重要的？" class="headerlink" title="为什么测试智能合约是重要的？"></a>为什么测试智能合约是重要的？</h2><p>测试智能合约很重要，原因如下：</p>
+<h3 id="1-智能合约是高价值的应用"><a href="#1-智能合约是高价值的应用" class="headerlink" title="1. 智能合约是高价值的应用"></a>1. 智能合约是高价值的应用</h3><p>智能合约经常处理高价值金融资产，尤其是在<a target="_blank" rel="noopener" href="https://ethereum.org/en/defi/">去中心化金融 (DeFi)</a> 等行业，以及诸如<a target="_blank" rel="noopener" href="https://ethereum.org/en/nft/">不可替代代币 (NFT)</a> 等有价值的物品。因此，智能合约中的小漏洞可能而且通常会给用户带来巨大的、不可挽回的损失。然而，综合测试可以暴露智能合约代码中的错误并降低部署前的安全风险。</p>
+<h3 id="2-智能合约是不可变的"><a href="#2-智能合约是不可变的" class="headerlink" title="2. 智能合约是不可变的"></a>2. 智能合约是不可变的</h3><p>默认情况下，部署在<a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/docs/evm/">以太坊虚拟机 (EVM)</a> 中的智能合约是不可变的。虽然传统开发人员可能习惯于在启动后修复软件错误，但一旦智能合约在区块链上运行，以太坊开发就几乎没有修补安全漏洞的空间。</p>
+<p>虽然智能合约有可升级机制，例如代理模式，但这些可能难以实施。除了降低不变性和引入复杂性之外，升级通常需要复杂的治理流程。</p>
+<p>在大多数情况下，升级应被视为最后的手段，除非必要，否则应避免。在预发布阶段检测智能合约中的潜在漏洞和缺陷可减少对逻辑升级的需求。</p>
+<h2 id="智能合约的自动测试"><a href="#智能合约的自动测试" class="headerlink" title="智能合约的自动测试"></a>智能合约的自动测试</h2><h3 id="1-功能测试"><a href="#1-功能测试" class="headerlink" title="1. 功能测试"></a>1. 功能测试</h3><p>功能测试验证智能合约的功能，并确保代码中的每个功能都按预期工作。功能测试需要了解您的智能合约在特定条件下的行为方式。然后，您可以通过使用选定值运行计算并将返回的输出与预期输出进行比较来测试每个功能。</p>
+<p>功能测试包括三种方法：<strong>单元测试、集成测试和系统测试</strong>。</p>
+<h4 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h4><p>单元测试涉及测试智能合约中的各个组件的正确性。单元测试简单、快速运行，并且可以清楚地了解测试失败时出了什么问题。</p>
+<p>单元测试对于智能合约开发至关重要，尤其是当您需要向代码添加新逻辑时。您可以验证每个函数的行为并确认它按预期执行。</p>
+<p>运行单元测试通常需要创建断言(<em>assertions</em>) —— 指定智能合约要求的简单、非正式的语句。然后可以使用单元测试来测试每个断言，看看它在执行时是否成立。</p>
+<p>与合约相关的断言示例包括：</p>
+<p>i. “只有管理员可以暂停合约”</p>
+<p>ii. “非管理员不能铸造新代币”</p>
+<p>iii. “合约因错误而恢复”</p>
+<h4 id="集成测试"><a href="#集成测试" class="headerlink" title="集成测试"></a>集成测试</h4><p>集成测试是在测试层次上比单元测试更高的测试。在集成测试中，智能合约的各个组件被一起测试。</p>
+<p>这种方法检测由合约的不同组件之间或跨多个合约的交互引起的错误。如果您有一个具有多个功能的复杂合约或一个与其他合约交互的合约，您应该使用此方法。</p>
+<p>集成测试对于确保继承和依赖注入之类的东西正常工作很有用。</p>
+<h4 id="系统测试"><a href="#系统测试" class="headerlink" title="系统测试"></a>系统测试</h4><p>系统测试是智能合约功能测试的最后阶段。系统将智能合约评估为一个完全集成的产品，以查看它是否按照技术要求中的规定执行。</p>
+<p>您可以将此阶段视为从用户的角度检查智能合约的端到端流程。对智能合约执行系统测试的一种好方法是将其部署在类似生产的环境中，例如<a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/docs/networks/#ethereum-testnets">测试网</a>或<a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/docs/development-networks/">开发网络</a>。</p>
+<p>在这里，终端用户可以进行试运行并报告合约业务逻辑和整体功能的任何问题。系统测试很重要，因为一旦合约部署在主 EVM 环境中，您就无法更改代码。</p>
+<h3 id="2-静态-x2F-动态分析"><a href="#2-静态-x2F-动态分析" class="headerlink" title="2. 静态&#x2F;动态分析"></a>2. 静态&#x2F;动态分析</h3><p>静态分析和动态分析是评估智能合约安全质量的两种自动化测试方法。然而，这两种技术都使用不同的方法来查找合约代码中的缺陷。</p>
+<h4 id="静态分析"><a href="#静态分析" class="headerlink" title="静态分析"></a>静态分析</h4><p>静态分析在执行前检查智能合约的源代码或字节码。这意味着您可以在不实际运行程序的情况下调试合约代码。静态分析器可以检测以太坊智能合约中的常见漏洞并帮助遵守最佳实践。</p>
+<h4 id="动态分析"><a href="#动态分析" class="headerlink" title="动态分析"></a>动态分析</h4><p>动态分析技术需要在运行时环境中执行智能合约来识别代码中的问题。动态代码分析器在执行期间观察合约行为，并生成已识别漏洞和财产违规(<em>property violations</em>)的详细报告。</p>
+<p>Fuzzing 是测试合约的动态分析技术的一个例子。在模糊测试期间，模糊器向您的智能合约提供格式错误和无效的数据，并监控合约如何响应这些输入。</p>
+<p>与任何程序一样，智能合约依赖于用户提供的输入来执行功能。而且，虽然我们假设用户会提供正确的输入，但情况并非总是如此。</p>
+<p>在某些情况下，向智能合约发送不正确的输入值可能会导致资源泄漏、崩溃，或者更糟糕的是，导致意外的代码执行。 Fuzzing 活动预先识别出此类问题，从而使您能够消除漏洞。</p>
+<h2 id="智能合约的手动测试"><a href="#智能合约的手动测试" class="headerlink" title="智能合约的手动测试"></a>智能合约的手动测试</h2><h3 id="1-代码审计"><a href="#1-代码审计" class="headerlink" title="1. 代码审计"></a>1. 代码审计</h3><p>代码审计是对智能合约源代码的详细评估，以发现可能的故障点、安全漏洞和不良的开发实践。虽然代码审计可以自动化，但我们在这里指的是人工辅助代码分析。</p>
+<p>代码审计需要攻击者的思维方式来绘制智能合约中可能的攻击向量。即使您运行自动审计，分析每一行源代码也是编写安全智能合约的最低要求。</p>
+<p>您还可以委托进行安全审计，为用户提供更高的智能合约安全保证。审计受益于网络安全专业人员执行的广泛分析，并检测可能破坏智能合约功能的潜在漏洞或错误。</p>
+<h3 id="2-漏洞赏金"><a href="#2-漏洞赏金" class="headerlink" title="2. 漏洞赏金"></a>2. 漏洞赏金</h3><p>漏洞赏金是给予在程序代码中发现漏洞并向开发人员报告的个人的经济奖励。漏洞赏金类似于审计，因为它涉及要求其他人帮助发现智能合约中的缺陷。主要区别在于漏洞赏金计划对更广泛的开发人员&#x2F;黑客社区开放。</p>
+<p>漏洞赏金计划通常会吸引一大批具有独特技能和经验的道德黑客和独立安全专业人士。与主要依赖可能拥有有限或狭窄专业知识的团队的智能合约审计相比，这可能是一个优势。</p>
+<h2 id="测试-vs-形式验证"><a href="#测试-vs-形式验证" class="headerlink" title="测试 vs. 形式验证"></a>测试 vs. 形式验证</h2><p>虽然测试有助于确认合约返回某些数据输入的预期结果，但它不能最终证明测试期间未使用的输入相同。测试智能合约不能保证“功能正确性”，这意味着它不能表明程序的行为符合所有输入值和条件集的要求。</p>
+<p>因此，鼓励开发人员将<strong>形式验证</strong>纳入其评估智能合约正确性的方法中。形式验证使用<a target="_blank" rel="noopener" href="https://www.brookings.edu/techstream/formal-methods-as-a-path-toward-better-cybersecurity/">形式方法</a> —— 用于指定和验证软件的数学上严格的技术。</p>
+<p>形式验证被认为对智能合约很重要，因为它可以帮助开发人员正式测试与智能合约相关的假设。这是通过创建描述智能合约属性的正式规范并验证智能合约的正式模型是否与规范匹配来完成的。这种方法增加了对智能合约将仅执行其业务逻辑中定义的功能而不执行其他任何功能的信心。</p>
+<p><a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/docs/smart-contracts/formal-verification">更多关于智能合约的形式验证</a></p>
+<h2 id="测试工具和库"><a href="#测试工具和库" class="headerlink" title="测试工具和库"></a>测试工具和库</h2><h3 id="单元测试工具"><a href="#单元测试工具" class="headerlink" title="单元测试工具"></a>单元测试工具</h3><p><strong>Solidity-Coverage</strong> - Solidity 代码覆盖工具，可用于测试智能合约。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/sc-forks/solidity-coverage">GitHub</a></li>
+</ul>
+<p><strong>Waffle</strong> - 高级智能合约开发和测试框架（基于 ethers.js）。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://ethereum-waffle.readthedocs.io/en/latest/">Documentation</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/TrueFiEng/Waffle">GitHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://getwaffle.io/">Website</a></li>
+</ul>
+<p><strong>Remix Tests</strong> - 用于测试 Solidity 智能合约的工具。在 Remix IDE “Solidity Unit Testing”插件下工作，该插件用于编写和运行合同的测试用例。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://remix-ide.readthedocs.io/en/latest/unittesting.html">Documentation</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ethereum/remix-project/tree/master/libs/remix-tests">GitHub</a></li>
+</ul>
+<p><strong>OpenZeppelin Test Helpers</strong> - 用于以太坊智能合约测试的断言库。确保您的合约按预期运行！</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/openzeppelin-test-helpers">GitHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/test-helpers">Documentation</a></li>
+</ul>
+<p><strong>Truffle smart contract test framework</strong> - 自动化测试框架，让您的合约测试变得轻而易举。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://trufflesuite.com/docs/truffle/testing/testing-your-contracts/">Documentation</a></li>
+<li><a target="_blank" rel="noopener" href="https://trufflesuite.com/">Website</a></li>
+</ul>
+<p><strong>Brownie unit testing framework</strong> - Brownie 使用 Pytest，这是一个功能丰富的测试框架，让您可以用最少的代码编写小型测试，可以很好地适应大型项目，并且具有高度可扩展性。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://eth-brownie.readthedocs.io/en/v1.0.0_a/tests.html">Documentation</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/eth-brownie/brownie">GitHub</a></li>
+</ul>
+<p><strong>Foundry Tests</strong> - Foundry 提供 Forge，这是一个快速灵活的以太坊测试框架，能够执行简单的单元测试、gas 优化检查和合约模糊测试。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/foundry-rs/foundry/tree/master/forge">GitHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.getfoundry.sh/forge/">Documentation</a></li>
+</ul>
+<p><strong>Etheno</strong> - All-in-one 的以太坊测试工具，包括 JSON RPC 多路复用器、分析工具包装器和测试集成工具。 Etheno 消除了在大型、多合约项目上设置分析工具（如 Manticore 和 Echidna）的复杂性。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/crytic/etheno">GitHub</a></li>
+</ul>
+<h3 id="动态分析工具"><a href="#动态分析工具" class="headerlink" title="动态分析工具"></a>动态分析工具</h3><p><strong>Echidna</strong> - 快速合约模糊器，用于通过基于属性的测试来检测智能合约中的漏洞。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/crytic/echidna/">GitHub</a></li>
+</ul>
+<p><strong>Harvey</strong> - 自动模糊测试工具，可用于检测智能合约代码中的财产违规(<em>property violations</em>)行为。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://consensys.net/diligence/fuzzing/">Website</a></li>
+</ul>
+<p><strong>Manticore</strong> - 用于分析 EVM 字节码的动态符号执行框架。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/trailofbits/manticore">GitHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/trailofbits/manticore/wiki">Documentation</a></li>
+</ul>
+<h3 id="智能合约审计服务"><a href="#智能合约审计服务" class="headerlink" title="智能合约审计服务"></a>智能合约审计服务</h3><p><strong>ConsenSys Diligence</strong> - 智能合约审计服务可帮助整个区块链生态系统中的项目确保其协议已准备好启动并构建以保护用户。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://consensys.net/diligence/">Website</a></li>
+</ul>
+<p><strong>CertiK</strong> - 率先在智能合约和区块链网络上使用尖端的形式验证技术的区块链安全公司。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.certik.com/">Website</a></li>
+</ul>
+<p><strong>Trail of Bits</strong> - 网络安全公司，将安全研究与攻击者心态相结合，以降低风险并强化代码。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.trailofbits.com/">Website</a></li>
+</ul>
+<p><strong>PeckShield</strong> - 区块链安全公司，为整个区块链生态系统的安全性、隐私性和可用性提供产品和服务。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://peckshield.com/">Website</a></li>
+</ul>
+<p><strong>QuantStamp</strong> - 审计服务通过安全和风险评估服务促进区块链技术的主流采用。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://quantstamp.com/">Website</a></li>
+</ul>
+<p><strong>OpenZeppelin</strong> - 为分布式系统提供安全审计的智能合约安全公司</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.openzeppelin.com/security-audits">Website</a></li>
+</ul>
+<h3 id="漏洞赏金平台"><a href="#漏洞赏金平台" class="headerlink" title="漏洞赏金平台"></a>漏洞赏金平台</h3><p><strong>Immunefi</strong> - 用于智能合约和 DeFi 项目的漏洞赏金平台，安全研究人员在这里审查代码、披露漏洞、获得报酬并让加密更安全。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://immunefi.com/">Website</a></li>
+</ul>
+<p><strong>HackerOne</strong> - 漏洞协调和漏洞赏金平台，将企业与渗透测试人员和网络安全研究人员联系起来。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.hackerone.com/">Website</a></li>
+</ul>
+<h2 id="相关教程"><a href="#相关教程" class="headerlink" title="相关教程"></a>相关教程</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/tutorials/solidity-and-truffle-continuous-integration-setup/">Solidity and Truffle Continuous Integration Setup</a> <em>– 如何设置 Travis 或 Circle CI 以进行 Truffle 测试以及有用的插件。</em></li>
+<li><a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/tutorials/guide-to-smart-contract-security-tools/">Testing products overview</a> <em>– 不同测试产品的概述和比较。</em></li>
+<li><a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/tutorials/how-to-use-echidna-to-test-smart-contracts/">How to use Echidna to test smart contracts</a></li>
+<li><a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/tutorials/how-to-use-manticor-to-find-smart-contract-bugs/">How to use Manticore to find smart contract bugs</a></li>
+<li><a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/tutorials/how-to-use-slither-to-find-smart-contract-bugs/">How to use Slither to find smart contract bugs</a></li>
+<li><a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/tutorials/how-to-mock-solidity-contracts-for-testing/">How to mock Solidity contracts for testing</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/test-environment/0.1/migrating-from-truffle">How to migrate from Truffle Tests to OpenZeppelin Test Environment</a></li>
+<li><a target="_blank" rel="noopener" href="https://fulldecent.blogspot.com/2019/04/testing-deployed-ethereum-contracts.html">How to test contracts after they have been deployed on a network</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=gyMwXuJrbJQ">Learn Blockchain, Solidity, and Full Stack Web3 Development with JavaScript (YouTube)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=M576WGiDBdQ">Solidity, Blockchain, and Smart Contract Course (YouTube)</a></li>
+</ul>
+<h2 id="延伸阅读"><a href="#延伸阅读" class="headerlink" title="延伸阅读"></a>延伸阅读</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://iamdefinitelyahuman.medium.com/an-in-depth-guide-to-testing-ethereum-smart-contracts-2e41b2770297">An In-Depth Guide to Testing Ethereum Smart Contracts</a> - <em>Ben Hauser</em></li>
+<li><a target="_blank" rel="noopener" href="https://betterprogramming.pub/how-to-test-ethereum-smart-contracts-35abc8fa199d">How to Test Ethereum Smart Contracts</a> - <em>Alex Roan</em></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/" class="category-chain-item">区块链技术</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/%E4%BB%A5%E5%A4%AA%E5%9D%8A%E5%AE%98%E7%BD%91-%E5%BC%80%E5%8F%91%E8%80%85%E6%96%87%E6%A1%A3-%E4%BB%A5%E5%A4%AA%E5%9D%8A%E6%8A%80%E6%9C%AF%E6%A0%88/" class="category-chain-item">以太坊官网-开发者文档-以太坊技术栈</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/">#区块链技术</a>
+      
+        <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/">#以太坊</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>以太坊开发者文档06 测试智能合约</div>
+      <div>https://alphafitz.com/2022/08/31/officialweb-06-testing-smart-contracts/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>alphafitz</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年8月31日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                <i class="iconfont icon-nc"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                <i class="iconfont icon-sa"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/08/31/officialweb-07-compiling-smart-contracts/" title="以太坊开发者文档07 编译智能合约">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">以太坊开发者文档07 编译智能合约</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/31/officialweb-05-smart-contract-libraries/" title="以太坊开发者文档05 智能合约库">
+                        <span class="hidden-mobile">以太坊开发者文档05 智能合约库</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

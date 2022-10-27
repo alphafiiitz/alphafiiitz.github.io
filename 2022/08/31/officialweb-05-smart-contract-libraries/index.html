@@ -1,0 +1,748 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fitz.png">
+  <link rel="icon" href="/img/fitz.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="alphafitz">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="智能合约库你不需要从头开始编写项目中的每个智能合约。有许多可用的开源智能合约库为项目提供可重用的构建块，可以让你不必重新发明轮子。 先决条件在进入智能合约库之前，对智能合约的结构有一个很好的了解是个好主意。如果你还没有这样做，请前往智能合约剖析。 库中有什么你通常可以在智能合约库中找到两种构建块(building blocks)：可以添加到合约中的可重用行为(reusable behaviors)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="以太坊开发者文档05 智能合约库">
+<meta property="og:url" content="https://alphafitz.com/2022/08/31/officialweb-05-smart-contract-libraries/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="智能合约库你不需要从头开始编写项目中的每个智能合约。有许多可用的开源智能合约库为项目提供可重用的构建块，可以让你不必重新发明轮子。 先决条件在进入智能合约库之前，对智能合约的结构有一个很好的了解是个好主意。如果你还没有这样做，请前往智能合约剖析。 库中有什么你通常可以在智能合约库中找到两种构建块(building blocks)：可以添加到合约中的可重用行为(reusable behaviors)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-31T13:57:58.000Z">
+<meta property="article:modified_time" content="2022-09-13T04:01:19.178Z">
+<meta property="article:author" content="alphafitz">
+<meta property="article:tag" content="区块链技术">
+<meta property="article:tag" content="以太坊">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>以太坊开发者文档05 智能合约库 - </title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alphafitz.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="null" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>alphafitz</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="以太坊开发者文档05 智能合约库"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-31 21:57" pubdate>
+          2022年8月31日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">以太坊开发者文档05 智能合约库</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="智能合约库"><a href="#智能合约库" class="headerlink" title="智能合约库"></a>智能合约库</h1><p>你不需要从头开始编写项目中的每个智能合约。有许多可用的开源智能合约库为项目提供可重用的构建块，可以让你不必重新发明轮子。</p>
+<h2 id="先决条件"><a href="#先决条件" class="headerlink" title="先决条件"></a>先决条件</h2><p>在进入智能合约库之前，对智能合约的结构有一个很好的了解是个好主意。如果你还没有这样做，请前往<a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/docs/smart-contracts/anatomy/">智能合约剖析</a>。</p>
+<h2 id="库中有什么"><a href="#库中有什么" class="headerlink" title="库中有什么"></a>库中有什么</h2><p>你通常可以在智能合约库中找到两种构建块(<em>building blocks</em>)：可以添加到合约中的可重用行为(<em>reusable behaviors</em>)，以及各种标准的实现。</p>
+<h3 id="Behaviors"><a href="#Behaviors" class="headerlink" title="Behaviors"></a>Behaviors</h3><p>在编写智能合约时，你很有可能会发现自己一遍又一遍地编写类似的模式，例如分配一个 <code>admin</code> 地址以在合约中执行受保护的操作，或者在出现意外问题时添加紧急 <code>pause</code> 按钮。</p>
+<p>智能合约库通常提供这些行为的可重用实现作为<a target="_blank" rel="noopener" href="https://solidity.readthedocs.io/en/v0.7.2/contracts.html#libraries">库</a>或通过 Solidity 中的<a target="_blank" rel="noopener" href="https://solidity.readthedocs.io/en/v0.7.2/contracts.html#inheritance">继承</a>。</p>
+<p>例如，以下是 <a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/openzeppelin-contracts">OpenZeppelin 合约库</a>中 <a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.2.0/contracts/access/Ownable.sol">Ownable 合约</a>的简化版本，它将地址指定为合约的所有者，并提供了一个修饰符，用于将方法的访问权限仅限于该所有者。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">contract</span> <span class="token class-name">Ownable</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">address</span> <span class="token keyword">public</span> owner<span class="token punctuation">;</span>
+
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token punctuation">&#123;</span>
+        owner <span class="token operator">=</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">modifier</span> <span class="token function">onlyOwner</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>owner <span class="token operator">==</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> <span class="token string">"Ownable: caller is not the owner"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">_</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>要在你的合约中使用这样的构建块，你需要先导入它，然后在你自己的合约中扩展它。这将允许你使用基本 Ownable 合约提供的修饰符来保护你自己的函数。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">import</span> <span class="token string">".../Ownable.sol"</span><span class="token punctuation">;</span> <span class="token comment">// Path to the imported library</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">MyContract</span> <span class="token keyword">is</span> Ownable <span class="token punctuation">&#123;</span>
+    <span class="token comment">// The following function can only be called by the owner</span>
+    <span class="token keyword">function</span> <span class="token function">secured</span><span class="token punctuation">(</span><span class="token punctuation">)</span> onlyOwner <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        msg<span class="token punctuation">.</span>sender<span class="token punctuation">.</span><span class="token function">transfer</span><span class="token punctuation">(</span><span class="token number">1</span> ether<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>另一个流行的例子是 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/3.x/utilities#math">SafeMath</a> 或 <a target="_blank" rel="noopener" href="https://dappsys.readthedocs.io/en/latest/ds_math.html">DsMath</a>。这些库（与基本合约相反）提供带有溢出检查的算术函数，语言不提供这些函数。使用这些库中的任何一个而不是原生算术运算来保护您的合约免受溢出是一种很好的做法，合约溢出有可能会产生灾难性的后果！</p>
+<h3 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h3><p>为了促进<a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/docs/smart-contracts/composability/">可组合性和互操作性</a>，以太坊社区以 <strong>ERC</strong> 的形式定义了几个标准。你可以在<a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/docs/standards/">标准</a>部分阅读更多关于它们的信息。</p>
+<p>将 ERC 作为合约的一部分时，寻找标准实现而不是尝试推出自己的实现是个好主意。许多智能合约库包括最流行的 ERC 的实现。例如，无处不在的<a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/tutorials/understand-the-erc-20-token-smart-contract/">ERC20 可替代代币标准</a>可以在 <a target="_blank" rel="noopener" href="https://github.com/HQ20/contracts/blob/master/contracts/token/README.md">HQ20</a>、<a target="_blank" rel="noopener" href="https://github.com/dapphub/ds-token/">DappSys</a> 和 <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/3.x/erc20">OpenZeppelin</a> 中找到。此外，一些 ERC 还提供规范实现作为 ERC 本身的一部分。</p>
+<p>值得一提的是，一些 ERC 不是独立的，而是对其他 ERC 的补充。例如，<a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-2612">ERC2612</a> 为 ERC20 添加了扩展以提高其可用性。</p>
+<h2 id="如何添加一个库"><a href="#如何添加一个库" class="headerlink" title="如何添加一个库"></a>如何添加一个库</h2><p>请始终参考你所包含的库的文档，以获取有关如何将其包含在项目中的具体说明。<code>npm</code> 打包了几个 Solidity 合约库，因此你只需用 <code>npm</code> 安装它们。大多数<a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/docs/smart-contracts/compiling/">编译</a>合约的工具都会在你的 <code>node_modules</code> 中查找智能合约库，因此你可以执行以下操作：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// This will load the @openzeppelin/contracts library from your node_modules</span>
+<span class="token keyword">import</span> <span class="token string">"@openzeppelin/contracts/token/ERC721/ERC721.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">MyNFT</span> <span class="token keyword">is</span> ERC721 <span class="token punctuation">&#123;</span>
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token function">ERC721</span><span class="token punctuation">(</span><span class="token string">"MyNFT"</span><span class="token punctuation">,</span> <span class="token string">"MNFT"</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>无论你使用哪种方法，在包含库时，请始终关注<a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/docs/smart-contracts/languages/">语言</a>版本。例如，如果你在 Solidity 0.5 中编写合约，则不能使用 Solidity 0.6 的库。</p>
+<h2 id="何时使用"><a href="#何时使用" class="headerlink" title="何时使用"></a>何时使用</h2><p>为你的项目使用智能合约库有几个好处。首先，它通过为你提供可以包含在系统中的即用型构建块来节省你的时间，而不必自己编写代码。</p>
+<p>安全性也是一大优势。开源智能合约库也经常受到严格审查。鉴于许多项目都依赖于它们，社区有强烈的动机不断对其进行审查。在应用程序代码中发现错误比在可重用合约库中更常见。一些库还接受<a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/openzeppelin-contracts/tree/master/audit">外部审计</a>以提高安全性。</p>
+<p>然而，使用智能合约库存在将你不熟悉的代码包含到项目中的风险。导入合约并将其直接包含到你的项目中是很诱人的，但是如果没有很好地了解该合约的作用，你可能会由于意外行为而无意中在系统中引入问题。始终确保阅读你正在导入的代码的文档，然后在将其作为项目的一部分之前查看代码本身！</p>
+<p>最后，在决定是否包含库时，请考虑其整体使用情况。一个被广泛采用的库其好处在于拥有更大的社区和更多的眼睛来寻找问题。使用智能合约构建时，安全性应该是您的主要关注点！</p>
+<h2 id="相关工具"><a href="#相关工具" class="headerlink" title="相关工具"></a>相关工具</h2><p><strong>OpenZeppelin Contracts - 最流行的安全智能合约开发库。</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/">Documentation</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/openzeppelin-contracts">GitHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://forum.openzeppelin.com/c/general/16">Community Forum</a></li>
+</ul>
+<p><strong>DappSys - 安全、简单、灵活的智能合约构建块。</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://dappsys.readthedocs.io/">Documentation</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/dapphub/dappsys">GitHub</a></li>
+</ul>
+<p><strong>HQ20 - 一个带有合约、库和示例的 Solidity 项目，可帮助您为现实世界构建功能齐全的分布式应用程序。</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/HQ20/contracts">GitHub</a></li>
+</ul>
+<h2 id="相关教程"><a href="#相关教程" class="headerlink" title="相关教程"></a>相关教程</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/docs/smart-contracts/security/">Security considerations for Ethereum developers</a> - <em>关于构建智能合约时的安全注意事项的教程，包括库的使用</em></li>
+<li><a target="_blank" rel="noopener" href="https://ethereum.org/en/developers/tutorials/understand-the-erc-20-token-smart-contract/">Understand the ERC-20 token smart contract</a> <em>- ERC20 标准教程，由多个库提供</em></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/" class="category-chain-item">区块链技术</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/%E4%BB%A5%E5%A4%AA%E5%9D%8A%E5%AE%98%E7%BD%91-%E5%BC%80%E5%8F%91%E8%80%85%E6%96%87%E6%A1%A3-%E4%BB%A5%E5%A4%AA%E5%9D%8A%E6%8A%80%E6%9C%AF%E6%A0%88/" class="category-chain-item">以太坊官网-开发者文档-以太坊技术栈</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/">#区块链技术</a>
+      
+        <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/">#以太坊</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>以太坊开发者文档05 智能合约库</div>
+      <div>https://alphafitz.com/2022/08/31/officialweb-05-smart-contract-libraries/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>alphafitz</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年8月31日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                <i class="iconfont icon-nc"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                <i class="iconfont icon-sa"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/08/31/officialweb-06-testing-smart-contracts/" title="以太坊开发者文档06 测试智能合约">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">以太坊开发者文档06 测试智能合约</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/31/officialweb-04-anatomy-of-smart-contracts/" title="以太坊开发者文档04 智能合约剖析">
+                        <span class="hidden-mobile">以太坊开发者文档04 智能合约剖析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

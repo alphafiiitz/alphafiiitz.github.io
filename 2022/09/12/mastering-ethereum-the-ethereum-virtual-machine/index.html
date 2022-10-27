@@ -1,0 +1,1106 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fitz.png">
+  <link rel="icon" href="/img/fitz.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="alphafitz">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="精通以太坊：以太坊虚拟机 本文内容是对 Mastering Ethereum 一书的 The Ethereum Virtual Machine 章节的翻译。  以太坊协议和操作的核心是以太坊虚拟机，简称 EVM。正如您可能从名称中猜到的那样，它是一个计算引擎，与 Microsoft 的 .NET Framework 的虚拟机或其他字节码编译的编程语言（如 Java）的解释器没有太大的不同。在本章中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="精通以太坊：以太坊虚拟机">
+<meta property="og:url" content="https://alphafitz.com/2022/09/12/mastering-ethereum-the-ethereum-virtual-machine/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="精通以太坊：以太坊虚拟机 本文内容是对 Mastering Ethereum 一书的 The Ethereum Virtual Machine 章节的翻译。  以太坊协议和操作的核心是以太坊虚拟机，简称 EVM。正如您可能从名称中猜到的那样，它是一个计算引擎，与 Microsoft 的 .NET Framework 的虚拟机或其他字节码编译的编程语言（如 Java）的解释器没有太大的不同。在本章中">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alphafitz.com/2022/09/12/mastering-ethereum-the-ethereum-virtual-machine/image-20220912093705-1sm4j4h.png">
+<meta property="og:image" content="https://alphafitz.com/2022/09/12/mastering-ethereum-the-ethereum-virtual-machine/image-20220912110351-pk67820.png">
+<meta property="og:image" content="https://alphafitz.com/2022/09/12/mastering-ethereum-the-ethereum-virtual-machine/image-20220912114702-0e5kjtm.png">
+<meta property="article:published_time" content="2022-09-12T12:53:09.000Z">
+<meta property="article:modified_time" content="2022-10-25T08:55:19.513Z">
+<meta property="article:author" content="alphafitz">
+<meta property="article:tag" content="区块链技术">
+<meta property="article:tag" content="以太坊">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://alphafitz.com/2022/09/12/mastering-ethereum-the-ethereum-virtual-machine/image-20220912093705-1sm4j4h.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>精通以太坊：以太坊虚拟机 - </title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alphafitz.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="null" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>alphafitz</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="精通以太坊：以太坊虚拟机"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-09-12 20:53" pubdate>
+          2022年9月12日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          16k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          134 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">精通以太坊：以太坊虚拟机</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="精通以太坊：以太坊虚拟机"><a href="#精通以太坊：以太坊虚拟机" class="headerlink" title="精通以太坊：以太坊虚拟机"></a>精通以太坊：以太坊虚拟机</h1><blockquote>
+<p>本文内容是对 <a target="_blank" rel="noopener" href="https://github.com/ethereumbook/ethereumbook/blob/develop/13evm.asciidoc">Mastering Ethereum</a> 一书的 The Ethereum Virtual Machine 章节的翻译。</p>
+</blockquote>
+<p>以太坊协议和操作的核心是以太坊虚拟机，简称 EVM。正如您可能从名称中猜到的那样，它是一个计算引擎，与 Microsoft 的 .NET Framework 的虚拟机或其他字节码编译的编程语言（如 Java）的解释器没有太大的不同。在本章中，我们将在以太坊状态更新的背景下详细了解 EVM，包括其指令集、结构和操作。</p>
+<h2 id="什么是EVM"><a href="#什么是EVM" class="headerlink" title="什么是EVM?"></a>什么是EVM?</h2><p>EVM 是以太坊中处理智能合约部署和执行的一部分。实际上，从一个 EOA 到另一个的简单价值转移交易不需要涉及它，但其他一切都将涉及由 EVM 计算的状态更新。在高层次上，运行在以太坊区块链上的 EVM 可以被认为是一个全球分散的计算机，包含数百万个可执行对象，每个对象都有自己的永久数据存储。</p>
+<p>EVM 是一个准图灵完备的状态机； “准”，因为所有执行过程都被限制在有限数量的计算步骤中，这取决于任何给定的智能合约执行可用的gas量。因此，停止问题得到了“解决”（所有程序执行都将停止），并且避免了执行可能（意外或恶意）永远运行的情况，从而使以太坊平台完全停止。</p>
+<p><strong>EVM 具有基于堆栈的架构，将所有内存中的值存储在堆栈中。</strong>它<strong>使用 256 位的字长</strong>（主要是为了促进本机散列和椭圆曲线操作），并<strong>具有几个可寻址的数据组件</strong>：</p>
+<ul>
+<li>一个不可变的程序代码 ROM，加载了要执行的智能合约的字节码</li>
+<li>易失性存储器，每个位置都显式初始化为零</li>
+<li>作为以太坊状态一部分的永久存储，也是零初始化的</li>
+</ul>
+<p>还有一组<strong>在执行期间可用的环境变量和数据</strong>。我们将在本章后面更详细地介绍这些内容。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ethereumbook/ethereumbook/blob/develop/13evm.asciidoc#evm_architecture">The Ethereum Virtual Machine (EVM) Architecture and Execution Context</a> 显示了 EVM 架构和执行上下文。</p>
+<img src="/2022/09/12/mastering-ethereum-the-ethereum-virtual-machine/image-20220912093705-1sm4j4h.png" srcset="/img/loading.gif" lazyload class="" title="以太坊虚拟机 (EVM) 架构和执行上下文">
+
+<center> 以太坊虚拟机(EVM)架构和执行上下文 </center>
+
+<img src="/2022/09/12/mastering-ethereum-the-ethereum-virtual-machine/image-20220912110351-pk67820.png" srcset="/img/loading.gif" lazyload class="" title="网上的EVM架构图">
+
+<center> 网上的EVM架构图 </center>
+
+<p>从上图的角度看，EVM与典型的冯诺依曼架构不同，程序代码和存储是分开存储的。</p>
+<h3 id="与现有技术的比较"><a href="#与现有技术的比较" class="headerlink" title="与现有技术的比较"></a>与现有技术的比较</h3><p>术语“虚拟机”通常用于真实计算机的虚拟化，通常由“管理程序”（如 VirtualBox 或 QEMU）或整个操作系统实例（如 Linux 的 KVM）进行虚拟化。这些必须分别提供实际硬件、系统调用和其他内核功能的软件抽象。</p>
+<p><strong>EVM 在一个更有限的领域中运行：它只是一个计算引擎，因此提供了计算和存储的抽象</strong>，例如类似于 Java 虚拟机 (JVM) 规范。从高级的角度来看，JVM 旨在提供一个与底层主机操作系统或硬件无关的运行时环境，从而实现跨多种系统的兼容性。高级编程语言，例如 Java 或 Scala（使用 JVM）或 C#（使用 .NET）被编译到各自虚拟机的字节码指令集中。同样，<strong>EVM 执行自己的字节码指令集</strong>（在下一节中介绍），将 LLL、Serpent、Mutan 或 Solidity 等高级智能合约编程语言编译成这些指令集。</p>
+<p>因此，<strong>EVM 没有调度能力，因为执行顺序是在其外部组织的</strong> —— <strong>以太坊客户端运行经过验证的块交易，以确定哪些智能合约需要执行以及以何种顺序执行</strong>。从这个意义上说，以太坊世界的计算机是单线程的，就像 JavaScript 一样。 <strong>EVM 也没有任何“系统接口”处理或“硬件支持”</strong>—— 没有物理机器可以与之交互。以太坊世界计算机是完全虚拟的。</p>
+<h3 id="EVM指令集（字节码操作）"><a href="#EVM指令集（字节码操作）" class="headerlink" title="EVM指令集（字节码操作）"></a>EVM指令集（字节码操作）</h3><p>EVM 指令集提供了您可能期望的大部分操作，包括：</p>
+<ul>
+<li>算术和按位逻辑运算</li>
+<li>执行上下文查询</li>
+<li>堆栈、内存和存储访问（因此有三个存储类型）</li>
+<li>控制流操作</li>
+<li>日志、调用和其他操作码(<em>Logging, calling, and other operators</em>)</li>
+</ul>
+<p>除了典型的字节码操作，EVM 还可以访问账户信息（例如地址和余额）和区块信息（例如区块号和当前 gas 价格）。</p>
+<p>让我们通过查看可用的操作码及其作用来更详细地探索 EVM。如您所料，所有操作数都从堆栈中取出，结果（如果适用）通常放回堆栈顶部。</p>
+<table>
+<thead>
+<tr>
+<th>Note</th>
+<th>可以在<a target="_blank" rel="noopener" href="https://github.com/ethereumbook/ethereumbook/blob/develop/13evm.asciidoc#evm_opcodes">evm_opcodes</a>中找到完整的操作码列表及其相应的 gas 成本。</th>
+</tr>
+</thead>
+</table>
+<p>（即执行每一个操作码都有对应的 gas 成本）</p>
+<p>可用的操作码可以分为以下几类：</p>
+<p><em>算术运算</em></p>
+<p>算术操作码指令：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">ADD        &#x2F;&#x2F;Add the top two stack items
+MUL        &#x2F;&#x2F;Multiply the top two stack items
+SUB        &#x2F;&#x2F;Subtract the top two stack items
+DIV        &#x2F;&#x2F;Integer division
+SDIV       &#x2F;&#x2F;Signed integer division
+MOD        &#x2F;&#x2F;Modulo (remainder) operation
+SMOD       &#x2F;&#x2F;Signed modulo operation
+ADDMOD     &#x2F;&#x2F;Addition modulo any number
+MULMOD     &#x2F;&#x2F;Multiplication modulo any number
+EXP        &#x2F;&#x2F;Exponential operation
+SIGNEXTEND &#x2F;&#x2F;Extend the length of a two&#39;s complement signed integer
+SHA3       &#x2F;&#x2F;Compute the Keccak-256 hash of a block of memory<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>请注意，所有算术都是以 $2^{256}$ 为模执行的（除非另有说明），并且零的零次方 $0^0$ 被视为 1。</p>
+<p><em>堆栈操作</em></p>
+<p>堆栈、内存和存储管理指令：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">POP     &#x2F;&#x2F;Remove the top item from the stack
+MLOAD   &#x2F;&#x2F;Load a word from memory
+MSTORE  &#x2F;&#x2F;Save a word to memory
+MSTORE8 &#x2F;&#x2F;Save a byte to memory
+SLOAD   &#x2F;&#x2F;Load a word from storage
+SSTORE  &#x2F;&#x2F;Save a word to storage
+MSIZE   &#x2F;&#x2F;Get the size of the active memory in bytes
+PUSHx   &#x2F;&#x2F;Place x byte item on the stack, where x can be any integer from
+        &#x2F;&#x2F; 1 to 32 (full word) inclusive
+DUPx    &#x2F;&#x2F;Duplicate the x-th stack item, where x can be any integer from
+        &#x2F;&#x2F; 1 to 16 inclusive
+SWAPx   &#x2F;&#x2F;Exchange 1st and (x+1)-th stack items, where x can be any
+        &#x2F;&#x2F; integer from 1 to 16 inclusive<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p><em>进程(process)流操作</em></p>
+<p>控制流指令：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">STOP      &#x2F;&#x2F;Halt execution
+JUMP      &#x2F;&#x2F;Set the program counter to any value
+JUMPI     &#x2F;&#x2F;Conditionally alter the program counter
+PC        &#x2F;&#x2F;Get the value of the program counter (prior to
+          &#x2F;&#x2F;the increment corresponding to this instruction)
+JUMPDEST  &#x2F;&#x2F;Mark a valid destination for jumps<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p><em>系统操作</em></p>
+<p>系统执行程序的操作码：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">LOGx          &#x2F;&#x2F;Append a log record with x topics, where x is any integer
+              &#x2F;&#x2F;from 0 to 4 inclusive
+CREATE        &#x2F;&#x2F;Create a new account with associated code
+CALL          &#x2F;&#x2F;Message-call into another account, i.e. run another
+              &#x2F;&#x2F;account&#39;s code
+CALLCODE      &#x2F;&#x2F;Message-call into this account with another
+              &#x2F;&#x2F;account&#39;s code
+RETURN        &#x2F;&#x2F;Halt execution and return output data
+DELEGATECALL  &#x2F;&#x2F;Message-call into this account with an alternative
+              &#x2F;&#x2F;account&#39;s code, but persisting the current values for
+              &#x2F;&#x2F;sender and value
+STATICCALL    &#x2F;&#x2F;Static message-call into an account
+REVERT        &#x2F;&#x2F;Halt execution, reverting state changes but returning
+              &#x2F;&#x2F;data and remaining gas
+INVALID       &#x2F;&#x2F;The designated invalid instruction
+SELFDESTRUCT  &#x2F;&#x2F;Halt execution and register account for deletion<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p><em>逻辑运算</em></p>
+<p>用于比较和按位逻辑的操作码：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">LT     &#x2F;&#x2F;Less-than comparison
+GT     &#x2F;&#x2F;Greater-than comparison
+SLT    &#x2F;&#x2F;Signed less-than comparison
+SGT    &#x2F;&#x2F;Signed greater-than comparison
+EQ     &#x2F;&#x2F;Equality comparison
+ISZERO &#x2F;&#x2F;Simple NOT operator
+AND    &#x2F;&#x2F;Bitwise AND operation
+OR     &#x2F;&#x2F;Bitwise OR operation
+XOR    &#x2F;&#x2F;Bitwise XOR operation
+NOT    &#x2F;&#x2F;Bitwise NOT operation
+BYTE   &#x2F;&#x2F;Retrieve a single byte from a full-width 256-bit word<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p><em>环境操作</em></p>
+<p>处理执行环境信息的操作码：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">GAS            &#x2F;&#x2F;Get the amount of available gas
+               &#x2F;&#x2F;(after the reduction for this instruction)
+ADDRESS        &#x2F;&#x2F;Get the address of the currently executing account
+BALANCE        &#x2F;&#x2F;Get the account balance of any given account
+ORIGIN         &#x2F;&#x2F;Get the address of the EOA that initiated this EVM
+               &#x2F;&#x2F;execution
+CALLER         &#x2F;&#x2F;Get the address of the caller immediately responsible
+               &#x2F;&#x2F;for this execution
+CALLVALUE      &#x2F;&#x2F;Get the ether amount deposited by the caller responsible
+               &#x2F;&#x2F;for this execution
+CALLDATALOAD   &#x2F;&#x2F;Get the input data sent by the caller responsible for
+               &#x2F;&#x2F;this execution
+CALLDATASIZE   &#x2F;&#x2F;Get the size of the input data
+CALLDATACOPY   &#x2F;&#x2F;Copy the input data to memory
+CODESIZE       &#x2F;&#x2F;Get the size of code running in the current environment
+CODECOPY       &#x2F;&#x2F;Copy the code running in the current environment to
+               &#x2F;&#x2F;memory
+GASPRICE       &#x2F;&#x2F;Get the gas price specified by the originating
+               &#x2F;&#x2F;transaction
+EXTCODESIZE    &#x2F;&#x2F;Get the size of any account&#39;s code
+EXTCODECOPY    &#x2F;&#x2F;Copy any account&#39;s code to memory
+RETURNDATASIZE &#x2F;&#x2F;Get the size of the output data from the previous call
+               &#x2F;&#x2F;in the current environment
+RETURNDATACOPY &#x2F;&#x2F;Copy data output from the previous call to memory<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p><em>块操作</em></p>
+<p>用于访问当前块信息的操作码：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">BLOCKHASH  &#x2F;&#x2F;Get the hash of one of the 256 most recently completed
+           &#x2F;&#x2F;blocks
+COINBASE   &#x2F;&#x2F;Get the block&#39;s beneficiary address for the block reward
+TIMESTAMP  &#x2F;&#x2F;Get the block&#39;s timestamp
+NUMBER     &#x2F;&#x2F;Get the block&#39;s number
+DIFFICULTY &#x2F;&#x2F;Get the block&#39;s difficulty
+GASLIMIT   &#x2F;&#x2F;Get the block&#39;s gas limit<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="以太坊状态"><a href="#以太坊状态" class="headerlink" title="以太坊状态"></a>以太坊状态</h3><p>EVM 的工作是通过计算有效的状态转换来更新以太坊状态，这是由以太坊协议定义的智能合约代码执行的结果。<strong>这一方面导致将以太坊描述为基于交易的状态机，这反映了外部参与者（即账户持有者和矿工）通过创建、接收和订购交易来启动状态转换的事实。</strong>在这一点上考虑什么构成了以太坊状态是有用的。</p>
+<p>在顶层，我们有以太坊世界状态(<em>world state</em>)。<strong>世界状态是以太坊地址（160 位值）到账户的映射。在较低级别，每个以太坊地址代表一个账户，包括一个以太币balance（存储为该账户拥有的 wei 数量）、一个nonce（如果它是 EOA，则表示从该账户成功发送的交易数量，或数量如果它是合约账户，则由它创建的合约的数量）、账户的storage（这是一个永久数据存储，仅由智能合约使用）和账户的 program code（同样，仅当账户是智能合约账户时）。 EOA 将始终没有代码和一个空存储。</strong></p>
+<p><strong>当交易导致智能合约代码执行时，EVM 将被实例化</strong>，其中包含与正在创建的当前块和正在处理的特定交易相关的所有所需信息。特别是，<strong>EVM 的 程序代码 ROM 加载了被调用合约账户的代码，程序计数器设置为零，存储从合约账户的存储中加载，内存设置为全零，所有区块和环境变量被设置。</strong>一个关键变量是此执行的 gas 供应量，它设置为发送者在交易开始时支付的 gas 量（有关更多详细信息，请参阅 <a target="_blank" rel="noopener" href="https://github.com/ethereumbook/ethereumbook/blob/develop/13evm.asciidoc#gas">Gas</a>）。<strong>随着代码执行的进行，gas 供应量会根据执行操作的 gas 成本而减少。</strong>如果在任何时候气体供应减少到零，我们会<strong>得到“gas不足(Out of Gas)”（OOG）异常；执行立即停止并放弃交易</strong>。不会对以太坊状态进行任何更改，除了<strong>发送者的随机数被增加并且他们的以太币余额下降以支付块的受益人用于执行代码到停止点的资源</strong>。此时，<strong>您可以认为 EVM 在以太坊世界状态的沙盒副本上运行，如果由于任何原因无法完成执行，该沙盒版本将被完全丢弃。但是，如果执行成功完成，那么真实世界状态会更新以匹配沙盒版本，包括对调用合约存储数据的任何更改、创建的任何新合约以及启动的任何以太余额转移</strong>。</p>
+<p>请注意，<strong>由于智能合约本身可以有效地启动交易，因此代码执行是一个递归过程。一个合约可以调用其他合约，每次调用都会围绕调用的新目标实例化另一个 EVM。每个实例化都有其沙盒世界状态，该状态是从上层 EVM 的沙盒中初始化的。每个实例化也被赋予指定数量的 gas 用于其 gas 供应（当然不超过上述级别中剩余的 gas 量），因此可能会由于给定的 gas 太少而无法完成其执行而自行停止。同样，在这种情况下，沙盒状态被丢弃，执行返回到上一层的 EVM。</strong></p>
+<h3 id="将Solidity编译为EVM字节码"><a href="#将Solidity编译为EVM字节码" class="headerlink" title="将Solidity编译为EVM字节码"></a>将Solidity编译为EVM字节码</h3><p>将 Solidity 源文件编译为 EVM 字节码可以通过多种方法完成。在 [intro_chapter] 中，我们使用了在线 Remix 编译器。在本章中，我们将在命令行中使用 solc 可执行文件。有关选项列表，请运行以下命令：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ solc --help<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>使用 –opcodes 命令行选项很容易生成 Solidity 源文件的原始操作码流。这个操作码流省略了一些信息（–asm 选项产生完整的信息），但是对于这个讨论来说已经足够了。例如，编译示例 Solidity 文件 Example.sol，并将操作码输出发送到名为 BytecodeDir 的目录中，可使用以下命令完成：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ solc -o BytecodeDir --opcodes Example.sol
+或者
+$ solc -o BytecodeDir --asm Example.sol<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>以下命令将为我们的示例程序生成字节码二进制文件：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ solc -o BytecodeDir --bin Example.sol<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>生成的输出操作码文件将取决于 Solidity 源文件中包含的特定合约。我们简单的 Solidity 文件 Example.sol 只有一个合约，名为 example：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.4.19</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">example</span> <span class="token punctuation">&#123;</span>
+
+  <span class="token builtin">address</span> contractOwner<span class="token punctuation">;</span>
+
+  <span class="token keyword">function</span> <span class="token function">example</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    contractOwner <span class="token operator">=</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>如您所见，该合约所做的只是保存一个持久状态变量，该变量被设置为运行该合约的最后一个帐户的地址。</p>
+<p>如果您查看 BytecodeDir 目录，您将看到操作码文件 example.opcode，其中包含示例合约的 EVM 操作码指令。在文本编辑器中打开 example.opcode 文件将显示以下内容：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">PUSH1 0x60 PUSH1 0x40 MSTORE CALLVALUE ISZERO PUSH1 0xE JUMPI PUSH1 0x0 DUP1
+REVERT JUMPDEST CALLER PUSH1 0x0 DUP1 PUSH2 0x100 EXP DUP2 SLOAD DUP2 PUSH20
+0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF MUL NOT AND SWAP1 DUP4 PUSH20
+0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF AND MUL OR SWAP1 SSTORE POP PUSH1
+0x35 DUP1 PUSH1 0x5B PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN STOP PUSH1 0x60 PUSH1
+0x40 MSTORE PUSH1 0x0 DUP1 REVERT STOP LOG1 PUSH6 0x627A7A723058 KECCAK256 JUMP
+0xb9 SWAP14 0xcb 0x1e 0xdd RETURNDATACOPY 0xec 0xe0 0x1f 0x27 0xc9 PUSH5
+0x9C5ABCC14A NUMBER 0x5e INVALID EXTCODESIZE 0xdb 0xcf EXTCODESIZE 0x27
+EXTCODESIZE 0xe2 0xb8 SWAP10 0xed 0x<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>使用 –asm 选项编译示例会在我们的 BytecodeDir 目录中生成一个名为 example.evm 的文件。这包含对 EVM 字节码指令的更高级别的描述，以及一些有用的注释：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">&#x2F;* &quot;Example.sol&quot;:26:132  contract example &#123;... *&#x2F;
+  mstore(0x40, 0x60)
+    &#x2F;* &quot;Example.sol&quot;:74:130  function example() &#123;... *&#x2F;
+  jumpi(tag_1, iszero(callvalue))
+  0x0
+  dup1
+  revert
+tag_1:
+    &#x2F;* &quot;Example.sol&quot;:115:125  msg.sender *&#x2F;
+  caller
+    &#x2F;* &quot;Example.sol&quot;:99:112  contractOwner *&#x2F;
+  0x0
+  dup1
+    &#x2F;* &quot;Example.sol&quot;:99:125  contractOwner &#x3D; msg.sender *&#x2F;
+  0x100
+  exp
+  dup2
+  sload
+  dup2
+  0xffffffffffffffffffffffffffffffffffffffff
+  mul
+  not
+  and
+  swap1
+  dup4
+  0xffffffffffffffffffffffffffffffffffffffff
+  and
+  mul
+  or
+  swap1
+  sstore
+  pop
+    &#x2F;* &quot;Example.sol&quot;:26:132  contract example &#123;... *&#x2F;
+  dataSize(sub_0)
+  dup1
+  dataOffset(sub_0)
+  0x0
+  codecopy
+  0x0
+  return
+stop
+
+sub_0: assembly &#123;
+        &#x2F;* &quot;Example.sol&quot;:26:132  contract example &#123;... *&#x2F;
+      mstore(0x40, 0x60)
+      0x0
+      dup1
+      revert
+
+    auxdata: 0xa165627a7a7230582056b99dcb1edd3eece01f27c9649c5abcc14a435efe3b...
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>–bin-runtime 选项生成机器可读的十六进制字节码：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">60606040523415600e57600080fd5b336000806101000a81548173
+ffffffffffffffffffffffffffffffffffffffff
+021916908373
+ffffffffffffffffffffffffffffffffffffffff
+160217905550603580605b6000396000f3006060604052600080fd00a165627a7a7230582056b...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>您可以使用 <a target="_blank" rel="noopener" href="https://github.com/ethereumbook/ethereumbook/blob/develop/13evm.asciidoc#evm_bytecode_overview">The EVM Instruction Set (Bytecode Operations)</a> 中给出的操作码列表详细调查此处发生的情况。然而，这是一项艰巨的任务，所以让我们从检查前四个指令开始：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">PUSH1 0x60 PUSH1 0x40 MSTORE CALLVALUE<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>这里我们有 PUSH1 后跟一个值为 0x60 的原始字节(<em>raw byte</em>)。此 EVM 指令采用程序代码中操作码后面的单个字节（作为字面值）并将其压入堆栈。可以将大小最大为 32 字节(EVM字长为256位)的值压入堆栈，如下所示：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">PUSH32 0x436f6e67726174756c6174696f6e732120536f6f6e20746f206d617374657221<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>example.opcode 中的第二个 PUSH1 操作码将 0x40 存储到堆栈顶部（将已经存在的 0x60 向下推到一个槽中）。</p>
+<p>接下来是 MSTORE，这是一个内存存储操作，将值保存到 EVM 的内存中。<strong>它需要两个参数，并且像大多数 EVM 操作一样，从堆栈中获取它们。</strong>对于每个参数，堆栈都会“弹出”；即，堆栈上的顶部值被取出，堆栈上的所有其他值都上移一个位置。 MSTORE 的第一个参数是将要保存的值存放在内存中的字的地址。对于这个程序，我们在堆栈顶部有 0x40，因此从堆栈中删除并用作内存地址。第二个参数是要保存的值，这里是0x60。在执行 MSTORE 操作后，我们的堆栈再次为空，但我们在内存位置 0x40 处有值 0x60（十进制的 96）。</p>
+<p>下一个操作码是 CALLVALUE，它是一个环境操作码，它将与启动此执行的消息调用一起发送的以太量（以 wei 为单位）推送到堆栈顶部。</p>
+<p>我们可以继续以这种方式逐步执行这个程序，直到我们完全理解这段代码影响的低级状态变化，但在这个阶段它对我们没有帮助。我们将在本章稍后再讨论它。</p>
+<h3 id="合约部署代码"><a href="#合约部署代码" class="headerlink" title="合约部署代码"></a>合约部署代码</h3><p><strong>在以太坊平台上创建和部署新合约时使用的代码与合约本身的代码之间存在重要但微妙的区别。<strong><strong>为了创建一个新合约，需要一个特殊的交易，它的 to 字段设置为特殊的 0x0 地址，其数据字段设置为合约的启动代码(initiation code)。</strong></strong>当处理这样的合约创建交易时，新合约账户的代码不是交易数据字段中的代码。相反，EVM 会使用加载到其程序代码 ROM 中的交易数据字段中的代码来实例化，然后将该部署代码的执行输出作为新合约账户的代码。这样就可以在部署时使用以太坊世界状态以编程方式初始化新合约，在合约的存储中设置值，甚至发送以太币或创建更多新合约。</strong></p>
+<p>离线编译合约时，例如在命令行上使用 solc，你可以获取<strong>部署字节码</strong>或<strong>运行时字节码</strong>。</p>
+<p><strong>部署字节码用于新合约账户初始化的各个方面，包括在交易调用此新合约时实际最终执行的字节码（即运行时字节码）和基于合约初始化所有内容的代码构造函数。</strong></p>
+<p>另一方面，运行时字节码正是在调用新合约时最终被执行的字节码，仅此而已；它不包括在部署期间初始化合约所需的字节码。</p>
+<p>让我们以我们之前创建的简单 Faucet.sol 合约为例：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// Version of Solidity compiler this program was written for</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.4.19</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Our first contract is a faucet!</span>
+<span class="token keyword">contract</span> <span class="token class-name">Faucet</span> <span class="token punctuation">&#123;</span>
+
+  <span class="token comment">// Give out ether to anyone who asks</span>
+  <span class="token keyword">function</span> <span class="token function">withdraw</span><span class="token punctuation">(</span><span class="token builtin">uint</span> withdraw_amount<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+
+      <span class="token comment">// Limit withdrawal amount</span>
+      <span class="token keyword">require</span><span class="token punctuation">(</span>withdraw_amount <span class="token operator">&lt;=</span> <span class="token number">100000000000000000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+      <span class="token comment">// Send the amount to the address that requested it</span>
+      msg<span class="token punctuation">.</span>sender<span class="token punctuation">.</span><span class="token function">transfer</span><span class="token punctuation">(</span>withdraw_amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">// Accept any incoming amount</span>
+  <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">payable</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>要获取部署字节码，我们将运行 <code>solc --bin Faucet.sol</code>。如果我们只想要运行时字节码，我们将运行 <code>solc --bin-runtime Faucet.sol</code>。</p>
+<p>如果您比较这些命令的输出，您将看到运行时字节码是部署字节码的子集。换句话说，运行时字节码完全包含在部署字节码中。</p>
+<h3 id="反汇编字节码"><a href="#反汇编字节码" class="headerlink" title="反汇编字节码"></a>反汇编字节码</h3><p>反汇编 EVM 字节码是了解高级 Solidity 如何在 EVM 中起作用的好方法。您可以使用一些反汇编程序来执行此操作：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/comaeio/porosity"><em>Porosity</em></a> 是一种流行的开源反编译器。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/trailofbits/ethersplay"><em>Ethersplay</em></a> 是一个反汇编程序 Binary Ninja 的 EVM 插件。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/trailofbits/ida-evm"><em>IDA-Evm</em></a> 是另一个反汇编程序 IDA 的 EVM 插件。</li>
+</ul>
+<p>在本节中，我们将使用 Binary Ninja 的 Ethersplay 插件并开始 <a target="_blank" rel="noopener" href="https://github.com/ethereumbook/ethereumbook/blob/develop/13evm.asciidoc#Faucet_disassembled">反汇编 Faucet 运行时字节码</a>。获得 Faucet.sol 的运行时字节码后，我们可以将其输入到 Binary Ninja（加载 Ethersplay 插件后），看看 EVM 指令是什么样的。</p>
+<img src="/2022/09/12/mastering-ethereum-the-ethereum-virtual-machine/image-20220912114702-0e5kjtm.png" srcset="/img/loading.gif" lazyload class="" title="反汇编 Faucet 运行时字节码">
+
+<center> 反汇编 Faucet 运行时字节码 </center>
+
+<p>当您将交易发送到与 ABI 兼容的智能合约（您可以假设所有合约都是ABI兼容的）时，交易首先与该智能合约的调度程序进行交互。调度程序读取交易的数据字段并将相关部分发送到适当的函数。我们可以在反汇编的 Faucet.sol 运行时字节码的开头看到一个调度程序的示例。在熟悉的 MSTORE 指令之后，我们看到如下指令：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">PUSH1 0x4
+CALLDATASIZE
+LT
+PUSH1 0x3f
+JUMPI<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>正如我们所见，PUSH1 0x4 将 0x4 放在栈顶，否则为空。 <strong>CALLDATASIZE 获取与交易一起发送的数据（称为 calldata）的大小（以字节为单位）并将该数字压入堆栈</strong>。执行完这些操作后，栈如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>Stack</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&lt;来自 tx 的 calldata 长度&gt;</td>
+</tr>
+<tr>
+<td>0x4 (函数以4个字节标识)</td>
+</tr>
+</tbody></table>
+<p>下一条指令是 LT，是“小于”的缩写。 LT 指令检查栈顶项是否小于栈顶项的下一项(whether the top item on the stack is less than the next item on the stack)。在我们的例子中，它检查 CALLDATASIZE 的结果是否小于 4 个字节。</p>
+<p><strong>为什么 EVM 会检查交易的 calldata 是否至少有 4 个字节？因为函数标识符的工作方式。</strong>每个函数由其 Keccak-256 散列的前 4 个字节标识。通过将函数的名称和它接受的参数放入 keccak256 哈希函数中，我们可以推断出它的函数标识符。在我们的例子中，我们有：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token function">keccak256</span><span class="token punctuation">(</span><span class="token string">"withdraw(uint256)"</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0x2e1a7d4d</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>下一条指令 EQ 弹出堆栈的顶部两项并进行比较。这是调度程序主要工作的地方：<strong>它比较在事务的 msg.data 字段中发送的函数标识符是否与 withdraw(uint256) 的函数标识符匹配。</strong>如果它们相等，则 EQ 将 1 压入堆栈，最终将用于跳转到提取函数。否则，EQ 将 0 压入堆栈。</p>
+<p>假设发送到我们合约的交易确实以 withdraw(uint256) 的函数标识符开始，我们的堆栈变成了：</p>
+<table>
+<thead>
+<tr>
+<th>Stack</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+</tr>
+<tr>
+<td>&lt;在数据中发送的函数标识符&gt;（现在已知为 0x2e1a7d4d）</td>
+</tr>
+</tbody></table>
+<p>接下来，我们有 PUSH1 0x41，这是 withdraw(uint256) 函数存在于合约中的地址。在此指令之后，堆栈如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>Stack</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x41</td>
+</tr>
+<tr>
+<td>1</td>
+</tr>
+<tr>
+<td>在 msg.data 中发送的函数标识符</td>
+</tr>
+</tbody></table>
+<p>接下来是 JUMPI 指令，它再次接受栈顶的两个元素作为参数。在这种情况下，我们有 jumpi(0x41, 1)，它告诉 EVM 执行跳转到 withdraw(uint256) 函数的位置，并且可以继续执行该函数的代码。</p>
+<h2 id="图灵完备性和Gas"><a href="#图灵完备性和Gas" class="headerlink" title="图灵完备性和Gas"></a>图灵完备性和Gas</h2><p>正如我们已经提到的，简单来说，如果系统或编程语言可以运行任何程序，它就是图灵完备的。但是，此功能带有一个非常重要的警告：某些程序需要永远运行。一个重要的方面是，我们无法仅通过查看程序来判断它是否需要永远执行。我们必须实际执行程序并等待它完成找出。当然，如果要永远执行，我们将不得不永远等待才能找到答案。这被称为停机问题，如果不加以解决，对以太坊来说将是一个巨大的问题。</p>
+<p>由于停机问题，以太坊世界计算机面临被要求执行永不停止的程序的风险。这可能是偶然的，也可能是恶意的。我们已经讨论过以太坊的行为就像一个单线程机器，没有任何调度程序，因此如果它陷入无限循环，这将意味着它将变得无法使用。</p>
+<p>但是，使用 gas 有一个解决方案：<strong>如果在执行了预先指定的最大计算量之后，执行还没有结束，则 EVM 会暂停程序的执行</strong>。这使得 EVM 成为一个准图灵完备的机器：它可以运行您输入其中的任何程序，但前提是程序在特定的计算量内终止。这个限制在以太坊中不是固定的 —— 你可以付费将其增加到最大值（称为“block gas limit”），并且每个人都可以同意随着时间的推移增加这个最大值。然而，在任何时候，都有一个限制，在执行时消耗过多gas的交易会被暂停。</p>
+<p>在接下来的部分中，我们将研究gas并详细研究它是如何工作的。</p>
+<h2 id="Gas"><a href="#Gas" class="headerlink" title="Gas"></a>Gas</h2><p><strong>Gas 是以太坊的单位，用于测量在以太坊区块链上执行操作所需的计算和存储资源。</strong>与比特币的交易费用仅考虑以千字节为单位的交易大小相比，以太坊必须考虑交易和智能合约代码执行执行的每个计算步骤。</p>
+<p><strong>交易或合约执行的每项操作都会消耗固定数量的gas。</strong>来自以太坊黄皮书的一些例子：</p>
+<ul>
+<li>添加两个数字需要 3 个 gas</li>
+<li>计算一个 Keccak-256 散列需要 30 gas + 对于每 256 位被散列的数据收取的6 gas</li>
+<li>发送一笔交易需要 21,000 gas</li>
+</ul>
+<p>Gas 是以太坊的重要组成部分，具有双重作用：作为以太坊（波动）价格与矿工工作奖励之间的缓冲，以及抵御拒绝服务攻击。为了防止网络中出现意外或恶意的无限循环或其他计算浪费，每笔交易的发起者都需要对他们愿意支付的计算量设置一个限制。因此，gas 系统阻止了攻击者发送“spam”交易，因为他们必须按比例支付他们消耗的计算、带宽和存储资源。</p>
+<h3 id="执行期间的Gas核算"><a href="#执行期间的Gas核算" class="headerlink" title="执行期间的Gas核算"></a>执行期间的Gas核算</h3><p>当需要 EVM 来完成交易时，首先会为其提供与交易中 gas limit 指定的数量相等的 gas 供应。执行的每个操作码都有 gas 成本，因此 EVM 的 gas 供应量会随着 EVM 逐步执行程序而减少。<strong>在每次操作之前，EVM 会检查是否有足够的 gas 来支付操作的执行费用。如果没有足够的 gas，执行将停止并恢复交易。</strong></p>
+<p><strong>如果 EVM 成功到达执行结束，并且没有用完 gas，则使用的 gas 成本作为交易费用支付给矿工</strong>，根据交易中指定的 gas 价格转换为 ether：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">miner fee &#x3D; gas cost * gas price<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p><strong>gas 供应中剩余的 gas 将退还给发送方</strong>，再次根据交易中指定的 gas 价格转换为以太币：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">remaining gas &#x3D; gas limit - gas cost
+refunded ether &#x3D; remaining gas * gas price<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p><strong>即：对于发送交易的用户，执行合约所需要的所有 gas 都支付给矿工，初始提供的 gas 中剩余的 gas 退还给用户。</strong></p>
+<p>如果交易在执行过程中“用尽 gas”，则操作立即终止，引发 “out of gas” 异常。交易被 revert 并且对状态的所有更改都被回滚。</p>
+<p><strong>尽管交易不成功，但发送者将被收取交易费用，因为矿工已经完成了计算工作，并且必须为此获得补偿。</strong></p>
+<h3 id="Gas核算注意事项"><a href="#Gas核算注意事项" class="headerlink" title="Gas核算注意事项"></a>Gas核算注意事项</h3><p>EVM 可以执行的各种操作的相对gas成本经过精心选择，以最好地保护以太坊区块链免受攻击。您可以在 [evm_opcodes_table] 中查看不同 EVM 操作码的 gas 成本详细表。</p>
+<p>计算量更大的操作会消耗更多的气体。例如，执行 SHA3 函数（30 gas）的成本是 ADD 操作（3 gas）的 10 倍。更重要的是，一些操作，比如 EXP，需要根据操作数的大小额外付费。使用 EVM 内存和在合约的链上存储中存储数据也需要 gas 成本。</p>
+<p>2016 年，当攻击者发现并利用成本不匹配时，证明了将 gas 成本与实际资源成本相匹配的重要性。攻击产生的交易计算成本非常高，并使以太坊主网几乎陷入停顿。这种不匹配通过调整相对gas成本的硬分叉（代号为“Tangerine Whistle”）解决。</p>
+<h3 id="Gas成本与Gas价格"><a href="#Gas成本与Gas价格" class="headerlink" title="Gas成本与Gas价格"></a>Gas成本与Gas价格</h3><p>虽然 gas 成本是 EVM 中使用的计算和存储的衡量标准，但 gas 本身也有以 ether 为单位的价格。在执行交易时，发送者指定他们愿意为每单位 gas 支付的 gas 价格（以 ether 为单位），从而<strong>允许市场决定 ether 价格与计算操作成本（以 gas 衡量）之间的关系</strong>：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">transaction fee &#x3D; total gas used * gas price paid  (in ether)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>在构建新区块时，以太坊网络上的矿工可以通过选择那些<strong>提供更高 gas 价格</strong>的交易来选择待处理的交易。因此，<strong>提供更高的 gas 价格将激励矿工将您的交易包括在内并更快地得到确认。</strong></p>
+<p>在实践中，交易的发送者将设置一个高于或等于预期使用的 gas 量的 gas limit。如果设置的 gas limit 高于所消耗的 gas 量，发送方将收到超出部分的退款，因为矿工只会根据他们实际执行的工作获得补偿。</p>
+<p>重要的是要明确 <em>gas cost</em> 和 <em>gas price</em> 之间的区别。回顾一下：</p>
+<ul>
+<li>gas cost 是执行特定操作所需的 <strong>gas 单位数</strong>。</li>
+<li>gas price 是当您将交易发送到以太坊网络时，您<strong>愿意为每单位天然气支付的以太币数量</strong>。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Tip</th>
+<th>虽然 gas 是有价格的，但它不能“拥有”或“花费”。 Gas 仅存在于 EVM 内部，用于计算正在执行的计算工作量。向发送者收取以太币交易费，然后将其转换为用于 EVM 核算的 gas，然后作为支付给矿工的交易费返回以太币。</th>
+</tr>
+</thead>
+</table>
+<h4 id="负-gas-cost"><a href="#负-gas-cost" class="headerlink" title="负 gas cost"></a>负 gas cost</h4><p>以太坊通过退还合约执行期间使用的一些 gas 来鼓励删除使用的存储变量和帐户。</p>
+<p>在 EVM 中有两个负 gas cost 的操作：</p>
+<ul>
+<li>删除合约 (SELFDESTRUCT) 价值 24,000 gas 的退款。</li>
+<li>将存储地址从非零值更改为零 (SSTORE[x] &#x3D; 0) 返还 15,000 个 gas。</li>
+</ul>
+<p>为避免利用退款机制，交易的最大退款设置为所用gas总量的一半（向下取整）。</p>
+<h3 id="区块Gas限制-Block-Gas-Limit"><a href="#区块Gas限制-Block-Gas-Limit" class="headerlink" title="区块Gas限制(Block Gas Limit)"></a>区块Gas限制(Block Gas Limit)</h3><p>区块 Gas 限制是一个区块中所有交易可能消耗的最大 Gas 量，并限制了一个区块可以容纳多少交易。</p>
+<p>例如，假设我们有 5 笔交易，其 gas limit 已设置为 30,000、30,000、40,000、50,000 和 50,000。如果区块gas限制为 180,000，那么这些交易中的任何四个都可以放入一个区块中，而第五个则必须等待未来的区块。如前所述，矿工决定将哪些交易包含在一个区块中。不同的矿工可能会选择不同的组合，主要是因为他们以不同的顺序从网络接收交易。</p>
+<p>如果矿工试图包含一个需要比当前区块gas限制更多的gas的交易，该区块将被网络拒绝。大多数以太坊客户端会通过发出“transaction exceeds block gas limit”的警告来阻止您发出此类交易。根据 <a target="_blank" rel="noopener" href="https://etherscan.io/">https://etherscan.io</a> 的数据，在撰写本文时，以太坊主网上的区块 Gas 上限为 800 万，这意味着大约 380 笔基本交易（每笔交易消耗 21,000 笔天然气）可以放入一个区块中。</p>
+<h4 id="谁来决定区块Gas限制是多少？"><a href="#谁来决定区块Gas限制是多少？" class="headerlink" title="谁来决定区块Gas限制是多少？"></a>谁来决定区块Gas限制是多少？</h4><p>网络上的矿工共同决定区块 Gas 限制。想要在以太坊网络上挖矿的个人使用挖矿程序，例如 Ethminer，它连接到 Geth 或 Parity 以太坊客户端。以太坊协议有一个内置机制，矿工可以对gas限制进行投票，以便在后续区块中增加或减少容量。一个区块的矿工可以投票决定在任一方向将区块gas限制调整 1&#x2F;1,024 (0.0976%)。其结果是可根据当时网络的需要调整块大小。该机制与默认挖矿策略相结合，矿工对至少 470 万 gas 的 gas 限制进行投票，但其目标是每块最近总 gas 使用量平均值的 150%（使用 1,024 块指数移动平均）。</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>在本章中，我们探索了以太坊虚拟机，跟踪各种智能合约的执行，并了解 EVM 如何执行字节码。我们还研究了 EVM 的记账机制 Gas，并了解它如何解决停机问题并保护以太坊免受拒绝服务攻击。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/" class="category-chain-item">区块链技术</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/%E7%B2%BE%E9%80%9A%E4%BB%A5%E5%A4%AA%E5%9D%8A/" class="category-chain-item">精通以太坊</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF/">#区块链技术</a>
+      
+        <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/">#以太坊</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>精通以太坊：以太坊虚拟机</div>
+      <div>https://alphafitz.com/2022/09/12/mastering-ethereum-the-ethereum-virtual-machine/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>alphafitz</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年9月12日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                <i class="iconfont icon-nc"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                <i class="iconfont icon-sa"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/09/13/mastering-ethereum-smart-contract-security/" title="精通以太坊：智能合约安全">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">精通以太坊：智能合约安全</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/09/01/tools-win-code-snippets-manager/" title="Windows 代码片段管理工具">
+                        <span class="hidden-mobile">Windows 代码片段管理工具</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.27.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
